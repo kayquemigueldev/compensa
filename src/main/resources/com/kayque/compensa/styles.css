@@ -498,3 +498,77 @@
     -fx-font-size: 15px;
     -fx-padding: 28px;
 }
+
+.wishlist-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.wishlist-list .viewport,
+.wishlist-list .virtual-flow {
+    -fx-background-color: transparent;
+}
+
+.wishlist-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12px 0;
+}
+
+.wishlist-list .list-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+
+.wishlist-card {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 12px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px 20px;
+}
+
+.wishlist-product {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.wishlist-date,
+.wishlist-small-label {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 10px;
+}
+
+.wishlist-value {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.wishlist-action {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 13px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.wishlist-purchased {
+    -fx-border-color: #a8e063;
+    -fx-text-fill: #a8e063;
+}
+
+.wishlist-purchased:hover {
+    -fx-background-color: #202918;
+}
+
+.wishlist-declined {
+    -fx-border-color: #8c929c;
+    -fx-text-fill: #c3c7ce;
+}
+
+.wishlist-declined:hover {
+    -fx-background-color: #242830;
+}

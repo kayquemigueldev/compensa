@@ -48,8 +48,10 @@
                         onAction="#showPurchaseAnalysis"
                         styleClass="nav-button-active"/>
 
-                <Button text="Lista de desejos"
+                <Button fx:id="wishlistButton"
+                        text="Lista de desejos"
                         maxWidth="Infinity"
+                        onAction="#showWishlist"
                         styleClass="nav-button"/>
 
                 <Button fx:id="historyButton"

@@ -23,7 +23,19 @@ public class MainController {
     @FXML
     private Button financialProfileButton;
 
+    @FXML
+    private Button wishlistButton;
+
     private Node purchaseAnalysisView;
+
+    @FXML
+    private void showWishlist() {
+        showView(
+                "/com/kayque/compensa/wishlist/wishlist-view.fxml",
+                wishlistButton,
+                "Não foi possível abrir a lista de desejos."
+        );
+    }
 
     @FXML
     private void initialize() {
@@ -79,6 +91,10 @@ public class MainController {
 
     private void setActiveButton(Button activeButton) {
         analyzePurchaseButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        wishlistButton.getStyleClass().setAll(
                 "nav-button"
         );
 
