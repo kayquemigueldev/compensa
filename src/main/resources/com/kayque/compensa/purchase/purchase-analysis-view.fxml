@@ -12,17 +12,17 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kayque.compensa.purchase.controller.PurchaseAnalysisController"
-      spacing="28.0"
+      spacing="24.0"
       styleClass="main-content">
 
     <padding>
-        <Insets top="42.0"
-                right="44.0"
-                bottom="42.0"
-                left="44.0"/>
+        <Insets top="32.0"
+                right="36.0"
+                bottom="32.0"
+                left="36.0"/>
     </padding>
 
-    <VBox spacing="8.0">
+    <VBox spacing="6.0">
         <Label text="Analisar compra"
                styleClass="page-title"/>
 
@@ -30,18 +30,18 @@
                styleClass="page-subtitle"/>
     </VBox>
 
-    <HBox spacing="22.0"
+    <HBox spacing="20.0"
           VBox.vgrow="ALWAYS">
 
-        <VBox spacing="20.0"
-              prefWidth="390.0"
-              minWidth="330.0"
+        <VBox spacing="14.0"
+              prefWidth="410.0"
+              minWidth="380.0"
               styleClass="card">
 
             <Label text="Sobre a compra"
                    styleClass="card-title"/>
 
-            <VBox spacing="8.0">
+            <VBox spacing="6.0">
                 <Label text="O que você quer comprar?"
                        styleClass="field-label"/>
 
@@ -50,23 +50,87 @@
                            styleClass="form-field"/>
             </VBox>
 
-            <VBox spacing="8.0">
-                <Label text="Quanto custa?"
-                       styleClass="field-label"/>
+            <HBox spacing="12.0">
 
-                <TextField fx:id="purchasePriceField"
-                           promptText="Ex.: 7,99"
-                           styleClass="form-field"/>
-            </VBox>
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="Quanto custa?"
+                           styleClass="field-label"/>
 
-            <VBox spacing="8.0">
-                <Label text="Com que frequência?"
-                       styleClass="field-label"/>
+                    <TextField fx:id="purchasePriceField"
+                               promptText="Ex.: 7,99"
+                               styleClass="form-field"/>
+                </VBox>
 
-                <ComboBox fx:id="frequencyComboBox"
-                          maxWidth="Infinity"
-                          styleClass="form-combo"/>
-            </VBox>
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="Frequência"
+                           styleClass="field-label"/>
+
+                    <ComboBox fx:id="frequencyComboBox"
+                              maxWidth="Infinity"
+                              styleClass="form-combo"/>
+                </VBox>
+            </HBox>
+
+            <Label text="Contexto da decisão"
+                   styleClass="form-section-title"/>
+
+            <HBox spacing="12.0">
+
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="Estava planejada?"
+                           styleClass="field-label"/>
+
+                    <ComboBox fx:id="plannedComboBox"
+                              promptText="Selecione"
+                              maxWidth="Infinity"
+                              styleClass="form-combo"/>
+                </VBox>
+
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="Existe alternativa?"
+                           styleClass="field-label"/>
+
+                    <ComboBox fx:id="alternativeComboBox"
+                              promptText="Selecione"
+                              maxWidth="Infinity"
+                              styleClass="form-combo"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12.0">
+
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="É urgente?"
+                           styleClass="field-label"/>
+
+                    <ComboBox fx:id="urgentComboBox"
+                              promptText="Selecione"
+                              maxWidth="Infinity"
+                              styleClass="form-combo"/>
+                </VBox>
+
+                <VBox spacing="6.0"
+                      HBox.hgrow="ALWAYS"
+                      maxWidth="Infinity">
+                    <Label text="Principal motivação"
+                           styleClass="field-label"/>
+
+                    <ComboBox fx:id="motivationComboBox"
+                              promptText="Selecione"
+                              maxWidth="Infinity"
+                              styleClass="form-combo"/>
+                </VBox>
+            </HBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
@@ -76,23 +140,23 @@
                     styleClass="primary-button"/>
         </VBox>
 
-        <VBox spacing="24.0"
+        <VBox spacing="20.0"
               maxWidth="Infinity"
               HBox.hgrow="ALWAYS"
               styleClass="card">
 
-            <VBox spacing="9.0">
+            <VBox spacing="8.0">
                 <Label fx:id="analysisStatusLabel"
                        text="SUA DECISÃO COMEÇA AQUI"
                        styleClass="analysis-status"/>
 
                 <Label fx:id="analysisDescriptionLabel"
-                       text="Informe o produto, preço e frequência para visualizar o impacto dessa escolha."
+                       text="Informe os dados e responda às perguntas para receber uma análise consciente."
                        wrapText="true"
                        styleClass="result-description-left"/>
             </VBox>
 
-            <HBox spacing="14.0">
+            <HBox spacing="12.0">
 
                 <VBox spacing="7.0"
                       maxWidth="Infinity"
@@ -105,10 +169,6 @@
                     <Label fx:id="professionalTimeLabel"
                            text="--"
                            styleClass="metric-value"/>
-
-                    <Label text="Considerando apenas sua jornada."
-                           wrapText="true"
-                           styleClass="metric-description"/>
                 </VBox>
 
                 <VBox spacing="7.0"
@@ -122,10 +182,6 @@
                     <Label fx:id="realTimeLabel"
                            text="--"
                            styleClass="metric-value-highlight"/>
-
-                    <Label text="Incluindo todo o tempo comprometido."
-                           wrapText="true"
-                           styleClass="metric-description"/>
                 </VBox>
 
                 <VBox spacing="7.0"
@@ -139,22 +195,18 @@
                     <Label fx:id="yearlyCostLabel"
                            text="--"
                            styleClass="metric-value"/>
-
-                    <Label text="Conforme a frequência informada."
-                           wrapText="true"
-                           styleClass="metric-description"/>
                 </VBox>
             </HBox>
 
-            <Region VBox.vgrow="ALWAYS"/>
-
-            <VBox spacing="12.0"
+            <VBox spacing="10.0"
+                  VBox.vgrow="ALWAYS"
                   styleClass="analysis-reflection">
 
-                <Label text="Reflexão"
+                <Label text="Por que chegamos a isso?"
                        styleClass="reflection-title"/>
 
-                <Label text="O preço mostra quanto você paga. O tempo mostra o que essa escolha realmente custa."
+                <Label fx:id="reflectionTextLabel"
+                       text="Os fatores positivos e pontos de atenção aparecerão aqui."
                        wrapText="true"
                        styleClass="reflection-text"/>
             </VBox>
