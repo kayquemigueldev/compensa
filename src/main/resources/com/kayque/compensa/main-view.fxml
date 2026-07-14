@@ -52,8 +52,10 @@
                         maxWidth="Infinity"
                         styleClass="nav-button"/>
 
-                <Button text="Histórico"
+                <Button fx:id="historyButton"
+                        text="Histórico"
                         maxWidth="Infinity"
+                        onAction="#showHistory"
                         styleClass="nav-button"/>
 
                 <Button text="Insights"

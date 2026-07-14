@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.history.controller.HistoryController"
+      spacing="26.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Histórico"
+               styleClass="page-title"/>
+
+        <Label fx:id="historySummaryLabel"
+               text="Carregando decisões..."
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <Label fx:id="emptyStateLabel"
+           text="Suas decisões aparecerão aqui depois da primeira análise."
+           visible="false"
+           managed="false"
+           wrapText="true"
+           styleClass="history-empty-state"/>
+
+    <ListView fx:id="historyListView"
+              VBox.vgrow="ALWAYS"
+              styleClass="history-list"/>
+
+</VBox>

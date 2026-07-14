@@ -18,6 +18,9 @@ public class MainController {
     private Button analyzePurchaseButton;
 
     @FXML
+    private Button historyButton;
+
+    @FXML
     private Button financialProfileButton;
 
     private Node purchaseAnalysisView;
@@ -35,21 +38,40 @@ public class MainController {
 
     @FXML
     private void showFinancialProfile() {
+        showView(
+                "/com/kayque/compensa/profile/profile-view.fxml",
+                financialProfileButton,
+                "Não foi possível abrir o perfil financeiro."
+        );
+    }
+
+    @FXML
+    private void showHistory() {
+        showView(
+                "/com/kayque/compensa/history/history-view.fxml",
+                historyButton,
+                "Não foi possível abrir o histórico."
+        );
+    }
+
+    private void showView(
+            String resource,
+            Button activeButton,
+            String errorMessage
+    ) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    MainController.class.getResource(
-                            "/com/kayque/compensa/profile/profile-view.fxml"
-                    )
+                    MainController.class.getResource(resource)
             );
 
-            Parent profileView = loader.load();
+            Parent view = loader.load();
 
-            mainBorderPane.setCenter(profileView);
-            setActiveButton(financialProfileButton);
+            mainBorderPane.setCenter(view);
+            setActiveButton(activeButton);
 
         } catch (IOException exception) {
             throw new IllegalStateException(
-                    "Não foi possível abrir o perfil financeiro.",
+                    errorMessage,
                     exception
             );
         }
@@ -57,6 +79,10 @@ public class MainController {
 
     private void setActiveButton(Button activeButton) {
         analyzePurchaseButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        historyButton.getStyleClass().setAll(
                 "nav-button"
         );
 
