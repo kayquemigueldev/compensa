@@ -10,6 +10,7 @@ module com.kayque.compensa {
     opens com.kayque.compensa.history.controller to javafx.fxml;
     opens com.kayque.compensa.wishlist.controller to javafx.fxml;
     opens com.kayque.compensa.dashboard.controller to javafx.fxml;
+    opens com.kayque.compensa.insights.controller to javafx.fxml;
 
     exports com.kayque.compensa;
 }

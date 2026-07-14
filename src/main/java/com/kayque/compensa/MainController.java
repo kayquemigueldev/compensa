@@ -29,6 +29,9 @@ public class MainController {
     @FXML
     private Button todayButton;
 
+    @FXML
+    private Button insightsButton;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -78,6 +81,15 @@ public class MainController {
         );
     }
 
+    @FXML
+    private void showInsights() {
+        showView(
+                "/com/kayque/compensa/insights/insights-view.fxml",
+                insightsButton,
+                "Não foi possível abrir os insights."
+        );
+    }
+
     private void showView(
             String resource,
             Button activeButton,
@@ -115,6 +127,10 @@ public class MainController {
         );
 
         historyButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        insightsButton.getStyleClass().setAll(
                 "nav-button"
         );
 

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.insights.controller.InsightsController"
+      spacing="28.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Insights"
+               styleClass="page-title"/>
+
+        <Label text="Entenda os padrões por trás das suas decisões."
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <GridPane hgap="16.0"
+              vgap="16.0">
+
+        <VBox GridPane.columnIndex="0"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="insight-metric-card">
+
+            <Label text="Compras realizadas"
+                   styleClass="insight-metric-title"/>
+
+            <Label fx:id="purchaseRateLabel"
+                   text="0%"
+                   styleClass="insight-metric-value"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="1"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="insight-metric-card">
+
+            <Label text="Compras evitadas"
+                   styleClass="insight-metric-title"/>
+
+            <Label fx:id="declineRateLabel"
+                   text="0%"
+                   styleClass="insight-metric-value-positive"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="2"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="insight-metric-card">
+
+            <Label text="Aguardando decisão"
+                   styleClass="insight-metric-title"/>
+
+            <Label fx:id="waitingRateLabel"
+                   text="0%"
+                   styleClass="insight-metric-value-warning"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="3"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="insight-metric-card">
+
+            <Label text="Média por decisão"
+                   styleClass="insight-metric-title"/>
+
+            <Label fx:id="averageTimeLabel"
+                   text="0 min"
+                   styleClass="insight-metric-value"/>
+        </VBox>
+
+    </GridPane>
+
+    <VBox spacing="16.0"
+          styleClass="insight-main-card">
+
+        <Label text="Padrão observado"
+               styleClass="insight-section-label"/>
+
+        <Label fx:id="insightHeadlineLabel"
+               text="Analisando suas decisões..."
+               wrapText="true"
+               styleClass="insight-main-title"/>
+
+        <Label fx:id="insightDescriptionLabel"
+               text="Continue utilizando o Compensa? para construir insights."
+               wrapText="true"
+               styleClass="insight-main-description"/>
+
+    </VBox>
+
+    <VBox spacing="10.0"
+          styleClass="insight-privacy-card">
+
+        <Label text="Como esses insights são criados?"
+               styleClass="insight-privacy-title"/>
+
+        <Label text="Nesta versão, os padrões são calculados localmente por regras transparentes. Seus dados permanecem no seu computador e nenhuma informação é enviada para serviços externos."
+               wrapText="true"
+               styleClass="insight-privacy-text"/>
+
+    </VBox>
+
+    <Label fx:id="insightsFeedbackLabel"
+           text=""
+           wrapText="true"
+           styleClass="feedback-label"/>
+
+</VBox>

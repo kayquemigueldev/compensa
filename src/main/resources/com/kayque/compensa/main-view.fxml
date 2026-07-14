@@ -62,8 +62,10 @@
                         onAction="#showHistory"
                         styleClass="nav-button"/>
 
-                <Button text="Insights"
+                <Button fx:id="insightsButton"
+                        text="Insights"
                         maxWidth="Infinity"
+                        onAction="#showInsights"
                         styleClass="nav-button"/>
 
                 <Region VBox.vgrow="ALWAYS"/>
