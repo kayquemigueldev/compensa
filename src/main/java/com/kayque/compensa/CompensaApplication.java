@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import com.kayque.compensa.database.DatabaseInitializer;
 
 import java.io.IOException;
 
@@ -14,6 +15,8 @@ public class CompensaApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        DatabaseInitializer.initialize();
+
         FXMLLoader loader = new FXMLLoader(
                 CompensaApplication.class.getResource("main-view.fxml")
         );
