@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            styleClass="app-root">
+
+    <left>
+        <VBox prefWidth="240.0"
+              minWidth="240.0"
+              styleClass="sidebar">
+
+            <padding>
+                <Insets top="32.0"
+                        right="18.0"
+                        bottom="24.0"
+                        left="18.0"/>
+            </padding>
+
+            <VBox spacing="2.0">
+                <Label text="✓  Compensa?"
+                       styleClass="brand-title"/>
+
+                <Label text="Compre consciente. Viva melhor."
+                       styleClass="brand-subtitle"/>
+            </VBox>
+
+            <VBox spacing="8.0"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="navigation">
+
+                <Button text="Hoje"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+
+                <Button text="Analisar compra"
+                        maxWidth="Infinity"
+                        styleClass="nav-button-active"/>
+
+                <Button text="Lista de desejos"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+
+                <Button text="Histórico"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+
+                <Button text="Insights"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Button text="Perfil financeiro"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+
+                <Button text="Configurações"
+                        maxWidth="Infinity"
+                        styleClass="nav-button"/>
+            </VBox>
+
+            <VBox spacing="8.0"
+                  styleClass="sidebar-message">
+
+                <Label text="Pequenas escolhas,"
+                       styleClass="sidebar-message-title"/>
+
+                <Label text="grandes mudanças."
+                       styleClass="sidebar-message-title"/>
+
+                <Label text="Você continua no controle."
+                       wrapText="true"
+                       styleClass="sidebar-message-text"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="28.0"
+              styleClass="main-content">
+
+            <padding>
+                <Insets top="42.0"
+                        right="44.0"
+                        bottom="42.0"
+                        left="44.0"/>
+            </padding>
+
+            <VBox spacing="8.0">
+                <Label text="Analisar compra"
+                       styleClass="page-title"/>
+
+                <Label text="Entenda o custo real antes de decidir."
+                       styleClass="page-subtitle"/>
+            </VBox>
+
+            <HBox spacing="22.0"
+                  VBox.vgrow="ALWAYS">
+
+                <VBox spacing="20.0"
+                      prefWidth="390.0"
+                      minWidth="330.0"
+                      styleClass="card">
+
+                    <Label text="Sobre a compra"
+                           styleClass="card-title"/>
+
+                    <VBox spacing="8.0">
+                        <Label text="O que você quer comprar?"
+                               styleClass="field-label"/>
+
+                        <Label text="Nenhuma compra informada"
+                               maxWidth="Infinity"
+                               styleClass="field-placeholder"/>
+                    </VBox>
+
+                    <VBox spacing="8.0">
+                        <Label text="Quanto custa?"
+                               styleClass="field-label"/>
+
+                        <Label text="R$ 0,00"
+                               maxWidth="Infinity"
+                               styleClass="field-placeholder"/>
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button text="Começar análise"
+                            maxWidth="Infinity"
+                            styleClass="primary-button"/>
+                </VBox>
+
+                <VBox spacing="18.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="card result-placeholder">
+
+                    <Label text="Sua decisão começa aqui"
+                           styleClass="result-title"/>
+
+                    <Label text="Informe o produto e o preço para descobrir quanto essa escolha representa em tempo de trabalho e impacto financeiro."
+                           wrapText="true"
+                           styleClass="result-description"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Label text="A decisão continua sendo sua."
+                           styleClass="decision-message"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

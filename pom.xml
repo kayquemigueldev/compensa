@@ -65,7 +65,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.kayque.compensa/com.kayque.compensa.HelloApplication
+                                com.kayque.compensa/com.kayque.compensa.Launcher
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
