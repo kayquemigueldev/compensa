@@ -1,0 +1,128 @@
+package com.kayque.compensa.insights.service;
+
+import com.kayque.compensa.insights.model.InsightReport;
+import com.kayque.compensa.insights.model.InsightsSummary;
+
+import java.util.Objects;
+
+public class InsightsService {
+
+    private static final long MINIMUM_DECISIONS_FOR_PATTERN = 5;
+
+    public InsightReport generateReport(
+            InsightsSummary summary
+    ) {
+        Objects.requireNonNull(
+                summary,
+                "O resumo dos insights é obrigatório."
+        );
+
+        if (summary.totalDecisions() == 0) {
+            return createEmptyReport();
+        }
+
+        int purchaseRate = calculateRate(
+                summary.purchasedDecisions(),
+                summary.totalDecisions()
+        );
+
+        int declineRate = calculateRate(
+                summary.declinedDecisions(),
+                summary.totalDecisions()
+        );
+
+        int waitingRate = calculateRate(
+                summary.waitingDecisions(),
+                summary.totalDecisions()
+        );
+
+        long averageMinutes = Math.round(
+                (double) summary.totalRealWorkMinutes()
+                        / summary.totalDecisions()
+        );
+
+        InsightMessage message =
+                determineInsightMessage(
+                        summary,
+                        declineRate
+                );
+
+        return new InsightReport(
+                purchaseRate,
+                declineRate,
+                waitingRate,
+                averageMinutes,
+                message.headline(),
+                message.description()
+        );
+    }
+
+    private InsightMessage determineInsightMessage(
+            InsightsSummary summary,
+            int declineRate
+    ) {
+        if (summary.totalDecisions()
+                < MINIMUM_DECISIONS_FOR_PATTERN) {
+            return new InsightMessage(
+                    "Continue registrando suas decisões",
+                    "Ainda existem poucos dados para identificar um padrão confiável. Cada nova análise ajuda o Compensa? a entender melhor suas escolhas."
+            );
+        }
+
+        if (hasFrequentPurchasesAgainstAdvice(summary)) {
+            return new InsightMessage(
+                    "Observe as compras feitas após alertas",
+                    "Você costuma comprar mesmo quando existem pontos importantes para reflexão. Isso não torna as compras erradas, mas vale acompanhar a satisfação depois delas."
+            );
+        }
+
+        if (declineRate >= 40) {
+            return new InsightMessage(
+                    "Você está criando espaço antes de gastar",
+                    "Uma parte relevante das compras analisadas não foi realizada. Seu histórico indica que parar para refletir está influenciando suas decisões."
+            );
+        }
+
+        return new InsightMessage(
+                "Suas decisões estão ganhando consistência",
+                "Você já possui dados suficientes para começar a reconhecer padrões. Continue registrando o resultado das compras para tornar os insights mais úteis."
+        );
+    }
+
+    private boolean hasFrequentPurchasesAgainstAdvice(
+            InsightsSummary summary
+    ) {
+        if (summary.purchasedDecisions() == 0) {
+            return false;
+        }
+
+        return summary.purchasesAgainstAdvice() * 2
+                >= summary.purchasedDecisions();
+    }
+
+    private int calculateRate(
+            long amount,
+            long total
+    ) {
+        return (int) Math.round(
+                amount * 100.0 / total
+        );
+    }
+
+    private InsightReport createEmptyReport() {
+        return new InsightReport(
+                0,
+                0,
+                0,
+                0,
+                "Comece pela sua primeira decisão",
+                "Analise uma compra para que o Compensa? comece a construir insights sobre suas escolhas."
+        );
+    }
+
+    private record InsightMessage(
+            String headline,
+            String description
+    ) {
+    }
+}
