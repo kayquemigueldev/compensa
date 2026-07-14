@@ -84,7 +84,7 @@
         <VBox spacing="6.0"
               HBox.hgrow="ALWAYS"
               maxWidth="Infinity"
-              styleClass="value-card value-card-highlight">
+              styleClass="value-card, value-card-highlight">
 
             <Label text="Hora real"
                    styleClass="value-card-title"/>

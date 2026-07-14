@@ -6,6 +6,7 @@ module com.kayque.compensa {
 
     opens com.kayque.compensa to javafx.fxml;
     opens com.kayque.compensa.profile.controller to javafx.fxml;
+    opens com.kayque.compensa.purchase.controller to javafx.fxml;
 
     exports com.kayque.compensa;
 }
