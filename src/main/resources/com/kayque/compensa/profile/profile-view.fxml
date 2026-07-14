@@ -105,9 +105,9 @@
            wrapText="true"
            styleClass="feedback-label"/>
 
-    <Button text="Calcular valor da minha hora"
+    <Button text="Salvar perfil financeiro"
             maxWidth="Infinity"
-            onAction="#calculateHourlyValues"
+            onAction="#saveFinancialProfile"
             styleClass="primary-button"/>
 
 </VBox>

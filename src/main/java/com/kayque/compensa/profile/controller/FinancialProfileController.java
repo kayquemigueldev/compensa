@@ -1,6 +1,8 @@
 package com.kayque.compensa.profile.controller;
 
 import com.kayque.compensa.profile.model.FinancialProfile;
+import com.kayque.compensa.profile.repository.FinancialProfileRepository;
+import com.kayque.compensa.profile.repository.SqliteFinancialProfileRepository;
 import com.kayque.compensa.profile.service.WorkValueService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,6 +16,9 @@ public class FinancialProfileController {
 
     private final WorkValueService workValueService =
             new WorkValueService();
+
+    private final FinancialProfileRepository profileRepository =
+            new SqliteFinancialProfileRepository();
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
@@ -39,39 +44,43 @@ public class FinancialProfileController {
     private Label feedbackLabel;
 
     @FXML
-    private void calculateHourlyValues() {
+    private void initialize() {
+        loadFinancialProfile();
+    }
+
+    @FXML
+    private void saveFinancialProfile() {
         clearFeedback();
 
         try {
             FinancialProfile profile = createProfileFromFields();
 
-            BigDecimal professionalHourlyValue =
-                    workValueService
-                            .calculateProfessionalHourlyValue(profile);
+            profileRepository.save(profile);
 
-            BigDecimal realHourlyValue =
-                    workValueService
-                            .calculateRealHourlyValue(profile);
-
-            professionalHourlyValueLabel.setText(
-                    currencyFormat.format(professionalHourlyValue)
-            );
-
-            realHourlyValueLabel.setText(
-                    currencyFormat.format(realHourlyValue)
-            );
-
-            feedbackLabel.setText(
-                    "Valores calculados com sucesso."
-            );
-
-            feedbackLabel.getStyleClass().setAll(
-                    "feedback-label",
-                    "feedback-success"
-            );
+            showCalculatedValues(profile);
+            showSuccess("Perfil financeiro salvo com sucesso.");
 
         } catch (IllegalArgumentException exception) {
             showError(exception.getMessage());
+
+        } catch (IllegalStateException exception) {
+            showError(
+                    "Não foi possível acessar o banco de dados."
+            );
+        }
+    }
+
+    private void loadFinancialProfile() {
+        try {
+            profileRepository.find().ifPresent(profile -> {
+                fillFields(profile);
+                showCalculatedValues(profile);
+            });
+
+        } catch (IllegalStateException exception) {
+            showError(
+                    "Não foi possível carregar o perfil financeiro."
+            );
         }
     }
 
@@ -94,6 +103,40 @@ public class FinancialProfileController {
                 netMonthlyIncome,
                 monthlyWorkHours,
                 monthlyAdditionalHours
+        );
+    }
+
+    private void fillFields(FinancialProfile profile) {
+        netMonthlyIncomeField.setText(
+                profile.netMonthlyIncome().toPlainString()
+        );
+
+        monthlyWorkHoursField.setText(
+                profile.monthlyWorkHours().toPlainString()
+        );
+
+        monthlyAdditionalHoursField.setText(
+                profile.monthlyAdditionalHours().toPlainString()
+        );
+    }
+
+    private void showCalculatedValues(
+            FinancialProfile profile
+    ) {
+        BigDecimal professionalHourlyValue =
+                workValueService
+                        .calculateProfessionalHourlyValue(profile);
+
+        BigDecimal realHourlyValue =
+                workValueService
+                        .calculateRealHourlyValue(profile);
+
+        professionalHourlyValueLabel.setText(
+                currencyFormat.format(professionalHourlyValue)
+        );
+
+        realHourlyValueLabel.setText(
+                currencyFormat.format(realHourlyValue)
         );
     }
 
@@ -127,8 +170,13 @@ public class FinancialProfileController {
             String normalizedValue = text
                     .trim()
                     .replace("R$", "")
-                    .replace(".", "")
-                    .replace(",", ".");
+                    .replace(" ", "");
+
+            if (normalizedValue.contains(",")) {
+                normalizedValue = normalizedValue
+                        .replace(".", "")
+                        .replace(",", ".");
+            }
 
             return new BigDecimal(normalizedValue);
 
@@ -142,10 +190,15 @@ public class FinancialProfileController {
         feedbackLabel.getStyleClass().setAll("feedback-label");
     }
 
-    private void showError(String message) {
-        professionalHourlyValueLabel.setText("R$ 0,00");
-        realHourlyValueLabel.setText("R$ 0,00");
+    private void showSuccess(String message) {
+        feedbackLabel.setText(message);
+        feedbackLabel.getStyleClass().setAll(
+                "feedback-label",
+                "feedback-success"
+        );
+    }
 
+    private void showError(String message) {
         feedbackLabel.setText(message);
         feedbackLabel.getStyleClass().setAll(
                 "feedback-label",
