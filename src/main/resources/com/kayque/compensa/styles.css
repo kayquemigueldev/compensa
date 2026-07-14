@@ -154,3 +154,92 @@
     -fx-text-fill: #737b87;
     -fx-font-size: 13px;
 }
+
+.profile-root {
+    -fx-background-color: #0e1014;
+}
+
+.profile-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.profile-subtitle {
+    -fx-text-fill: #9da3ae;
+    -fx-font-size: 14px;
+}
+
+.profile-form {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 14px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 14px;
+    -fx-padding: 22px;
+}
+
+.form-field {
+    -fx-background-color: #11141a;
+    -fx-background-radius: 9px;
+    -fx-border-color: #303641;
+    -fx-border-radius: 9px;
+    -fx-text-fill: #f4f1ea;
+    -fx-prompt-text-fill: #69717d;
+    -fx-padding: 12px 14px;
+    -fx-font-size: 14px;
+}
+
+.form-field:focused {
+    -fx-border-color: #a8e063;
+}
+
+.field-help {
+    -fx-text-fill: #707885;
+    -fx-font-size: 11px;
+}
+
+.value-card {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 12px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.value-card-highlight {
+    -fx-border-color: #506638;
+}
+
+.value-card-title {
+    -fx-text-fill: #9da3ae;
+    -fx-font-size: 12px;
+}
+
+.value-card-number {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+}
+
+.value-card-number-highlight {
+    -fx-text-fill: #a8e063;
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+}
+
+.value-card-description {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 10px;
+}
+
+.feedback-label {
+    -fx-font-size: 12px;
+}
+
+.feedback-success {
+    -fx-text-fill: #a8e063;
+}
+
+.feedback-error {
+    -fx-text-fill: #e87979;
+}

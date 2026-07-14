@@ -10,6 +10,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="mainBorderPane"
+            fx:controller="com.kayque.compensa.MainController"
             styleClass="app-root">
 
     <left>
@@ -40,8 +42,10 @@
                         maxWidth="Infinity"
                         styleClass="nav-button"/>
 
-                <Button text="Analisar compra"
+                <Button fx:id="analyzePurchaseButton"
+                        text="Analisar compra"
                         maxWidth="Infinity"
+                        onAction="#showPurchaseAnalysis"
                         styleClass="nav-button-active"/>
 
                 <Button text="Lista de desejos"
@@ -58,8 +62,10 @@
 
                 <Region VBox.vgrow="ALWAYS"/>
 
-                <Button text="Perfil financeiro"
+                <Button fx:id="financialProfileButton"
+                        text="Perfil financeiro"
                         maxWidth="Infinity"
+                        onAction="#showFinancialProfile"
                         styleClass="nav-button"/>
 
                 <Button text="Configurações"

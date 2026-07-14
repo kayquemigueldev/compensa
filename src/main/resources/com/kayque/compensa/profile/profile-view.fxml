@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.profile.controller.FinancialProfileController"
+      spacing="24.0"
+      styleClass="profile-root">
+
+    <padding>
+        <Insets top="32.0"
+                right="36.0"
+                bottom="32.0"
+                left="36.0"/>
+    </padding>
+
+    <VBox spacing="7.0">
+        <Label text="Perfil financeiro"
+               styleClass="profile-title"/>
+
+        <Label text="Descubra quanto uma hora da sua vida realmente vale."
+               styleClass="profile-subtitle"/>
+    </VBox>
+
+    <VBox spacing="18.0"
+          styleClass="profile-form">
+
+        <VBox spacing="7.0">
+            <Label text="Renda mensal líquida"
+                   styleClass="field-label"/>
+
+            <TextField fx:id="netMonthlyIncomeField"
+                       promptText="Ex.: 2.000,00"
+                       styleClass="form-field"/>
+        </VBox>
+
+        <VBox spacing="7.0">
+            <Label text="Horas trabalhadas por mês"
+                   styleClass="field-label"/>
+
+            <TextField fx:id="monthlyWorkHoursField"
+                       promptText="Ex.: 160"
+                       styleClass="form-field"/>
+        </VBox>
+
+        <VBox spacing="7.0">
+            <Label text="Horas adicionais comprometidas"
+                   styleClass="field-label"/>
+
+            <TextField fx:id="monthlyAdditionalHoursField"
+                       promptText="Deslocamento, preparação e outras atividades"
+                       styleClass="form-field"/>
+
+            <Label text="Esse campo é opcional e torna o cálculo mais próximo da sua realidade."
+                   wrapText="true"
+                   styleClass="field-help"/>
+        </VBox>
+    </VBox>
+
+    <HBox spacing="14.0">
+        <VBox spacing="6.0"
+              HBox.hgrow="ALWAYS"
+              maxWidth="Infinity"
+              styleClass="value-card">
+
+            <Label text="Hora profissional"
+                   styleClass="value-card-title"/>
+
+            <Label fx:id="professionalHourlyValueLabel"
+                   text="R$ 0,00"
+                   styleClass="value-card-number"/>
+
+            <Label text="Considera apenas o trabalho."
+                   styleClass="value-card-description"/>
+        </VBox>
+
+        <VBox spacing="6.0"
+              HBox.hgrow="ALWAYS"
+              maxWidth="Infinity"
+              styleClass="value-card value-card-highlight">
+
+            <Label text="Hora real"
+                   styleClass="value-card-title"/>
+
+            <Label fx:id="realHourlyValueLabel"
+                   text="R$ 0,00"
+                   styleClass="value-card-number-highlight"/>
+
+            <Label text="Inclui todo o tempo comprometido."
+                   styleClass="value-card-description"/>
+        </VBox>
+    </HBox>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <Label fx:id="feedbackLabel"
+           text=""
+           wrapText="true"
+           styleClass="feedback-label"/>
+
+    <Button text="Calcular valor da minha hora"
+            maxWidth="Infinity"
+            onAction="#calculateHourlyValues"
+            styleClass="primary-button"/>
+
+</VBox>
