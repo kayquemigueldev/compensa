@@ -64,6 +64,27 @@ public class SqlitePurchaseDecisionRepository
             ORDER BY created_at DESC, id DESC
             """;
 
+    private static final String FIND_WAITING_DECISIONS = """
+        SELECT
+            id,
+            product_name,
+            price,
+            real_work_minutes,
+            advice_status,
+            outcome,
+            created_at
+        FROM purchase_decision
+        WHERE outcome = 'WAITING'
+        ORDER BY created_at DESC, id DESC
+        """;
+
+    private static final String FINALIZE_WAITING_DECISION = """
+        UPDATE purchase_decision
+        SET outcome = ?
+        WHERE id = ?
+          AND outcome = 'WAITING'
+        """;
+
     @Override
     public long save(PurchaseDecision decision) {
         try (
@@ -128,6 +149,78 @@ public class SqlitePurchaseDecisionRepository
                     exception
             );
         }
+    }
+
+    @Override
+    public List<PurchaseDecisionHistoryItem> findWaiting() {
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                FIND_WAITING_DECISIONS
+                        );
+
+                ResultSet resultSet =
+                        statement.executeQuery()
+        ) {
+            List<PurchaseDecisionHistoryItem> waitingDecisions =
+                    new ArrayList<>();
+
+            while (resultSet.next()) {
+                waitingDecisions.add(
+                        mapHistoryItem(resultSet)
+                );
+            }
+
+            return List.copyOf(waitingDecisions);
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível carregar a lista de desejos.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public boolean finalizeWaitingDecision(
+            long decisionId,
+            PurchaseDecisionOutcome finalOutcome
+    ) {
+        validateFinalization(decisionId, finalOutcome);
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                FINALIZE_WAITING_DECISION
+                        )
+        ) {
+            statement.setString(
+                    1,
+                    finalOutcome.name()
+            );
+
+            statement.setLong(
+                    2,
+                    decisionId
+            );
+
+            int updatedRows = statement.executeUpdate();
+
+            return updatedRows == 1;
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível finalizar a decisão.",
+                    exception
+            );
+        }
+
     }
 
     private PurchaseDecisionHistoryItem mapHistoryItem(
@@ -232,4 +325,28 @@ public class SqlitePurchaseDecisionRepository
                 decision.outcome().name()
         );
     }
+
+    private void validateFinalization(
+            long decisionId,
+            PurchaseDecisionOutcome finalOutcome
+    ) {
+        if (decisionId <= 0) {
+            throw new IllegalArgumentException(
+                    "O ID da decisão deve ser positivo."
+            );
+        }
+
+        if (finalOutcome == null) {
+            throw new IllegalArgumentException(
+                    "O resultado final é obrigatório."
+            );
+        }
+
+        if (finalOutcome == PurchaseDecisionOutcome.WAITING) {
+            throw new IllegalArgumentException(
+                    "Uma decisão aguardando só pode ser finalizada como comprada ou recusada."
+            );
+        }
+    }
+
 }
