@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.dashboard.controller.DashboardController"
+      spacing="28.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Hoje"
+               styleClass="page-title"/>
+
+        <Label text="Veja como suas decisões estão transformando sua relação com o dinheiro."
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <GridPane hgap="16.0"
+              vgap="16.0">
+
+        <VBox GridPane.columnIndex="0"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="dashboard-card">
+
+            <Label text="Decisões analisadas"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="totalDecisionsLabel"
+                   text="0"
+                   styleClass="dashboard-card-value"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="1"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="dashboard-card">
+
+            <Label text="Compras realizadas"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="purchasedDecisionsLabel"
+                   text="0"
+                   styleClass="dashboard-card-value"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="2"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="dashboard-card">
+
+            <Label text="Compras evitadas"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="declinedDecisionsLabel"
+                   text="0"
+                   styleClass="dashboard-card-value-highlight"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="3"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="dashboard-card">
+
+            <Label text="Aguardando decisão"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="waitingDecisionsLabel"
+                   text="0"
+                   styleClass="dashboard-card-value-warning"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="0"
+              GridPane.columnSpan="2"
+              GridPane.rowIndex="1"
+              maxWidth="Infinity"
+              styleClass="dashboard-card-large">
+
+            <Label text="Valor preservado"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="preservedValueLabel"
+                   text="R$ 0,00"
+                   styleClass="dashboard-large-value"/>
+
+            <Label text="Compras que você decidiu não realizar."
+                   styleClass="dashboard-card-description"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="2"
+              GridPane.columnSpan="2"
+              GridPane.rowIndex="1"
+              maxWidth="Infinity"
+              styleClass="dashboard-card-large">
+
+            <Label text="Tempo envolvido nas decisões"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="totalWorkTimeLabel"
+                   text="0 min"
+                   styleClass="dashboard-large-value"/>
+
+            <Label text="Tempo real necessário para pagar todas as compras analisadas."
+                   wrapText="true"
+                   styleClass="dashboard-card-description"/>
+        </VBox>
+
+    </GridPane>
+
+    <VBox spacing="10.0"
+          styleClass="dashboard-insight-card">
+
+        <Label text="Uma escolha de cada vez"
+               styleClass="dashboard-insight-title"/>
+
+        <Label text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
+               wrapText="true"
+               styleClass="dashboard-insight-text"/>
+    </VBox>
+
+    <Label fx:id="dashboardFeedbackLabel"
+           text=""
+           styleClass="feedback-label"/>
+
+</VBox>

@@ -38,8 +38,10 @@
                   VBox.vgrow="ALWAYS"
                   styleClass="navigation">
 
-                <Button text="Hoje"
+                <Button fx:id="todayButton"
+                        text="Hoje"
                         maxWidth="Infinity"
+                        onAction="#showDashboard"
                         styleClass="nav-button"/>
 
                 <Button fx:id="analyzePurchaseButton"

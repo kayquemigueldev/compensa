@@ -572,3 +572,76 @@
 .wishlist-declined:hover {
     -fx-background-color: #242830;
 }
+
+.dashboard-card,
+.dashboard-card-large {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 13px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 13px;
+    -fx-padding: 20px;
+    -fx-spacing: 9px;
+}
+
+.dashboard-card {
+    -fx-min-width: 180px;
+}
+
+.dashboard-card-large {
+    -fx-min-height: 145px;
+}
+
+.dashboard-card-title {
+    -fx-text-fill: #9da3ae;
+    -fx-font-size: 12px;
+}
+
+.dashboard-card-value,
+.dashboard-card-value-highlight,
+.dashboard-card-value-warning {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-card-value {
+    -fx-text-fill: #f4f1ea;
+}
+
+.dashboard-card-value-highlight {
+    -fx-text-fill: #a8e063;
+}
+
+.dashboard-card-value-warning {
+    -fx-text-fill: #f2b84b;
+}
+
+.dashboard-large-value {
+    -fx-text-fill: #a8e063;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-card-description {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 11px;
+}
+
+.dashboard-insight-card {
+    -fx-background-color: #181a16;
+    -fx-background-radius: 13px;
+    -fx-border-color: #4d5438;
+    -fx-border-radius: 13px;
+    -fx-padding: 22px;
+}
+
+.dashboard-insight-title {
+    -fx-text-fill: #f2b84b;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-insight-text {
+    -fx-text-fill: #c8c2b5;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+}

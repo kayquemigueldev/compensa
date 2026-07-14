@@ -26,6 +26,9 @@ public class MainController {
     @FXML
     private Button wishlistButton;
 
+    @FXML
+    private Button todayButton;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -66,6 +69,15 @@ public class MainController {
         );
     }
 
+    @FXML
+    private void showDashboard() {
+        showView(
+                "/com/kayque/compensa/dashboard/dashboard-view.fxml",
+                todayButton,
+                "Não foi possível abrir a tela Hoje."
+        );
+    }
+
     private void showView(
             String resource,
             Button activeButton,
@@ -90,6 +102,10 @@ public class MainController {
     }
 
     private void setActiveButton(Button activeButton) {
+        todayButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
         analyzePurchaseButton.getStyleClass().setAll(
                 "nav-button"
         );
