@@ -211,6 +211,31 @@
                        styleClass="reflection-text"/>
             </VBox>
 
+            <HBox spacing="10.0">
+
+                <Button fx:id="purchaseDecisionButton"
+                        text="Vou comprar"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        onAction="#choosePurchase"
+                        styleClass="decision-button, decision-purchase"/>
+
+                <Button fx:id="waitDecisionButton"
+                        text="Esperar"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        onAction="#chooseWaiting"
+                        styleClass="decision-button, decision-wait"/>
+
+                <Button fx:id="declineDecisionButton"
+                        text="Não vou comprar"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        onAction="#chooseDeclined"
+                        styleClass="decision-button, decision-decline"/>
+
+            </HBox>
+
             <Label fx:id="analysisFeedbackLabel"
                    text=""
                    wrapText="true"

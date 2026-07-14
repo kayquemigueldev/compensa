@@ -358,3 +358,45 @@
 .status-negative {
     -fx-text-fill: #e87979;
 }
+
+.decision-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+    -fx-padding: 11px 14px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.decision-purchase {
+    -fx-border-color: #a8e063;
+    -fx-text-fill: #a8e063;
+}
+
+.decision-purchase:hover {
+    -fx-background-color: #202918;
+}
+
+.decision-wait {
+    -fx-border-color: #64b5f6;
+    -fx-text-fill: #64b5f6;
+}
+
+.decision-wait:hover {
+    -fx-background-color: #17232d;
+}
+
+.decision-decline {
+    -fx-border-color: #8c929c;
+    -fx-text-fill: #c3c7ce;
+}
+
+.decision-decline:hover {
+    -fx-background-color: #242830;
+}
+
+.decision-button:disabled {
+    -fx-opacity: 0.35;
+    -fx-cursor: default;
+}

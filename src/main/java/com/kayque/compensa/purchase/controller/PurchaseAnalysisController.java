@@ -6,13 +6,18 @@ import com.kayque.compensa.profile.repository.SqliteFinancialProfileRepository;
 import com.kayque.compensa.purchase.model.Purchase;
 import com.kayque.compensa.purchase.model.PurchaseAdvice;
 import com.kayque.compensa.purchase.model.PurchaseAnalysis;
+import com.kayque.compensa.purchase.model.PurchaseDecision;
 import com.kayque.compensa.purchase.model.PurchaseDecisionContext;
+import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
 import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
 import com.kayque.compensa.purchase.model.PurchaseFrequency;
 import com.kayque.compensa.purchase.model.PurchaseMotivation;
+import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
+import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.PurchaseAdviceService;
 import com.kayque.compensa.purchase.service.PurchaseAnalysisService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -34,10 +39,17 @@ public class PurchaseAnalysisController {
     private final FinancialProfileRepository profileRepository =
             new SqliteFinancialProfileRepository();
 
+    private final PurchaseDecisionRepository decisionRepository =
+            new SqlitePurchaseDecisionRepository();
+
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
                     Locale.of("pt", "BR")
             );
+
+    private PurchaseAnalysis currentAnalysis;
+    private PurchaseDecisionContext currentContext;
+    private PurchaseAdvice currentAdvice;
 
     @FXML
     private TextField purchaseNameField;
@@ -82,17 +94,30 @@ public class PurchaseAnalysisController {
     private Label analysisFeedbackLabel;
 
     @FXML
+    private Button purchaseDecisionButton;
+
+    @FXML
+    private Button waitDecisionButton;
+
+    @FXML
+    private Button declineDecisionButton;
+
+    @FXML
     private void initialize() {
         configureFrequencyComboBox();
         configureBooleanComboBox(plannedComboBox);
         configureBooleanComboBox(alternativeComboBox);
         configureBooleanComboBox(urgentComboBox);
         configureMotivationComboBox();
+
+        setDecisionButtonsDisabled(true);
     }
 
     @FXML
     private void analyzePurchase() {
         clearFeedback();
+        clearCurrentAnalysis();
+        setDecisionButtonsDisabled(true);
 
         try {
             FinancialProfile profile = profileRepository
@@ -112,11 +137,60 @@ public class PurchaseAnalysisController {
             PurchaseAdvice advice =
                     adviceService.evaluate(analysis, context);
 
+            currentAnalysis = analysis;
+            currentContext = context;
+            currentAdvice = advice;
+
             showAnalysis(analysis);
             showAdvice(advice);
+            setDecisionButtonsDisabled(false);
 
         } catch (IllegalArgumentException |
                  IllegalStateException exception) {
+            showError(exception.getMessage());
+        }
+    }
+
+    @FXML
+    private void choosePurchase() {
+        saveDecision(PurchaseDecisionOutcome.PURCHASED);
+    }
+
+    @FXML
+    private void chooseWaiting() {
+        saveDecision(PurchaseDecisionOutcome.WAITING);
+    }
+
+    @FXML
+    private void chooseDeclined() {
+        saveDecision(PurchaseDecisionOutcome.DECLINED);
+    }
+
+    private void saveDecision(
+            PurchaseDecisionOutcome outcome
+    ) {
+        if (!hasCurrentAnalysis()) {
+            showError(
+                    "Faça uma análise antes de registrar sua decisão."
+            );
+            return;
+        }
+
+        try {
+            PurchaseDecision decision = new PurchaseDecision(
+                    currentAnalysis,
+                    currentContext,
+                    currentAdvice,
+                    outcome
+            );
+
+            long generatedId =
+                    decisionRepository.save(decision);
+
+            showDecisionSaved(outcome, generatedId);
+            setDecisionButtonsDisabled(true);
+
+        } catch (IllegalStateException exception) {
             showError(exception.getMessage());
         }
     }
@@ -196,13 +270,24 @@ public class PurchaseAnalysisController {
 
         reflectionTextLabel.setText(reasons);
 
-        analysisFeedbackLabel.setText(
-                "Análise concluída."
-        );
+        showSuccess("Análise concluída.");
+    }
 
-        analysisFeedbackLabel.getStyleClass().setAll(
-                "feedback-label",
-                "feedback-success"
+    private void showDecisionSaved(
+            PurchaseDecisionOutcome outcome,
+            long generatedId
+    ) {
+        String decisionText = switch (outcome) {
+            case PURCHASED -> "Você decidiu comprar.";
+            case WAITING -> "Você decidiu esperar.";
+            case DECLINED -> "Você decidiu não comprar.";
+        };
+
+        showSuccess(
+                decisionText
+                        + " Decisão registrada com o número "
+                        + generatedId
+                        + "."
         );
     }
 
@@ -248,36 +333,33 @@ public class PurchaseAnalysisController {
         );
 
         frequencyComboBox.setConverter(
-                createFrequencyConverter()
+                new StringConverter<>() {
+                    @Override
+                    public String toString(
+                            PurchaseFrequency frequency
+                    ) {
+                        if (frequency == null) {
+                            return "";
+                        }
+
+                        return switch (frequency) {
+                            case ONCE -> "Apenas uma vez";
+                            case MONTHLY -> "Uma vez por mês";
+                            case WEEKLY -> "Uma vez por semana";
+                            case DAILY -> "Todos os dias";
+                        };
+                    }
+
+                    @Override
+                    public PurchaseFrequency fromString(
+                            String value
+                    ) {
+                        return null;
+                    }
+                }
         );
 
         frequencyComboBox.setValue(PurchaseFrequency.ONCE);
-    }
-
-    private StringConverter<PurchaseFrequency>
-    createFrequencyConverter() {
-        return new StringConverter<>() {
-            @Override
-            public String toString(
-                    PurchaseFrequency frequency
-            ) {
-                if (frequency == null) {
-                    return "";
-                }
-
-                return switch (frequency) {
-                    case ONCE -> "Apenas uma vez";
-                    case MONTHLY -> "Uma vez por mês";
-                    case WEEKLY -> "Uma vez por semana";
-                    case DAILY -> "Todos os dias";
-                };
-            }
-
-            @Override
-            public PurchaseFrequency fromString(String value) {
-                return null;
-            }
-        };
     }
 
     private void configureBooleanComboBox(
@@ -388,11 +470,40 @@ public class PurchaseAnalysisController {
         return hours + "h " + minutes + "min";
     }
 
+    private boolean hasCurrentAnalysis() {
+        return currentAnalysis != null
+                && currentContext != null
+                && currentAdvice != null;
+    }
+
+    private void clearCurrentAnalysis() {
+        currentAnalysis = null;
+        currentContext = null;
+        currentAdvice = null;
+    }
+
+    private void setDecisionButtonsDisabled(
+            boolean disabled
+    ) {
+        purchaseDecisionButton.setDisable(disabled);
+        waitDecisionButton.setDisable(disabled);
+        declineDecisionButton.setDisable(disabled);
+    }
+
     private void clearFeedback() {
         analysisFeedbackLabel.setText("");
         analysisFeedbackLabel
                 .getStyleClass()
                 .setAll("feedback-label");
+    }
+
+    private void showSuccess(String message) {
+        analysisFeedbackLabel.setText(message);
+
+        analysisFeedbackLabel.getStyleClass().setAll(
+                "feedback-label",
+                "feedback-success"
+        );
     }
 
     private void showError(String message) {
