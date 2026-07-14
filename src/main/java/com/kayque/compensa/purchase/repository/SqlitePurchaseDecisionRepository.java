@@ -6,15 +6,30 @@ import com.kayque.compensa.purchase.model.PurchaseAdvice;
 import com.kayque.compensa.purchase.model.PurchaseAnalysis;
 import com.kayque.compensa.purchase.model.PurchaseDecision;
 import com.kayque.compensa.purchase.model.PurchaseDecisionContext;
+import com.kayque.compensa.purchase.model.PurchaseDecisionHistoryItem;
+import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
+import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SqlitePurchaseDecisionRepository
         implements PurchaseDecisionRepository {
+
+    private static final DateTimeFormatter DATABASE_DATE_FORMAT =
+            DateTimeFormatter.ofPattern(
+                    "yyyy-MM-dd HH:mm:ss"
+            );
 
     private static final String INSERT_DECISION = """
             INSERT INTO purchase_decision (
@@ -34,6 +49,19 @@ public class SqlitePurchaseDecisionRepository
                 outcome
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """;
+
+    private static final String FIND_ALL_DECISIONS = """
+            SELECT
+                id,
+                product_name,
+                price,
+                real_work_minutes,
+                advice_status,
+                outcome,
+                created_at
+            FROM purchase_decision
+            ORDER BY created_at DESC, id DESC
             """;
 
     @Override
@@ -69,6 +97,68 @@ public class SqlitePurchaseDecisionRepository
                     exception
             );
         }
+    }
+
+    @Override
+    public List<PurchaseDecisionHistoryItem> findAll() {
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                FIND_ALL_DECISIONS
+                        );
+
+                ResultSet resultSet =
+                        statement.executeQuery()
+        ) {
+            List<PurchaseDecisionHistoryItem> history =
+                    new ArrayList<>();
+
+            while (resultSet.next()) {
+                history.add(mapHistoryItem(resultSet));
+            }
+
+            return List.copyOf(history);
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível carregar o histórico.",
+                    exception
+            );
+        }
+    }
+
+    private PurchaseDecisionHistoryItem mapHistoryItem(
+            ResultSet resultSet
+    ) throws SQLException {
+        return new PurchaseDecisionHistoryItem(
+                resultSet.getLong("id"),
+                resultSet.getString("product_name"),
+                new BigDecimal(
+                        resultSet.getString("price")
+                ),
+                resultSet.getLong("real_work_minutes"),
+                PurchaseDecisionStatus.valueOf(
+                        resultSet.getString("advice_status")
+                ),
+                PurchaseDecisionOutcome.valueOf(
+                        resultSet.getString("outcome")
+                ),
+                parseDatabaseDate(
+                        resultSet.getString("created_at")
+                )
+        );
+    }
+
+    private Instant parseDatabaseDate(String value) {
+        LocalDateTime dateTime = LocalDateTime.parse(
+                value,
+                DATABASE_DATE_FORMAT
+        );
+
+        return dateTime.toInstant(ZoneOffset.UTC);
     }
 
     private void fillStatement(
