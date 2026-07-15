@@ -9,6 +9,7 @@ import com.kayque.compensa.purchase.model.PurchaseDecisionContext;
 import com.kayque.compensa.purchase.model.PurchaseDecisionHistoryItem;
 import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
 import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
+import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -83,6 +84,15 @@ public class SqlitePurchaseDecisionRepository
         SET outcome = ?
         WHERE id = ?
           AND outcome = 'WAITING'
+        """;
+
+    private static final String EVALUATE_PURCHASED_DECISION = """
+        UPDATE purchase_decision
+        SET
+            satisfaction = ?,
+            evaluated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+          AND outcome = 'PURCHASED'
         """;
 
     @Override
@@ -223,6 +233,44 @@ public class SqlitePurchaseDecisionRepository
 
     }
 
+    @Override
+    public boolean evaluatePurchasedDecision(
+            long decisionId,
+            PurchaseSatisfaction satisfaction
+    ) {
+        validateEvaluation(decisionId, satisfaction);
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                EVALUATE_PURCHASED_DECISION
+                        )
+        ) {
+            statement.setString(
+                    1,
+                    satisfaction.name()
+            );
+
+            statement.setLong(
+                    2,
+                    decisionId
+            );
+
+            int updatedRows = statement.executeUpdate();
+
+            return updatedRows == 1;
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível avaliar a compra.",
+                    exception
+            );
+        }
+    }
+
     private PurchaseDecisionHistoryItem mapHistoryItem(
             ResultSet resultSet
     ) throws SQLException {
@@ -345,6 +393,23 @@ public class SqlitePurchaseDecisionRepository
         if (finalOutcome == PurchaseDecisionOutcome.WAITING) {
             throw new IllegalArgumentException(
                     "Uma decisão aguardando só pode ser finalizada como comprada ou recusada."
+            );
+        }
+    }
+
+    private void validateEvaluation(
+            long decisionId,
+            PurchaseSatisfaction satisfaction
+    ) {
+        if (decisionId <= 0) {
+            throw new IllegalArgumentException(
+                    "O ID da decisão deve ser positivo."
+            );
+        }
+
+        if (satisfaction == null) {
+            throw new IllegalArgumentException(
+                    "A avaliação da compra é obrigatória."
             );
         }
     }

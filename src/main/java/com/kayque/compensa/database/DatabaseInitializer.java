@@ -1,6 +1,7 @@
 package com.kayque.compensa.database;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -86,6 +87,17 @@ public final class DatabaseInitializer {
                     )
                 ),
 
+                satisfaction TEXT CHECK (
+                    satisfaction IS NULL
+                    OR satisfaction IN (
+                        'WORTH_IT',
+                        'PARTIALLY_WORTH_IT',
+                        'REGRETTED'
+                    )
+                ),
+
+                evaluated_at TEXT,
+
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
             """;
@@ -104,6 +116,8 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_FINANCIAL_PROFILE_TABLE);
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
 
+            migratePurchaseDecisionTable(connection);
+
             System.out.println(
                     "Banco inicializado em: "
                             + DatabaseConnection.getDatabaseFile()
@@ -115,5 +129,86 @@ public final class DatabaseInitializer {
                     exception
             );
         }
+    }
+
+    private static void migratePurchaseDecisionTable(
+            Connection connection
+    ) throws SQLException {
+        addColumnIfMissing(
+                connection,
+                "purchase_decision",
+                "satisfaction",
+                """
+                satisfaction TEXT CHECK (
+                    satisfaction IS NULL
+                    OR satisfaction IN (
+                        'WORTH_IT',
+                        'PARTIALLY_WORTH_IT',
+                        'REGRETTED'
+                    )
+                )
+                """
+        );
+
+        addColumnIfMissing(
+                connection,
+                "purchase_decision",
+                "evaluated_at",
+                "evaluated_at TEXT"
+        );
+    }
+
+    private static void addColumnIfMissing(
+            Connection connection,
+            String table,
+            String column,
+            String definition
+    ) throws SQLException {
+        if (columnExists(connection, table, column)) {
+            return;
+        }
+
+        String sql = "ALTER TABLE "
+                + table
+                + " ADD COLUMN "
+                + definition;
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+
+        System.out.println(
+                "Migração aplicada: "
+                        + table
+                        + "."
+                        + column
+        );
+    }
+
+    private static boolean columnExists(
+            Connection connection,
+            String table,
+            String expectedColumn
+    ) throws SQLException {
+        String sql = "PRAGMA table_info(" + table + ")";
+
+        try (
+                Statement statement =
+                        connection.createStatement();
+
+                ResultSet resultSet =
+                        statement.executeQuery(sql)
+        ) {
+            while (resultSet.next()) {
+                String columnName =
+                        resultSet.getString("name");
+
+                if (expectedColumn.equals(columnName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

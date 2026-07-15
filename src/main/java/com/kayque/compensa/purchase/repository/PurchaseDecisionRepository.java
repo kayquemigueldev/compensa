@@ -3,6 +3,7 @@ package com.kayque.compensa.purchase.repository;
 import com.kayque.compensa.purchase.model.PurchaseDecision;
 import com.kayque.compensa.purchase.model.PurchaseDecisionHistoryItem;
 import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
+import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
 
 import java.util.List;
 
@@ -17,5 +18,10 @@ public interface PurchaseDecisionRepository {
     boolean finalizeWaitingDecision(
             long decisionId,
             PurchaseDecisionOutcome finalOutcome
+    );
+
+    boolean evaluatePurchasedDecision(
+            long decisionId,
+            PurchaseSatisfaction satisfaction
     );
 }
