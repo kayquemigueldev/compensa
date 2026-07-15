@@ -46,12 +46,40 @@ public class SqliteInsightsRepository
                         THEN 1
                         ELSE 0
                     END
-                ) AS purchases_against_advice,
-
-                COALESCE(
-                    SUM(real_work_minutes),
-                    0
-                ) AS total_real_work_minutes
+            ) AS purchases_against_advice,
+                                              
+                                              SUM(
+                                                  CASE
+                                                      WHEN satisfaction IS NOT NULL THEN 1
+                                                      ELSE 0
+                                                  END
+                                              ) AS evaluated_purchases,
+                                              
+                                              SUM(
+                                                  CASE
+                                                      WHEN satisfaction = 'WORTH_IT' THEN 1
+                                                      ELSE 0
+                                                  END
+                                              ) AS worth_it_purchases,
+                                              
+                                              SUM(
+                                                  CASE
+                                                      WHEN satisfaction = 'PARTIALLY_WORTH_IT' THEN 1
+                                                      ELSE 0
+                                                  END
+                                              ) AS partially_worth_it_purchases,
+                                              
+                                              SUM(
+                                                  CASE
+                                                      WHEN satisfaction = 'REGRETTED' THEN 1
+                                                      ELSE 0
+                                                  END
+                                              ) AS regretted_purchases,
+                                              
+                                              COALESCE(
+                                                  SUM(real_work_minutes),
+                                                  0
+                                              ) AS total_real_work_minutes
 
             FROM purchase_decision
             """;
@@ -84,6 +112,18 @@ public class SqliteInsightsRepository
                     ),
                     resultSet.getLong(
                             "total_real_work_minutes"
+                    ),
+                    resultSet.getLong(
+                            "evaluated_purchases"
+                    ),
+                    resultSet.getLong(
+                            "worth_it_purchases"
+                    ),
+                    resultSet.getLong(
+                            "partially_worth_it_purchases"
+                    ),
+                    resultSet.getLong(
+                            "regretted_purchases"
                     )
             );
 
@@ -97,6 +137,10 @@ public class SqliteInsightsRepository
 
     private InsightsSummary emptySummary() {
         return new InsightsSummary(
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
