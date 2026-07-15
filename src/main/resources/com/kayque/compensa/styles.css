@@ -762,3 +762,31 @@
     -fx-font-size: 27px;
     -fx-font-weight: bold;
 }
+
+.profile-section-title {
+    -fx-text-fill: #f3f5f7;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.budget-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.budget-status {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.budget-available {
+    -fx-text-fill: #93e83f;
+}
+
+.budget-balanced {
+    -fx-text-fill: #ffb627;
+}
+
+.budget-deficit {
+    -fx-text-fill: #ff6b6b;
+}

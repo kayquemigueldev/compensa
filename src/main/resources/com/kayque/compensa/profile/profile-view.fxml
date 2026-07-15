@@ -11,13 +11,13 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kayque.compensa.profile.controller.FinancialProfileController"
-      spacing="24.0"
+      spacing="22.0"
       styleClass="profile-root">
 
     <padding>
-        <Insets top="32.0"
+        <Insets top="30.0"
                 right="36.0"
-                bottom="32.0"
+                bottom="30.0"
                 left="36.0"/>
     </padding>
 
@@ -25,46 +25,89 @@
         <Label text="Perfil financeiro"
                styleClass="profile-title"/>
 
-        <Label text="Descubra quanto uma hora da sua vida realmente vale."
+        <Label text="Entenda o valor do seu tempo e quanto realmente está disponível para suas escolhas."
                styleClass="profile-subtitle"/>
     </VBox>
 
-    <VBox spacing="18.0"
-          styleClass="profile-form">
+    <HBox spacing="18.0">
 
-        <VBox spacing="7.0">
-            <Label text="Renda mensal líquida"
-                   styleClass="field-label"/>
+        <VBox spacing="16.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="profile-form">
 
-            <TextField fx:id="netMonthlyIncomeField"
-                       promptText="Ex.: 2.000,00"
-                       styleClass="form-field"/>
+            <Label text="Tempo e trabalho"
+                   styleClass="profile-section-title"/>
+
+            <VBox spacing="7.0">
+                <Label text="Renda mensal líquida"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="netMonthlyIncomeField"
+                           promptText="Ex.: 2.000,00"
+                           styleClass="form-field"/>
+            </VBox>
+
+            <VBox spacing="7.0">
+                <Label text="Horas trabalhadas por mês"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="monthlyWorkHoursField"
+                           promptText="Ex.: 160"
+                           styleClass="form-field"/>
+            </VBox>
+
+            <VBox spacing="7.0">
+                <Label text="Horas adicionais comprometidas"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="monthlyAdditionalHoursField"
+                           promptText="Deslocamento e preparação"
+                           styleClass="form-field"/>
+
+                <Label text="Campo opcional."
+                       styleClass="field-help"/>
+            </VBox>
         </VBox>
 
-        <VBox spacing="7.0">
-            <Label text="Horas trabalhadas por mês"
-                   styleClass="field-label"/>
+        <VBox spacing="16.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="profile-form">
 
-            <TextField fx:id="monthlyWorkHoursField"
-                       promptText="Ex.: 160"
-                       styleClass="form-field"/>
+            <Label text="Orçamento mensal"
+                   styleClass="profile-section-title"/>
+
+            <VBox spacing="7.0">
+                <Label text="Despesas essenciais"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="essentialExpensesField"
+                           promptText="Moradia, contas, alimentação..."
+                           styleClass="form-field"/>
+
+                <Label text="Informe apenas os gastos necessários do mês."
+                       wrapText="true"
+                       styleClass="field-help"/>
+            </VBox>
+
+            <VBox spacing="7.0">
+                <Label text="Meta mensal de economia"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="monthlySavingsGoalField"
+                           promptText="Quanto deseja preservar?"
+                           styleClass="form-field"/>
+
+                <Label text="Esse valor será protegido antes dos gastos livres."
+                       wrapText="true"
+                       styleClass="field-help"/>
+            </VBox>
         </VBox>
-
-        <VBox spacing="7.0">
-            <Label text="Horas adicionais comprometidas"
-                   styleClass="field-label"/>
-
-            <TextField fx:id="monthlyAdditionalHoursField"
-                       promptText="Deslocamento, preparação e outras atividades"
-                       styleClass="form-field"/>
-
-            <Label text="Esse campo é opcional e torna o cálculo mais próximo da sua realidade."
-                   wrapText="true"
-                   styleClass="field-help"/>
-        </VBox>
-    </VBox>
+    </HBox>
 
     <HBox spacing="14.0">
+
         <VBox spacing="6.0"
               HBox.hgrow="ALWAYS"
               maxWidth="Infinity"
@@ -95,6 +138,23 @@
 
             <Label text="Inclui todo o tempo comprometido."
                    styleClass="value-card-description"/>
+        </VBox>
+
+        <VBox spacing="6.0"
+              HBox.hgrow="ALWAYS"
+              maxWidth="Infinity"
+              styleClass="value-card">
+
+            <Label text="Dinheiro livre no mês"
+                   styleClass="value-card-title"/>
+
+            <Label fx:id="availableMonthlyAmountLabel"
+                   text="R$ 0,00"
+                   styleClass="budget-value"/>
+
+            <Label fx:id="budgetStatusLabel"
+                   text="Preencha seu orçamento"
+                   styleClass="budget-status"/>
         </VBox>
     </HBox>
 

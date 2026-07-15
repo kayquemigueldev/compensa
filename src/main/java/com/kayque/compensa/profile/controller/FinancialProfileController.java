@@ -1,8 +1,11 @@
 package com.kayque.compensa.profile.controller;
 
 import com.kayque.compensa.profile.model.FinancialProfile;
+import com.kayque.compensa.profile.model.MonthlyBudgetStatus;
+import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
 import com.kayque.compensa.profile.repository.FinancialProfileRepository;
 import com.kayque.compensa.profile.repository.SqliteFinancialProfileRepository;
+import com.kayque.compensa.profile.service.MonthlyBudgetService;
 import com.kayque.compensa.profile.service.WorkValueService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -16,6 +19,9 @@ public class FinancialProfileController {
 
     private final WorkValueService workValueService =
             new WorkValueService();
+
+    private final MonthlyBudgetService budgetService =
+            new MonthlyBudgetService();
 
     private final FinancialProfileRepository profileRepository =
             new SqliteFinancialProfileRepository();
@@ -35,10 +41,22 @@ public class FinancialProfileController {
     private TextField monthlyAdditionalHoursField;
 
     @FXML
+    private TextField essentialExpensesField;
+
+    @FXML
+    private TextField monthlySavingsGoalField;
+
+    @FXML
     private Label professionalHourlyValueLabel;
 
     @FXML
     private Label realHourlyValueLabel;
+
+    @FXML
+    private Label availableMonthlyAmountLabel;
+
+    @FXML
+    private Label budgetStatusLabel;
 
     @FXML
     private Label feedbackLabel;
@@ -53,12 +71,15 @@ public class FinancialProfileController {
         clearFeedback();
 
         try {
-            FinancialProfile profile = createProfileFromFields();
+            FinancialProfile profile =
+                    createProfileFromFields();
 
             profileRepository.save(profile);
 
             showCalculatedValues(profile);
-            showSuccess("Perfil financeiro salvo com sucesso.");
+            showSuccess(
+                    "Perfil financeiro salvo com sucesso."
+            );
 
         } catch (IllegalArgumentException exception) {
             showError(exception.getMessage());
@@ -85,24 +106,42 @@ public class FinancialProfileController {
     }
 
     private FinancialProfile createProfileFromFields() {
-        BigDecimal netMonthlyIncome = parseRequiredValue(
-                netMonthlyIncomeField.getText(),
-                "Informe uma renda mensal válida."
-        );
+        BigDecimal netMonthlyIncome =
+                parseRequiredValue(
+                        netMonthlyIncomeField.getText(),
+                        "Informe uma renda mensal válida."
+                );
 
-        BigDecimal monthlyWorkHours = parseRequiredValue(
-                monthlyWorkHoursField.getText(),
-                "Informe uma quantidade válida de horas trabalhadas."
-        );
+        BigDecimal monthlyWorkHours =
+                parseRequiredValue(
+                        monthlyWorkHoursField.getText(),
+                        "Informe uma quantidade válida de horas trabalhadas."
+                );
 
-        BigDecimal monthlyAdditionalHours = parseOptionalValue(
-                monthlyAdditionalHoursField.getText()
-        );
+        BigDecimal monthlyAdditionalHours =
+                parseOptionalValue(
+                        monthlyAdditionalHoursField.getText(),
+                        "Informe uma quantidade válida de horas adicionais."
+                );
+
+        BigDecimal essentialExpenses =
+                parseOptionalValue(
+                        essentialExpensesField.getText(),
+                        "Informe um valor válido para as despesas essenciais."
+                );
+
+        BigDecimal monthlySavingsGoal =
+                parseOptionalValue(
+                        monthlySavingsGoalField.getText(),
+                        "Informe um valor válido para a meta de economia."
+                );
 
         return new FinancialProfile(
                 netMonthlyIncome,
                 monthlyWorkHours,
-                monthlyAdditionalHours
+                monthlyAdditionalHours,
+                essentialExpenses,
+                monthlySavingsGoal
         );
     }
 
@@ -118,6 +157,14 @@ public class FinancialProfileController {
         monthlyAdditionalHoursField.setText(
                 profile.monthlyAdditionalHours().toPlainString()
         );
+
+        essentialExpensesField.setText(
+                profile.essentialExpenses().toPlainString()
+        );
+
+        monthlySavingsGoalField.setText(
+                profile.monthlySavingsGoal().toPlainString()
+        );
     }
 
     private void showCalculatedValues(
@@ -131,13 +178,74 @@ public class FinancialProfileController {
                 workValueService
                         .calculateRealHourlyValue(profile);
 
+        MonthlyBudgetSummary budget =
+                budgetService.calculate(profile);
+
         professionalHourlyValueLabel.setText(
-                currencyFormat.format(professionalHourlyValue)
+                currencyFormat.format(
+                        professionalHourlyValue
+                )
         );
 
         realHourlyValueLabel.setText(
                 currencyFormat.format(realHourlyValue)
         );
+
+        showBudget(budget);
+    }
+
+    private void showBudget(
+            MonthlyBudgetSummary budget
+    ) {
+        String statusStyle =
+                getBudgetStatusStyle(budget.status());
+
+        availableMonthlyAmountLabel.setText(
+                currencyFormat.format(
+                        budget.availableAmount()
+                )
+        );
+
+        availableMonthlyAmountLabel
+                .getStyleClass()
+                .setAll(
+                        "budget-value",
+                        statusStyle
+                );
+
+        budgetStatusLabel.setText(
+                formatBudgetStatus(budget.status())
+        );
+
+        budgetStatusLabel
+                .getStyleClass()
+                .setAll(
+                        "budget-status",
+                        statusStyle
+                );
+    }
+
+    private String formatBudgetStatus(
+            MonthlyBudgetStatus status
+    ) {
+        return switch (status) {
+            case AVAILABLE ->
+                    "Disponível para escolhas";
+            case BALANCED ->
+                    "Orçamento no limite";
+            case DEFICIT ->
+                    "Orçamento em déficit";
+        };
+    }
+
+    private String getBudgetStatusStyle(
+            MonthlyBudgetStatus status
+    ) {
+        return switch (status) {
+            case AVAILABLE -> "budget-available";
+            case BALANCED -> "budget-balanced";
+            case DEFICIT -> "budget-deficit";
+        };
     }
 
     private BigDecimal parseRequiredValue(
@@ -151,15 +259,15 @@ public class FinancialProfileController {
         return parseValue(text, errorMessage);
     }
 
-    private BigDecimal parseOptionalValue(String text) {
+    private BigDecimal parseOptionalValue(
+            String text,
+            String errorMessage
+    ) {
         if (text == null || text.isBlank()) {
             return BigDecimal.ZERO;
         }
 
-        return parseValue(
-                text,
-                "Informe uma quantidade válida de horas adicionais."
-        );
+        return parseValue(text, errorMessage);
     }
 
     private BigDecimal parseValue(
@@ -187,7 +295,9 @@ public class FinancialProfileController {
 
     private void clearFeedback() {
         feedbackLabel.setText("");
-        feedbackLabel.getStyleClass().setAll("feedback-label");
+        feedbackLabel.getStyleClass().setAll(
+                "feedback-label"
+        );
     }
 
     private void showSuccess(String message) {
