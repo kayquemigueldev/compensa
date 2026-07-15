@@ -52,4 +52,77 @@ class InsightsSatisfactionServiceTest {
         assertEquals(0, report.satisfactionRate());
         assertEquals(0, report.regretRate());
     }
+
+    @Test
+    void shouldIdentifyFrequentRegretAfterEnoughEvaluations() {
+        InsightsSummary summary = new InsightsSummary(
+                5,
+                3,
+                2,
+                0,
+                0,
+                300,
+                3,
+                0,
+                0,
+                3
+        );
+
+        InsightReport report =
+                service.generateReport(summary);
+
+        assertEquals(
+                "Algumas compras estão gerando arrependimento",
+                report.headline()
+        );
+    }
+
+    @Test
+    void shouldIdentifyPositiveSatisfactionPattern() {
+        InsightsSummary summary = new InsightsSummary(
+                5,
+                4,
+                1,
+                0,
+                0,
+                300,
+                3,
+                3,
+                0,
+                0
+        );
+
+        InsightReport report =
+                service.generateReport(summary);
+
+        assertEquals(
+                "Suas compras avaliadas costumam valer a pena",
+                report.headline()
+        );
+    }
+
+    @Test
+    void shouldNotTreatOneEvaluationAsSatisfactionPattern() {
+        InsightsSummary summary = new InsightsSummary(
+                5,
+                1,
+                4,
+                0,
+                0,
+                300,
+                1,
+                0,
+                0,
+                1
+        );
+
+        InsightReport report =
+                service.generateReport(summary);
+
+        assertEquals(
+                "Você está criando espaço antes de gastar",
+                report.headline()
+        );
+    }
+
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
 public class InsightsService {
 
     private static final long MINIMUM_DECISIONS_FOR_PATTERN = 5;
+    private static final long MINIMUM_EVALUATIONS_FOR_SATISFACTION_PATTERN = 3;
 
     public InsightReport generateReport(
             InsightsSummary summary
@@ -54,7 +55,9 @@ public class InsightsService {
         InsightMessage message =
                 determineInsightMessage(
                         summary,
-                        declineRate
+                        declineRate,
+                        satisfactionRate,
+                        regretRate
                 );
 
         return new InsightReport(
@@ -72,7 +75,9 @@ public class InsightsService {
 
     private InsightMessage determineInsightMessage(
             InsightsSummary summary,
-            int declineRate
+            int declineRate,
+            int satisfactionRate,
+            int regretRate
     ) {
         if (summary.totalDecisions()
                 < MINIMUM_DECISIONS_FOR_PATTERN) {
@@ -80,6 +85,29 @@ public class InsightsService {
                     "Continue registrando suas decisões",
                     "Ainda existem poucos dados para identificar um padrão confiável. Cada nova análise ajuda o Compensa? a entender melhor suas escolhas."
             );
+        }
+
+        if (hasEnoughSatisfactionEvaluations(summary)) {
+            if (regretRate >= 50) {
+                return new InsightMessage(
+                        "Algumas compras estão gerando arrependimento",
+                        "Metade ou mais das compras avaliadas não valeu a pena para você. Antes da próxima decisão, observe se existem pressa, impulso ou alternativas disponíveis."
+                );
+            }
+
+            if (satisfactionRate >= 70) {
+                return new InsightMessage(
+                        "Suas compras avaliadas costumam valer a pena",
+                        "A maioria das compras avaliadas trouxe uma experiência positiva. Continue registrando o contexto para descobrir quais tipos de escolha funcionam melhor para você."
+                );
+            }
+
+            if (hasFrequentPartialSatisfaction(summary)) {
+                return new InsightMessage(
+                        "Suas compras estão deixando dúvidas",
+                        "Muitas compras foram avaliadas como mais ou menos. Isso pode indicar que elas não foram ruins, mas também não entregaram todo o valor esperado."
+                );
+            }
         }
 
         if (hasFrequentPurchasesAgainstAdvice(summary)) {
@@ -100,6 +128,20 @@ public class InsightsService {
                 "Suas decisões estão ganhando consistência",
                 "Você já possui dados suficientes para começar a reconhecer padrões. Continue registrando o resultado das compras para tornar os insights mais úteis."
         );
+    }
+
+    private boolean hasEnoughSatisfactionEvaluations(
+            InsightsSummary summary
+    ) {
+        return summary.evaluatedPurchases()
+                >= MINIMUM_EVALUATIONS_FOR_SATISFACTION_PATTERN;
+    }
+
+    private boolean hasFrequentPartialSatisfaction(
+            InsightsSummary summary
+    ) {
+        return summary.partiallyWorthItPurchases() * 2
+                >= summary.evaluatedPurchases();
     }
 
     private boolean hasFrequentPurchasesAgainstAdvice(
