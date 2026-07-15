@@ -5,6 +5,9 @@ public record InsightReport(
         int declineRate,
         int waitingRate,
         long averageRealWorkMinutes,
+        int satisfactionRate,
+        int regretRate,
+        long evaluatedPurchases,
         String headline,
         String description
 ) {
@@ -13,10 +16,18 @@ public record InsightReport(
         validatePercentage(purchaseRate);
         validatePercentage(declineRate);
         validatePercentage(waitingRate);
+        validatePercentage(satisfactionRate);
+        validatePercentage(regretRate);
 
         if (averageRealWorkMinutes < 0) {
             throw new IllegalArgumentException(
                     "A média de tempo não pode ser negativa."
+            );
+        }
+
+        if (evaluatedPurchases < 0) {
+            throw new IllegalArgumentException(
+                    "O número de avaliações não pode ser negativo."
             );
         }
 
@@ -31,6 +42,27 @@ public record InsightReport(
                     "A descrição do insight é obrigatória."
             );
         }
+    }
+
+    public InsightReport(
+            int purchaseRate,
+            int declineRate,
+            int waitingRate,
+            long averageRealWorkMinutes,
+            String headline,
+            String description
+    ) {
+        this(
+                purchaseRate,
+                declineRate,
+                waitingRate,
+                averageRealWorkMinutes,
+                0,
+                0,
+                0,
+                headline,
+                description
+        );
     }
 
     private static void validatePercentage(int value) {

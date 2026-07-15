@@ -41,6 +41,16 @@ public class InsightsService {
                         / summary.totalDecisions()
         );
 
+        int satisfactionRate = calculateEvaluationRate(
+                summary.worthItPurchases(),
+                summary.evaluatedPurchases()
+        );
+
+        int regretRate = calculateEvaluationRate(
+                summary.regrettedPurchases(),
+                summary.evaluatedPurchases()
+        );
+
         InsightMessage message =
                 determineInsightMessage(
                         summary,
@@ -52,6 +62,9 @@ public class InsightsService {
                 declineRate,
                 waitingRate,
                 averageMinutes,
+                satisfactionRate,
+                regretRate,
+                summary.evaluatedPurchases(),
                 message.headline(),
                 message.description()
         );
@@ -109,8 +122,25 @@ public class InsightsService {
         );
     }
 
+    private int calculateEvaluationRate(
+            long amount,
+            long evaluatedPurchases
+    ) {
+        if (evaluatedPurchases == 0) {
+            return 0;
+        }
+
+        return calculateRate(
+                amount,
+                evaluatedPurchases
+        );
+    }
+
     private InsightReport createEmptyReport() {
         return new InsightReport(
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
