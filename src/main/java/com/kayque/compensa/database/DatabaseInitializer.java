@@ -8,17 +8,21 @@ import java.sql.Statement;
 public final class DatabaseInitializer {
 
     private static final String CREATE_FINANCIAL_PROFILE_TABLE = """
-            CREATE TABLE IF NOT EXISTS financial_profile (
-                id INTEGER PRIMARY KEY CHECK (id = 1),
-                net_monthly_income NUMERIC NOT NULL
-                    CHECK (net_monthly_income > 0),
-                monthly_work_hours NUMERIC NOT NULL
-                    CHECK (monthly_work_hours > 0),
-                monthly_additional_hours NUMERIC NOT NULL DEFAULT 0
-                    CHECK (monthly_additional_hours >= 0),
-                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """;
+        CREATE TABLE IF NOT EXISTS financial_profile (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            net_monthly_income NUMERIC NOT NULL
+                CHECK (net_monthly_income > 0),
+            monthly_work_hours NUMERIC NOT NULL
+                CHECK (monthly_work_hours > 0),
+            monthly_additional_hours NUMERIC NOT NULL DEFAULT 0
+                CHECK (monthly_additional_hours >= 0),
+            essential_expenses NUMERIC NOT NULL DEFAULT 0
+                CHECK (essential_expenses >= 0),
+            monthly_savings_goal NUMERIC NOT NULL DEFAULT 0
+                CHECK (monthly_savings_goal >= 0),
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        """;
 
     private static final String CREATE_PURCHASE_DECISION_TABLE = """
             CREATE TABLE IF NOT EXISTS purchase_decision (
@@ -116,6 +120,7 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_FINANCIAL_PROFILE_TABLE);
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
 
+            migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
 
             System.out.println(
@@ -129,6 +134,30 @@ public final class DatabaseInitializer {
                     exception
             );
         }
+    }
+
+    private static void migrateFinancialProfileTable(
+            Connection connection
+    ) throws SQLException {
+        addColumnIfMissing(
+                connection,
+                "financial_profile",
+                "essential_expenses",
+                """
+                essential_expenses NUMERIC NOT NULL DEFAULT 0
+                    CHECK (essential_expenses >= 0)
+                """
+        );
+
+        addColumnIfMissing(
+                connection,
+                "financial_profile",
+                "monthly_savings_goal",
+                """
+                monthly_savings_goal NUMERIC NOT NULL DEFAULT 0
+                    CHECK (monthly_savings_goal >= 0)
+                """
+        );
     }
 
     private static void migratePurchaseDecisionTable(

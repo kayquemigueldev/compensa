@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 public record FinancialProfile(
         BigDecimal netMonthlyIncome,
         BigDecimal monthlyWorkHours,
-        BigDecimal monthlyAdditionalHours
+        BigDecimal monthlyAdditionalHours,
+        BigDecimal essentialExpenses,
+        BigDecimal monthlySavingsGoal
 ) {
 
     public FinancialProfile {
@@ -23,6 +25,30 @@ public record FinancialProfile(
                 monthlyAdditionalHours,
                 "As horas adicionais não podem ser negativas."
         );
+
+        validateNonNegative(
+                essentialExpenses,
+                "As despesas essenciais não podem ser negativas."
+        );
+
+        validateNonNegative(
+                monthlySavingsGoal,
+                "A meta de economia não pode ser negativa."
+        );
+    }
+
+    public FinancialProfile(
+            BigDecimal netMonthlyIncome,
+            BigDecimal monthlyWorkHours,
+            BigDecimal monthlyAdditionalHours
+    ) {
+        this(
+                netMonthlyIncome,
+                monthlyWorkHours,
+                monthlyAdditionalHours,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO
+        );
     }
 
     public BigDecimal totalCommittedHours() {
@@ -33,7 +59,8 @@ public record FinancialProfile(
             BigDecimal value,
             String message
     ) {
-        if (value == null || value.compareTo(BigDecimal.ZERO) <= 0) {
+        if (value == null
+                || value.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -42,7 +69,8 @@ public record FinancialProfile(
             BigDecimal value,
             String message
     ) {
-        if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
+        if (value == null
+                || value.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(message);
         }
     }

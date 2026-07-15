@@ -19,7 +19,9 @@ public class SqliteFinancialProfileRepository
             SELECT
                 net_monthly_income,
                 monthly_work_hours,
-                monthly_additional_hours
+                monthly_additional_hours,
+                essential_expenses,
+                monthly_savings_goal
             FROM financial_profile
             WHERE id = ?
             """;
@@ -30,14 +32,22 @@ public class SqliteFinancialProfileRepository
                 net_monthly_income,
                 monthly_work_hours,
                 monthly_additional_hours,
+                essential_expenses,
+                monthly_savings_goal,
                 updated_at
             )
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+            VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(id) DO UPDATE SET
-                net_monthly_income = excluded.net_monthly_income,
-                monthly_work_hours = excluded.monthly_work_hours,
+                net_monthly_income =
+                    excluded.net_monthly_income,
+                monthly_work_hours =
+                    excluded.monthly_work_hours,
                 monthly_additional_hours =
                     excluded.monthly_additional_hours,
+                essential_expenses =
+                    excluded.essential_expenses,
+                monthly_savings_goal =
+                    excluded.monthly_savings_goal,
                 updated_at = CURRENT_TIMESTAMP
             """;
 
@@ -78,17 +88,30 @@ public class SqliteFinancialProfileRepository
                         connection.prepareStatement(SAVE_PROFILE)
         ) {
             statement.setInt(1, PROFILE_ID);
+
             statement.setBigDecimal(
                     2,
                     profile.netMonthlyIncome()
             );
+
             statement.setBigDecimal(
                     3,
                     profile.monthlyWorkHours()
             );
+
             statement.setBigDecimal(
                     4,
                     profile.monthlyAdditionalHours()
+            );
+
+            statement.setBigDecimal(
+                    5,
+                    profile.essentialExpenses()
+            );
+
+            statement.setBigDecimal(
+                    6,
+                    profile.monthlySavingsGoal()
             );
 
             statement.executeUpdate();
@@ -116,6 +139,14 @@ public class SqliteFinancialProfileRepository
                 readBigDecimal(
                         resultSet,
                         "monthly_additional_hours"
+                ),
+                readBigDecimal(
+                        resultSet,
+                        "essential_expenses"
+                ),
+                readBigDecimal(
+                        resultSet,
+                        "monthly_savings_goal"
                 )
         );
     }
@@ -124,6 +155,8 @@ public class SqliteFinancialProfileRepository
             ResultSet resultSet,
             String column
     ) throws SQLException {
-        return new BigDecimal(resultSet.getString(column));
+        return new BigDecimal(
+                resultSet.getString(column)
+        );
     }
 }
