@@ -790,3 +790,28 @@
 .budget-deficit {
     -fx-text-fill: #ff6b6b;
 }
+
+.budget-impact-detail {
+    -fx-font-size: 10px;
+    -fx-text-fill: #7f8998;
+}
+
+.budget-impact-positive {
+    -fx-text-fill: #93e83f;
+}
+
+.budget-impact-warning {
+    -fx-text-fill: #ffb627;
+}
+
+.budget-impact-negative {
+    -fx-text-fill: #ff6b6b;
+}
+
+.budget-impact-card {
+    -fx-background-color: #10151d;
+    -fx-border-color: #29313d;
+    -fx-border-radius: 11px;
+    -fx-background-radius: 11px;
+    -fx-padding: 13px 16px;
+}

@@ -22,6 +22,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
+import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
+import com.kayque.compensa.profile.service.MonthlyBudgetService;
+import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
+import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
+import com.kayque.compensa.purchase.service.PurchaseBudgetImpactService;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -32,6 +37,12 @@ public class PurchaseAnalysisController {
 
     private final PurchaseAnalysisService analysisService =
             new PurchaseAnalysisService();
+
+    private final MonthlyBudgetService budgetService =
+            new MonthlyBudgetService();
+
+    private final PurchaseBudgetImpactService budgetImpactService =
+            new PurchaseBudgetImpactService();
 
     private final PurchaseAdviceService adviceService =
             new PurchaseAdviceService();
@@ -48,6 +59,7 @@ public class PurchaseAnalysisController {
             );
 
     private PurchaseAnalysis currentAnalysis;
+    private PurchaseBudgetImpact currentBudgetImpact;
     private PurchaseDecisionContext currentContext;
     private PurchaseAdvice currentAdvice;
 
@@ -86,6 +98,12 @@ public class PurchaseAnalysisController {
 
     @FXML
     private Label yearlyCostLabel;
+
+    @FXML
+    private Label budgetImpactPercentageLabel;
+
+    @FXML
+    private Label budgetImpactDetailLabel;
 
     @FXML
     private Label reflectionTextLabel;
@@ -131,6 +149,15 @@ public class PurchaseAnalysisController {
             PurchaseAnalysis analysis =
                     analysisService.analyze(purchase, profile);
 
+            MonthlyBudgetSummary budget =
+                    budgetService.calculate(profile);
+
+            PurchaseBudgetImpact budgetImpact =
+                    budgetImpactService.calculate(
+                            purchase,
+                            budget
+                    );
+
             PurchaseDecisionContext context =
                     createDecisionContext();
 
@@ -138,10 +165,12 @@ public class PurchaseAnalysisController {
                     adviceService.evaluate(analysis, context);
 
             currentAnalysis = analysis;
+            currentBudgetImpact = budgetImpact;
             currentContext = context;
             currentAdvice = advice;
 
             showAnalysis(analysis);
+            showBudgetImpact(budgetImpact);
             showAdvice(advice);
             setDecisionButtonsDisabled(false);
 
@@ -245,6 +274,88 @@ public class PurchaseAnalysisController {
                         analysis.projectedYearlyCost()
                 )
         );
+    }
+
+    private void showBudgetImpact(
+            PurchaseBudgetImpact impact
+    ) {
+        PurchaseBudgetImpactStatus status =
+                impact.status();
+
+        budgetImpactPercentageLabel.setText(
+                formatBudgetPercentage(impact)
+        );
+
+        budgetImpactDetailLabel.setText(
+                formatBudgetImpactDetail(impact)
+        );
+
+        String styleClass =
+                getBudgetImpactStyle(status);
+
+        budgetImpactPercentageLabel
+                .getStyleClass()
+                .setAll(
+                        "metric-value",
+                        styleClass
+                );
+
+        budgetImpactDetailLabel
+                .getStyleClass()
+                .setAll(
+                        "budget-impact-detail",
+                        styleClass
+                );
+    }
+
+    private String formatBudgetPercentage(
+            PurchaseBudgetImpact impact
+    ) {
+        return impact.budgetUsagePercentage()
+                .map(percentage -> String.format(
+                        Locale.of("pt", "BR"),
+                        "%.2f%%",
+                        percentage
+                ))
+                .orElse("--");
+    }
+
+    private String formatBudgetImpactDetail(
+            PurchaseBudgetImpact impact
+    ) {
+        return switch (impact.status()) {
+            case WITHIN_BUDGET ->
+                    currencyFormat.format(
+                            impact.remainingAfterPurchase()
+                    ) + " livres após a compra";
+
+            case EXCEEDS_AVAILABLE_AMOUNT ->
+                    "Ultrapassa em " + currencyFormat.format(
+                            impact.remainingAfterPurchase().abs()
+                    );
+
+            case NO_AVAILABLE_BUDGET ->
+                    "Sem dinheiro livre neste mês";
+
+            case BUDGET_IN_DEFICIT ->
+                    "O orçamento já está em déficit";
+        };
+    }
+
+    private String getBudgetImpactStyle(
+            PurchaseBudgetImpactStatus status
+    ) {
+        return switch (status) {
+            case WITHIN_BUDGET ->
+                    "budget-impact-positive";
+
+            case EXCEEDS_AVAILABLE_AMOUNT,
+                 NO_AVAILABLE_BUDGET ->
+                    "budget-impact-warning";
+
+            case BUDGET_IN_DEFICIT ->
+                    "budget-impact-negative";
+        };
     }
 
     private void showAdvice(PurchaseAdvice advice) {
@@ -472,12 +583,14 @@ public class PurchaseAnalysisController {
 
     private boolean hasCurrentAnalysis() {
         return currentAnalysis != null
+                && currentBudgetImpact != null
                 && currentContext != null
                 && currentAdvice != null;
     }
 
     private void clearCurrentAnalysis() {
         currentAnalysis = null;
+        currentBudgetImpact = null;
         currentContext = null;
         currentAdvice = null;
     }
