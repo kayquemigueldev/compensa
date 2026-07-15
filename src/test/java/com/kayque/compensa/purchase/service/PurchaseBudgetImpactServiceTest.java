@@ -8,6 +8,7 @@ import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
 import com.kayque.compensa.purchase.model.PurchaseFrequency;
 import org.junit.jupiter.api.Test;
 
+
 import java.math.BigDecimal;
 import java.util.Optional;
 
