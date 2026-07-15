@@ -29,6 +29,15 @@ public class InsightsController {
     private Label averageTimeLabel;
 
     @FXML
+    private Label evaluatedPurchasesLabel;
+
+    @FXML
+    private Label satisfactionRateLabel;
+
+    @FXML
+    private Label regretRateLabel;
+
+    @FXML
     private Label insightHeadlineLabel;
 
     @FXML
@@ -83,6 +92,20 @@ public class InsightsController {
                 )
         );
 
+        evaluatedPurchasesLabel.setText(
+                formatEvaluatedPurchases(
+                        report.evaluatedPurchases()
+                )
+        );
+
+        satisfactionRateLabel.setText(
+                formatPercentage(report.satisfactionRate())
+        );
+
+        regretRateLabel.setText(
+                formatPercentage(report.regretRate())
+        );
+
         insightHeadlineLabel.setText(
                 report.headline()
         );
@@ -90,6 +113,14 @@ public class InsightsController {
         insightDescriptionLabel.setText(
                 report.description()
         );
+    }
+
+    private String formatEvaluatedPurchases(long total) {
+        if (total == 1) {
+            return "1 avaliação";
+        }
+
+        return total + " avaliações";
     }
 
     private String formatPercentage(int value) {

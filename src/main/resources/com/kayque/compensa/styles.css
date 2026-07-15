@@ -756,3 +756,9 @@
     -fx-text-fill: #ff6b6b;
     -fx-font-size: 12px;
 }
+
+.insight-metric-value-negative {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 27px;
+    -fx-font-weight: bold;
+}

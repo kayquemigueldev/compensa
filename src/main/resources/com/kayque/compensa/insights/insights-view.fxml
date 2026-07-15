@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -80,6 +81,50 @@
                    text="0 min"
                    styleClass="insight-metric-value"/>
         </VBox>
+
+        <HBox spacing="16.0"
+              maxWidth="Infinity"
+              GridPane.columnIndex="0"
+              GridPane.rowIndex="1"
+              GridPane.columnSpan="4">
+
+            <VBox maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="insight-metric-card">
+
+                <Label text="Compras avaliadas"
+                       styleClass="insight-metric-title"/>
+
+                <Label fx:id="evaluatedPurchasesLabel"
+                       text="0 avaliações"
+                       styleClass="insight-metric-value"/>
+            </VBox>
+
+            <VBox maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="insight-metric-card">
+
+                <Label text="Valeu a pena"
+                       styleClass="insight-metric-title"/>
+
+                <Label fx:id="satisfactionRateLabel"
+                       text="0%"
+                       styleClass="insight-metric-value-positive"/>
+            </VBox>
+
+            <VBox maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="insight-metric-card">
+
+                <Label text="Arrependimento"
+                       styleClass="insight-metric-title"/>
+
+                <Label fx:id="regretRateLabel"
+                       text="0%"
+                       styleClass="insight-metric-value-negative"/>
+            </VBox>
+
+        </HBox>
 
     </GridPane>
 
