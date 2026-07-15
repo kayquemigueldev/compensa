@@ -53,17 +53,18 @@ public class SqlitePurchaseDecisionRepository
             """;
 
     private static final String FIND_ALL_DECISIONS = """
-            SELECT
-                id,
-                product_name,
-                price,
-                real_work_minutes,
-                advice_status,
-                outcome,
-                created_at
-            FROM purchase_decision
-            ORDER BY created_at DESC, id DESC
-            """;
+        SELECT
+            id,
+            product_name,
+            price,
+            real_work_minutes,
+            advice_status,
+            outcome,
+            satisfaction,
+            created_at
+        FROM purchase_decision
+        ORDER BY created_at DESC, id DESC
+        """;
 
     private static final String FIND_WAITING_DECISIONS = """
         SELECT
@@ -73,6 +74,7 @@ public class SqlitePurchaseDecisionRepository
             real_work_minutes,
             advice_status,
             outcome,
+            satisfaction,
             created_at
         FROM purchase_decision
         WHERE outcome = 'WAITING'
@@ -287,10 +289,23 @@ public class SqlitePurchaseDecisionRepository
                 PurchaseDecisionOutcome.valueOf(
                         resultSet.getString("outcome")
                 ),
+                parseSatisfaction(
+                        resultSet.getString("satisfaction")
+                ),
                 parseDatabaseDate(
                         resultSet.getString("created_at")
                 )
         );
+    }
+
+    private PurchaseSatisfaction parseSatisfaction(
+            String value
+    ) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        return PurchaseSatisfaction.valueOf(value);
     }
 
     private Instant parseDatabaseDate(String value) {

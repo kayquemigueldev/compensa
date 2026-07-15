@@ -3,6 +3,7 @@ package com.kayque.compensa.history.controller;
 import com.kayque.compensa.purchase.model.PurchaseDecisionHistoryItem;
 import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
 import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
+import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
 
 import java.text.NumberFormat;
 import java.time.ZoneId;
@@ -196,7 +198,7 @@ public class HistoryController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        HBox card = new HBox(
+        HBox informationRow = new HBox(
                 18,
                 identification,
                 spacer,
@@ -206,10 +208,169 @@ public class HistoryController {
                 outcomeLabel
         );
 
-        card.setAlignment(Pos.CENTER_LEFT);
+        informationRow.setAlignment(Pos.CENTER_LEFT);
+
+        VBox card = new VBox(14, informationRow);
         card.getStyleClass().add("history-card");
 
+        if (item.outcome() == PurchaseDecisionOutcome.PURCHASED) {
+            card.getChildren().add(
+                    createSatisfactionSection(item)
+            );
+        }
+
         return card;
+    }
+
+    private Node createSatisfactionSection(
+            PurchaseDecisionHistoryItem item
+    ) {
+        if (item.satisfaction() != null) {
+            Label title = createSmallLabel(
+                    "Depois da compra"
+            );
+
+            Label satisfactionLabel = new Label(
+                    formatSatisfaction(item.satisfaction())
+            );
+
+            satisfactionLabel.getStyleClass().addAll(
+                    "history-badge",
+                    getSatisfactionStyle(item.satisfaction())
+            );
+
+            HBox evaluatedBox = new HBox(
+                    12,
+                    title,
+                    satisfactionLabel
+            );
+
+            evaluatedBox.setAlignment(Pos.CENTER_LEFT);
+
+            return evaluatedBox;
+        }
+
+        Label questionLabel = new Label(
+                "Depois da compra: valeu a pena?"
+        );
+
+        questionLabel.getStyleClass().add(
+                "history-evaluation-question"
+        );
+
+        Label feedbackLabel = new Label();
+        feedbackLabel.setVisible(false);
+        feedbackLabel.setManaged(false);
+        feedbackLabel.getStyleClass().add(
+                "history-evaluation-error"
+        );
+
+        Button worthItButton = createEvaluationButton(
+                "Valeu a pena",
+                item,
+                PurchaseSatisfaction.WORTH_IT,
+                feedbackLabel
+        );
+
+        Button partiallyButton = createEvaluationButton(
+                "Mais ou menos",
+                item,
+                PurchaseSatisfaction.PARTIALLY_WORTH_IT,
+                feedbackLabel
+        );
+
+        Button regrettedButton = createEvaluationButton(
+                "Me arrependi",
+                item,
+                PurchaseSatisfaction.REGRETTED,
+                feedbackLabel
+        );
+
+        HBox buttons = new HBox(
+                10,
+                worthItButton,
+                partiallyButton,
+                regrettedButton
+        );
+
+        buttons.setAlignment(Pos.CENTER_LEFT);
+
+        return new VBox(
+                8,
+                questionLabel,
+                buttons,
+                feedbackLabel
+        );
+    }
+
+    private Button createEvaluationButton(
+            String text,
+            PurchaseDecisionHistoryItem item,
+            PurchaseSatisfaction satisfaction,
+            Label feedbackLabel
+    ) {
+        Button button = new Button(text);
+
+        button.getStyleClass().add(
+                "history-evaluation-button"
+        );
+
+        button.setOnAction(event -> {
+            try {
+                boolean updated =
+                        repository.evaluatePurchasedDecision(
+                                item.id(),
+                                satisfaction
+                        );
+
+                if (!updated) {
+                    showEvaluationError(
+                            feedbackLabel,
+                            "Essa compra não pôde ser avaliada."
+                    );
+                    return;
+                }
+
+                loadHistory();
+
+            } catch (IllegalStateException exception) {
+                showEvaluationError(
+                        feedbackLabel,
+                        "Não foi possível salvar a avaliação."
+                );
+            }
+        });
+
+        return button;
+    }
+
+    private void showEvaluationError(
+            Label feedbackLabel,
+            String message
+    ) {
+        feedbackLabel.setText(message);
+        feedbackLabel.setVisible(true);
+        feedbackLabel.setManaged(true);
+    }
+
+    private String formatSatisfaction(
+            PurchaseSatisfaction satisfaction
+    ) {
+        return switch (satisfaction) {
+            case WORTH_IT -> "Valeu a pena";
+            case PARTIALLY_WORTH_IT -> "Mais ou menos";
+            case REGRETTED -> "Me arrependi";
+        };
+    }
+
+    private String getSatisfactionStyle(
+            PurchaseSatisfaction satisfaction
+    ) {
+        return switch (satisfaction) {
+            case WORTH_IT -> "history-positive";
+            case PARTIALLY_WORTH_IT -> "history-warning";
+            case REGRETTED -> "history-negative";
+        };
     }
 
     private VBox createInformationBox(

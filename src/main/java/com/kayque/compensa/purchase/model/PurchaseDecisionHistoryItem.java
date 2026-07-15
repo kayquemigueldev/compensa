@@ -11,6 +11,7 @@ public record PurchaseDecisionHistoryItem(
         long realWorkMinutes,
         PurchaseDecisionStatus adviceStatus,
         PurchaseDecisionOutcome outcome,
+        PurchaseSatisfaction satisfaction,
         Instant createdAt
 ) {
 

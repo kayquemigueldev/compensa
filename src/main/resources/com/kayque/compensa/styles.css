@@ -726,3 +726,33 @@
     -fx-font-size: 12px;
     -fx-line-spacing: 3px;
 }
+
+
+.history-evaluation-question {
+    -fx-text-fill: #c8ced8;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.history-evaluation-button {
+    -fx-background-color: #11161e;
+    -fx-border-color: #343c49;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #c8ced8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 14px;
+    -fx-cursor: hand;
+}
+
+.history-evaluation-button:hover {
+    -fx-background-color: #202936;
+    -fx-border-color: #93e83f;
+    -fx-text-fill: #93e83f;
+}
+
+.history-evaluation-error {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 12px;
+}
