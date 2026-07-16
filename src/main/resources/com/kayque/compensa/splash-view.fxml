@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.ArcType?>
+<?import javafx.scene.control.ProgressBar?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.kayque.compensa.splash.controller.SplashController"
+           styleClass="splash-root">
+
+    <VBox alignment="CENTER"
+          spacing="16.0">
+
+        <HBox fx:id="brandContainer"
+              alignment="CENTER"
+              spacing="2.0">
+
+            <Pane prefWidth="76.0"
+                  prefHeight="76.0"
+                  minWidth="76.0"
+                  minHeight="76.0">
+
+                <Arc fx:id="logoArc"
+                     centerX="38.0"
+                     centerY="38.0"
+                     radiusX="29.0"
+                     radiusY="29.0"
+                     startAngle="42.0"
+                     length="276.0"
+                     type="OPEN"
+                     fill="TRANSPARENT"
+                     stroke="#8eea3c"
+                     strokeWidth="7.0"
+                     strokeLineCap="ROUND"/>
+
+            </Pane>
+
+            <Label fx:id="wordmarkLabel"
+                   text="ompensa?"
+                   styleClass="splash-title"/>
+
+        </HBox>
+
+        <Label fx:id="splashSubtitleLabel"
+               text="Compre consciente. Viva melhor."
+               styleClass="splash-subtitle"/>
+
+        <ProgressBar fx:id="splashProgressBar"
+                     progress="0.0"
+                     prefWidth="280.0"
+                     minHeight="3.0"
+                     maxHeight="3.0"
+                     styleClass="splash-loading-line"/>
+
+    </VBox>
+
+    <Label text="Desenvolvido por Kayque Miguel"
+           StackPane.alignment="BOTTOM_CENTER"
+           styleClass="splash-developer">
+
+        <StackPane.margin>
+            <Insets bottom="34.0"/>
+        </StackPane.margin>
+
+    </Label>
+
+</StackPane>

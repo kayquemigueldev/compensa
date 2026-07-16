@@ -929,3 +929,56 @@
     -fx-font-size: 15px;
     -fx-font-weight: 800;
 }
+
+.splash-root {
+    -fx-background-color: #0e1014;
+}
+
+.splash-symbol {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 54px;
+    -fx-font-weight: 800;
+}
+
+.splash-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 42px;
+    -fx-font-weight: 800;
+}
+
+.splash-subtitle {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 16px;
+}
+
+.splash-progress .indicator {
+    -fx-border-color: #8eea3c;
+}
+
+.splash-progress .progress {
+    -fx-background-color: #8eea3c;
+}
+
+.splash-developer {
+    -fx-text-fill: #69717d;
+    -fx-font-size: 12px;
+}
+
+.splash-loading-line {
+    -fx-pref-height: 3px;
+    -fx-min-height: 3px;
+    -fx-max-height: 3px;
+}
+
+.splash-loading-line .track {
+    -fx-background-color: #252d38;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+}
+
+.splash-loading-line .bar {
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+    -fx-padding: 1.5px;
+}
