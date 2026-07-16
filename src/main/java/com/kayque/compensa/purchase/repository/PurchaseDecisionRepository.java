@@ -4,12 +4,11 @@ import com.kayque.compensa.purchase.model.PurchaseDecision;
 import com.kayque.compensa.purchase.model.PurchaseDecisionHistoryItem;
 import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
 import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
-import java.math.BigDecimal;
-import java.time.Instant;
 
 import java.util.List;
 
-public interface PurchaseDecisionRepository {
+    public interface PurchaseDecisionRepository
+        extends PurchasedAmountRepository {
 
     long save(PurchaseDecision decision);
 
@@ -25,11 +24,6 @@ public interface PurchaseDecisionRepository {
     boolean evaluatePurchasedDecision(
             long decisionId,
             PurchaseSatisfaction satisfaction
-    );
-
-    BigDecimal sumPurchasedAmountBetween(
-            Instant startInclusive,
-            Instant endExclusive
     );
 
 }
