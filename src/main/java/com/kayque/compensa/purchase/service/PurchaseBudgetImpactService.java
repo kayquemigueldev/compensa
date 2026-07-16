@@ -4,6 +4,7 @@ import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
 import com.kayque.compensa.purchase.model.Purchase;
 import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
 import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
+import com.kayque.compensa.profile.model.MonthlyBudgetUsage;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,17 +23,44 @@ public class PurchaseBudgetImpactService {
             MonthlyBudgetSummary budget
     ) {
         Objects.requireNonNull(
+                budget,
+                "O orçamento mensal é obrigatório."
+        );
+
+        return calculate(
+                purchase,
+                budget.availableAmount()
+        );
+    }
+
+    public PurchaseBudgetImpact calculate(
+            Purchase purchase,
+            MonthlyBudgetUsage budgetUsage
+    ) {
+        Objects.requireNonNull(
+                budgetUsage,
+                "O uso do orçamento mensal é obrigatório."
+        );
+
+        return calculate(
+                purchase,
+                budgetUsage.currentAvailableAmount()
+        );
+    }
+
+    private PurchaseBudgetImpact calculate(
+            Purchase purchase,
+            BigDecimal availableAmount
+    ) {
+        Objects.requireNonNull(
                 purchase,
                 "A compra é obrigatória."
         );
 
         Objects.requireNonNull(
-                budget,
-                "O orçamento mensal é obrigatório."
+                availableAmount,
+                "O dinheiro disponível é obrigatório."
         );
-
-        BigDecimal availableAmount =
-                budget.availableAmount();
 
         BigDecimal remainingAfterPurchase =
                 availableAmount.subtract(purchase.price());
@@ -44,8 +72,7 @@ public class PurchaseBudgetImpactService {
             return createWithoutPercentage(
                     availableAmount,
                     remainingAfterPurchase,
-                    PurchaseBudgetImpactStatus
-                            .BUDGET_IN_DEFICIT
+                    PurchaseBudgetImpactStatus.BUDGET_IN_DEFICIT
             );
         }
 
@@ -53,8 +80,7 @@ public class PurchaseBudgetImpactService {
             return createWithoutPercentage(
                     availableAmount,
                     remainingAfterPurchase,
-                    PurchaseBudgetImpactStatus
-                            .NO_AVAILABLE_BUDGET
+                    PurchaseBudgetImpactStatus.NO_AVAILABLE_BUDGET
             );
         }
 
@@ -67,8 +93,7 @@ public class PurchaseBudgetImpactService {
         PurchaseBudgetImpactStatus status =
                 purchase.price().compareTo(availableAmount) <= 0
                         ? PurchaseBudgetImpactStatus.WITHIN_BUDGET
-                        : PurchaseBudgetImpactStatus
-                          .EXCEEDS_AVAILABLE_AMOUNT;
+                        : PurchaseBudgetImpactStatus.EXCEEDS_AVAILABLE_AMOUNT;
 
         return new PurchaseBudgetImpact(
                 availableAmount,

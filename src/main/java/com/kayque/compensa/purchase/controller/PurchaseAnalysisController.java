@@ -27,6 +27,9 @@ import com.kayque.compensa.profile.service.MonthlyBudgetService;
 import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
 import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
 import com.kayque.compensa.purchase.service.PurchaseBudgetImpactService;
+import com.kayque.compensa.profile.model.MonthlyBudgetUsage;
+import com.kayque.compensa.profile.service.MonthlyBudgetUsageService;
+import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -52,6 +55,15 @@ public class PurchaseAnalysisController {
 
     private final PurchaseDecisionRepository decisionRepository =
             new SqlitePurchaseDecisionRepository();
+
+    private final CurrentMonthPurchasedAmountService
+            currentMonthPurchasedAmountService =
+            new CurrentMonthPurchasedAmountService(
+                    decisionRepository
+            );
+
+    private final MonthlyBudgetUsageService budgetUsageService =
+            new MonthlyBudgetUsageService();
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
@@ -149,13 +161,22 @@ public class PurchaseAnalysisController {
             PurchaseAnalysis analysis =
                     analysisService.analyze(purchase, profile);
 
-            MonthlyBudgetSummary budget =
+            MonthlyBudgetSummary plannedBudget =
                     budgetService.calculate(profile);
+
+            BigDecimal purchasedThisMonth =
+                    currentMonthPurchasedAmountService.calculate();
+
+            MonthlyBudgetUsage currentBudget =
+                    budgetUsageService.calculate(
+                            plannedBudget,
+                            purchasedThisMonth
+                    );
 
             PurchaseBudgetImpact budgetImpact =
                     budgetImpactService.calculate(
                             purchase,
-                            budget
+                            currentBudget
                     );
 
             PurchaseDecisionContext context =
