@@ -162,7 +162,11 @@ public class PurchaseAnalysisController {
                     createDecisionContext();
 
             PurchaseAdvice advice =
-                    adviceService.evaluate(analysis, context);
+                    adviceService.evaluate(
+                            analysis,
+                            context,
+                            budgetImpact
+                    );
 
             currentAnalysis = analysis;
             currentBudgetImpact = budgetImpact;
