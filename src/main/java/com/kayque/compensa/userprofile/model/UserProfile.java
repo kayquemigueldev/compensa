@@ -3,6 +3,8 @@ package com.kayque.compensa.userprofile.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+
+
 public record UserProfile(
         String displayName,
         UserGoal mainGoal,
