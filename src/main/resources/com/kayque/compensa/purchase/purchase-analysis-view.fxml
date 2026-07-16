@@ -222,6 +222,21 @@
                        styleClass="metric-value"/>
             </HBox>
 
+            <VBox fx:id="dreamImpactCard"
+                  spacing="5.0"
+                  visible="false"
+                  managed="false"
+                  styleClass="dream-impact-card">
+
+                <Label text="Impacto no seu objetivo"
+                       styleClass="dream-impact-title"/>
+
+                <Label fx:id="dreamImpactLabel"
+                       text=""
+                       wrapText="true"
+                       styleClass="dream-impact-text"/>
+            </VBox>
+
             <VBox spacing="10.0"
                   VBox.vgrow="ALWAYS"
                   styleClass="analysis-reflection">

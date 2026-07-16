@@ -1059,3 +1059,22 @@
     -fx-background-color: #242a32;
     -fx-text-fill: #8eea3c;
 }
+
+.dream-impact-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 10px;
+    -fx-border-color: #31421f;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 16px;
+}
+
+.dream-impact-title {
+    -fx-text-fill: #a8e063;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.dream-impact-text {
+    -fx-text-fill: #b7bdc7;
+    -fx-font-size: 12px;
+}

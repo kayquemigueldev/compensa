@@ -1,11 +1,19 @@
 package com.kayque.compensa.purchase.controller;
 
 import com.kayque.compensa.profile.model.FinancialProfile;
+import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
+import com.kayque.compensa.profile.model.MonthlyBudgetUsage;
 import com.kayque.compensa.profile.repository.FinancialProfileRepository;
 import com.kayque.compensa.profile.repository.SqliteFinancialProfileRepository;
+import com.kayque.compensa.profile.service.MonthlyBudgetService;
+import com.kayque.compensa.profile.service.MonthlyBudgetUsageService;
+
 import com.kayque.compensa.purchase.model.Purchase;
 import com.kayque.compensa.purchase.model.PurchaseAdvice;
+import com.kayque.compensa.purchase.model.PurchaseAdviceMessage;
 import com.kayque.compensa.purchase.model.PurchaseAnalysis;
+import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
+import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
 import com.kayque.compensa.purchase.model.PurchaseDecision;
 import com.kayque.compensa.purchase.model.PurchaseDecisionContext;
 import com.kayque.compensa.purchase.model.PurchaseDecisionOutcome;
@@ -14,28 +22,25 @@ import com.kayque.compensa.purchase.model.PurchaseFrequency;
 import com.kayque.compensa.purchase.model.PurchaseMotivation;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
+import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
+import com.kayque.compensa.purchase.service.PurchaseAdviceMessageService;
 import com.kayque.compensa.purchase.service.PurchaseAdviceService;
 import com.kayque.compensa.purchase.service.PurchaseAnalysisService;
-import com.kayque.compensa.purchase.model.PurchaseAdviceMessage;
-import com.kayque.compensa.purchase.service.PurchaseAdviceMessageService;
+import com.kayque.compensa.purchase.service.PurchaseBudgetImpactService;
+
+import com.kayque.compensa.userprofile.model.PurchaseDreamImpact;
 import com.kayque.compensa.userprofile.model.RecommendationTone;
 import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
 import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+import com.kayque.compensa.userprofile.service.PurchaseDreamImpactService;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
-import com.kayque.compensa.profile.service.MonthlyBudgetService;
-import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
-import com.kayque.compensa.purchase.model.PurchaseBudgetImpactStatus;
-import com.kayque.compensa.purchase.service.PurchaseBudgetImpactService;
-import com.kayque.compensa.profile.model.MonthlyBudgetUsage;
-import com.kayque.compensa.profile.service.MonthlyBudgetUsageService;
-import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -62,6 +67,10 @@ public class PurchaseAnalysisController {
 
     private final UserProfileRepository userProfileRepository =
             new SqliteUserProfileRepository();
+
+    private final PurchaseDreamImpactService
+            dreamImpactService =
+            new PurchaseDreamImpactService();
 
     private final FinancialProfileRepository profileRepository =
             new SqliteFinancialProfileRepository();
@@ -129,6 +138,12 @@ public class PurchaseAnalysisController {
 
     @FXML
     private Label budgetImpactDetailLabel;
+
+    @FXML
+    private VBox dreamImpactCard;
+
+    @FXML
+    private Label dreamImpactLabel;
 
     @FXML
     private Label reflectionTextLabel;
@@ -216,6 +231,7 @@ public class PurchaseAnalysisController {
 
             showAnalysis(analysis);
             showBudgetImpact(budgetImpact);
+            showDreamImpact(purchase);
             showAdvice(advice);
             setDecisionButtonsDisabled(false);
 
@@ -380,6 +396,54 @@ public class PurchaseAnalysisController {
                         "budget-impact-detail",
                         styleClass
                 );
+    }
+
+    private void showDreamImpact(Purchase purchase) {
+        try {
+            userProfileRepository.find()
+                    .flatMap(profile ->
+                            dreamImpactService.calculate(
+                                    profile,
+                                    purchase.price()
+                            )
+                    )
+                    .ifPresentOrElse(
+                            this::displayDreamImpact,
+                            this::hideDreamImpact
+                    );
+
+        } catch (IllegalStateException exception) {
+            hideDreamImpact();
+        }
+    }
+
+    private void displayDreamImpact(
+            PurchaseDreamImpact impact
+    ) {
+        String percentage = impact.targetPercentage()
+                .toPlainString()
+                .replace(".", ",");
+
+        dreamImpactLabel.setText(
+                "Esta compra representa "
+                        + percentage
+                        + "% do objetivo “"
+                        + impact.dreamName()
+                        + "”, estimado em "
+                        + currencyFormat.format(
+                        impact.targetAmount()
+                )
+                        + "."
+        );
+
+        dreamImpactCard.setVisible(true);
+        dreamImpactCard.setManaged(true);
+    }
+
+    private void hideDreamImpact() {
+        dreamImpactLabel.setText("");
+        dreamImpactCard.setVisible(false);
+        dreamImpactCard.setManaged(false);
     }
 
     private String formatBudgetPercentage(
@@ -683,9 +747,12 @@ public class PurchaseAnalysisController {
         yearlyCostLabel.setText("--");
 
         budgetImpactPercentageLabel.setText("--");
+
         budgetImpactDetailLabel.setText(
                 "Impacto no dinheiro livre"
         );
+
+        hideDreamImpact();
 
         budgetImpactPercentageLabel
                 .getStyleClass()
