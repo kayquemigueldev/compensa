@@ -16,6 +16,12 @@ import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.PurchaseAdviceService;
 import com.kayque.compensa.purchase.service.PurchaseAnalysisService;
+import com.kayque.compensa.purchase.model.PurchaseAdviceMessage;
+import com.kayque.compensa.purchase.service.PurchaseAdviceMessageService;
+import com.kayque.compensa.userprofile.model.RecommendationTone;
+import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
+import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -49,6 +55,13 @@ public class PurchaseAnalysisController {
 
     private final PurchaseAdviceService adviceService =
             new PurchaseAdviceService();
+
+    private final PurchaseAdviceMessageService
+            adviceMessageService =
+            new PurchaseAdviceMessageService();
+
+    private final UserProfileRepository userProfileRepository =
+            new SqliteUserProfileRepository();
 
     private final FinancialProfileRepository profileRepository =
             new SqliteFinancialProfileRepository();
@@ -422,12 +435,19 @@ public class PurchaseAnalysisController {
     private void showAdvice(PurchaseAdvice advice) {
         PurchaseDecisionStatus status = advice.status();
 
-        analysisStatusLabel.setText(
-                getStatusTitle(status)
-        );
+        RecommendationTone tone =
+                loadRecommendationTone();
+
+        PurchaseAdviceMessage message =
+                adviceMessageService.create(
+                        status,
+                        tone
+                );
+
+        analysisStatusLabel.setText(message.title());
 
         analysisDescriptionLabel.setText(
-                getStatusDescription(status)
+                message.description()
         );
 
         analysisStatusLabel.getStyleClass().setAll(
@@ -443,6 +463,20 @@ public class PurchaseAnalysisController {
         reflectionTextLabel.setText(reasons);
 
         showSuccess("Análise concluída.");
+    }
+
+    private RecommendationTone loadRecommendationTone() {
+        try {
+            return userProfileRepository
+                    .find()
+                    .map(profile ->
+                            profile.recommendationTone()
+                    )
+                    .orElse(RecommendationTone.BALANCED);
+
+        } catch (IllegalStateException exception) {
+            return RecommendationTone.BALANCED;
+        }
     }
 
     private void showDecisionSaved(
@@ -461,32 +495,6 @@ public class PurchaseAnalysisController {
                         + generatedId
                         + "."
         );
-    }
-
-    private String getStatusTitle(
-            PurchaseDecisionStatus status
-    ) {
-        return switch (status) {
-            case MAKES_SENSE -> "FAZ SENTIDO";
-            case THINK_AGAIN -> "PENSE MAIS UM POUCO";
-            case PROBABLY_NOT_WORTH_IT ->
-                    "PROVAVELMENTE NÃO COMPENSA";
-        };
-    }
-
-    private String getStatusDescription(
-            PurchaseDecisionStatus status
-    ) {
-        return switch (status) {
-            case MAKES_SENSE ->
-                    "A compra apresenta fatores coerentes com o contexto informado.";
-
-            case THINK_AGAIN ->
-                    "A compra é possível, mas existem pontos que merecem reflexão.";
-
-            case PROBABLY_NOT_WORTH_IT ->
-                    "A decisão reúne vários sinais de impulso ou baixo benefício imediato.";
-        };
     }
 
     private String getStatusStyleClass(
