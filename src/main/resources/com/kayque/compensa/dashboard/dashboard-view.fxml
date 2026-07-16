@@ -21,7 +21,8 @@
     </padding>
 
     <VBox spacing="8.0">
-        <Label text="Hoje"
+        <Label fx:id="dashboardGreetingLabel"
+               text="Hoje"
                styleClass="page-title"/>
 
         <Label text="Veja como suas decisões estão transformando sua relação com o dinheiro."

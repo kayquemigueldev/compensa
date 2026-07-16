@@ -13,6 +13,9 @@ import com.kayque.compensa.profile.service.MonthlyBudgetUsageService;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
+import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
+import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -38,6 +41,9 @@ public class DashboardController {
 
     private final MonthlyBudgetUsageService budgetUsageService =
             new MonthlyBudgetUsageService();
+
+    private final UserProfileRepository userProfileRepository =
+            new SqliteUserProfileRepository();
 
     private final CurrentMonthPurchasedAmountService
             currentMonthPurchasedAmountService =
@@ -87,9 +93,29 @@ public class DashboardController {
     private ProgressBar budgetUsageProgressBar;
 
     @FXML
+    private Label dashboardGreetingLabel;
+
+    @FXML
     private void initialize() {
+        loadGreeting();
         loadSummary();
         loadMonthlyBudget();
+    }
+
+    private void loadGreeting() {
+        try {
+            String greeting = userProfileRepository
+                    .find()
+                    .map(profile ->
+                            "Olá, " + profile.displayName()
+                    )
+                    .orElse("Hoje");
+
+            dashboardGreetingLabel.setText(greeting);
+
+        } catch (IllegalStateException exception) {
+            dashboardGreetingLabel.setText("Hoje");
+        }
     }
 
     private void loadSummary() {
