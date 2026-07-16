@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -117,6 +118,59 @@
         </VBox>
 
     </GridPane>
+
+    <HBox spacing="16.0">
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="dashboard-card-large">
+
+            <Label text="Planejado para escolhas"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="plannedBudgetLabel"
+                   text="--"
+                   styleClass="dashboard-large-value"/>
+
+            <Label text="Dinheiro livre previsto para o mês."
+                   wrapText="true"
+                   styleClass="dashboard-card-description"/>
+        </VBox>
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="dashboard-card-large">
+
+            <Label text="Comprado neste mês"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="purchasedThisMonthLabel"
+                   text="--"
+                   styleClass="dashboard-large-value"/>
+
+            <Label fx:id="budgetUsagePercentageLabel"
+                   text="--"
+                   wrapText="true"
+                   styleClass="dashboard-card-description"/>
+        </VBox>
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="dashboard-card-large">
+
+            <Label text="Disponível agora"
+                   styleClass="dashboard-card-title"/>
+
+            <Label fx:id="currentAvailableBudgetLabel"
+                   text="--"
+                   styleClass="dashboard-large-value"/>
+
+            <Label text="Valor restante para novas escolhas."
+                   wrapText="true"
+                   styleClass="dashboard-card-description"/>
+        </VBox>
+
+    </HBox>
 
     <VBox spacing="10.0"
           styleClass="dashboard-insight-card">
