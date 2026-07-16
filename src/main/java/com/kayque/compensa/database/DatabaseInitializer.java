@@ -150,6 +150,30 @@ public final class DatabaseInitializer {
             DEFAULT CURRENT_TIMESTAMP
         )
         """;
+
+    private static final String CREATE_SAVINGS_GOAL_TABLE = """
+    CREATE TABLE IF NOT EXISTS savings_goal (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+
+        name TEXT NOT NULL
+            CHECK (
+                length(trim(name))
+                BETWEEN 1 AND 120
+            ),
+
+        target_amount NUMERIC NOT NULL
+            CHECK (target_amount > 0),
+
+        saved_amount NUMERIC NOT NULL DEFAULT 0
+            CHECK (saved_amount >= 0),
+
+        created_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP,
+
+        updated_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP
+    )
+    """;
     
 
     private DatabaseInitializer() {
@@ -166,10 +190,12 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_FINANCIAL_PROFILE_TABLE);
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
             statement.execute(CREATE_USER_PROFILE_TABLE);
+            statement.execute(CREATE_SAVINGS_GOAL_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
             migrateUserProfileTable(connection);
+            migrateLegacySavingsGoal(connection);
 
             System.out.println(
                     "Banco inicializado em: "
@@ -264,6 +290,37 @@ public final class DatabaseInitializer {
                 """
         );
 
+    }
+
+    private static void migrateLegacySavingsGoal(
+            Connection connection
+    ) throws SQLException {
+        String sql = """
+        INSERT INTO savings_goal (
+            id,
+            name,
+            target_amount,
+            saved_amount,
+            created_at,
+            updated_at
+        )
+        SELECT
+            1,
+            trim(current_dream),
+            current_dream_target_amount,
+            current_dream_saved_amount,
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+        FROM user_profile
+        WHERE id = 1
+          AND length(trim(current_dream)) > 0
+          AND current_dream_target_amount IS NOT NULL
+        ON CONFLICT(id) DO NOTHING
+        """;
+
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sql);
+        }
     }
 
     private static void addColumnIfMissing(
