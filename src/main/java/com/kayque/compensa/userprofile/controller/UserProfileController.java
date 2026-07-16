@@ -11,6 +11,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class UserProfileController {
 
@@ -28,6 +31,9 @@ public class UserProfileController {
     private TextField currentDreamField;
 
     @FXML
+    private TextField currentDreamTargetAmountField;
+
+    @FXML
     private Button saveProfileButton;
 
     @FXML
@@ -35,6 +41,11 @@ public class UserProfileController {
 
     private final UserProfileRepository repository =
             new SqliteUserProfileRepository();
+
+    private final NumberFormat currencyFormat =
+            NumberFormat.getCurrencyInstance(
+                    Locale.of("pt", "BR")
+            );
 
     @FXML
     private void initialize() {
@@ -52,7 +63,10 @@ public class UserProfileController {
                     displayNameField.getText(),
                     mainGoalComboBox.getValue(),
                     recommendationToneComboBox.getValue(),
-                    currentDreamField.getText()
+                    currentDreamField.getText(),
+                    parseOptionalMoney(
+                            currentDreamTargetAmountField.getText()
+                    )
             );
 
             repository.save(profile);
@@ -93,6 +107,15 @@ public class UserProfileController {
         );
 
         currentDreamField.setText(profile.currentDream());
+        if (profile.hasCurrentDreamTargetAmount()) {
+            currentDreamTargetAmountField.setText(
+                    currencyFormat.format(
+                            profile.currentDreamTargetAmount()
+                    )
+            );
+        } else {
+            currentDreamTargetAmountField.clear();
+        }
     }
 
     private void configureGoalComboBox() {
@@ -162,6 +185,35 @@ public class UserProfileController {
                 return null;
             }
         };
+    }
+
+    private BigDecimal parseOptionalMoney(
+            String text
+    ) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+
+        try {
+            String normalizedValue = text
+                    .trim()
+                    .replace("R$", "")
+                    .replace("\u00A0", "")
+                    .replace(" ", "");
+
+            if (normalizedValue.contains(",")) {
+                normalizedValue = normalizedValue
+                        .replace(".", "")
+                        .replace(",", ".");
+            }
+
+            return new BigDecimal(normalizedValue);
+
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException(
+                    "Informe um valor válido para seu objetivo."
+            );
+        }
     }
 
     private void clearFeedback() {

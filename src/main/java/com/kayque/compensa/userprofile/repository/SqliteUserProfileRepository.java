@@ -97,7 +97,6 @@ public class SqliteUserProfileRepository
             );
 
             statement.setString(5, profile.currentDream());
-            statement.executeUpdate();
 
             if (profile.hasCurrentDreamTargetAmount()) {
                 statement.setBigDecimal(
@@ -107,6 +106,8 @@ public class SqliteUserProfileRepository
             } else {
                 statement.setNull(6, Types.NUMERIC);
             }
+
+            statement.executeUpdate();
 
         } catch (SQLException exception) {
             throw new IllegalStateException(

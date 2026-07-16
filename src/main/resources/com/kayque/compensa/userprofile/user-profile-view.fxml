@@ -83,7 +83,7 @@
             <Label text="Seu objetivo atual"
                    styleClass="card-title"/>
 
-            <Label text="Este campo é opcional. Futuramente ele ajudará a comparar uma compra com algo que você realmente deseja conquistar."
+            <Label text="Defina algo que deseja conquistar. O Compensa? poderá comparar suas compras com esse objetivo."
                    wrapText="true"
                    styleClass="settings-description"/>
 
@@ -95,6 +95,21 @@
                            promptText="Ex.: montar meu computador"
                            maxWidth="Infinity"
                            styleClass="user-profile-field"/>
+
+                <VBox spacing="8.0">
+                    <Label text="Quanto você precisa para conquistar isso?"
+                           styleClass="field-label"/>
+
+                    <TextField fx:id="currentDreamTargetAmountField"
+                               promptText="Ex.: R$ 5.000,00"
+                               maxWidth="Infinity"
+                               styleClass="user-profile-field"/>
+
+                    <Label text="Campo opcional. Use uma estimativa caso ainda não saiba o valor exato."
+                           wrapText="true"
+                           styleClass="settings-description"/>
+
+                </VBox>
             </VBox>
 
             <VBox spacing="8.0"
