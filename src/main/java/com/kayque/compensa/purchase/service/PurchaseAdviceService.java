@@ -2,10 +2,12 @@ package com.kayque.compensa.purchase.service;
 
 import com.kayque.compensa.purchase.model.PurchaseAdvice;
 import com.kayque.compensa.purchase.model.PurchaseAnalysis;
+import com.kayque.compensa.purchase.model.PurchaseBudgetImpact;
 import com.kayque.compensa.purchase.model.PurchaseDecisionContext;
 import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
 import com.kayque.compensa.purchase.model.PurchaseMotivation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +22,46 @@ public class PurchaseAdviceService {
     private static final long HIGH_TIME_IMPACT_MINUTES = 480;
     private static final long MEDIUM_TIME_IMPACT_MINUTES = 120;
 
+    private static final BigDecimal
+            HIGH_BUDGET_IMPACT_PERCENTAGE =
+            new BigDecimal("50");
+
+    private static final BigDecimal
+            MEDIUM_BUDGET_IMPACT_PERCENTAGE =
+            new BigDecimal("25");
+
     public PurchaseAdvice evaluate(
             PurchaseAnalysis analysis,
             PurchaseDecisionContext context
+    ) {
+        return evaluateInternal(
+                analysis,
+                context,
+                null
+        );
+    }
+
+    public PurchaseAdvice evaluate(
+            PurchaseAnalysis analysis,
+            PurchaseDecisionContext context,
+            PurchaseBudgetImpact budgetImpact
+    ) {
+        Objects.requireNonNull(
+                budgetImpact,
+                "O impacto no orçamento é obrigatório."
+        );
+
+        return evaluateInternal(
+                analysis,
+                context,
+                budgetImpact
+        );
+    }
+
+    private PurchaseAdvice evaluateInternal(
+            PurchaseAnalysis analysis,
+            PurchaseDecisionContext context,
+            PurchaseBudgetImpact budgetImpact
     ) {
         Objects.requireNonNull(
                 analysis,
@@ -80,6 +119,13 @@ public class PurchaseAdviceService {
                 analysis.realWorkMinutes(),
                 reasons
         );
+
+        if (budgetImpact != null) {
+            score += evaluateBudgetImpact(
+                    budgetImpact,
+                    reasons
+            );
+        }
 
         int normalizedScore = normalizeScore(score);
 
@@ -143,6 +189,77 @@ public class PurchaseAdviceService {
         return 0;
     }
 
+    private int evaluateBudgetImpact(
+            PurchaseBudgetImpact impact,
+            List<String> reasons
+    ) {
+        return switch (impact.status()) {
+            case WITHIN_BUDGET ->
+                    evaluateAvailableBudgetPercentage(
+                            impact,
+                            reasons
+                    );
+
+            case EXCEEDS_AVAILABLE_AMOUNT -> {
+                reasons.add(
+                        "A compra ultrapassa o dinheiro livre deste mês."
+                );
+                yield -30;
+            }
+
+            case NO_AVAILABLE_BUDGET -> {
+                reasons.add(
+                        "Não existe dinheiro livre disponível neste mês."
+                );
+                yield -25;
+            }
+
+            case BUDGET_IN_DEFICIT -> {
+                reasons.add(
+                        "O orçamento mensal já está em déficit."
+                );
+                yield -30;
+            }
+        };
+    }
+
+    private int evaluateAvailableBudgetPercentage(
+            PurchaseBudgetImpact impact,
+            List<String> reasons
+    ) {
+        BigDecimal percentage =
+                impact.budgetUsagePercentage()
+                        .orElseThrow(() ->
+                                new IllegalStateException(
+                                        "A porcentagem do orçamento deveria estar disponível."
+                                )
+                        );
+
+        if (percentage.compareTo(
+                HIGH_BUDGET_IMPACT_PERCENTAGE
+        ) >= 0) {
+            reasons.add(
+                    "A compra consome pelo menos metade do dinheiro livre do mês."
+            );
+            return -15;
+        }
+
+        if (percentage.compareTo(
+                MEDIUM_BUDGET_IMPACT_PERCENTAGE
+        ) >= 0) {
+            reasons.add(
+                    "A compra consome uma parte relevante do dinheiro livre do mês."
+            );
+            return -8;
+        }
+
+        reasons.add(
+                "A compra preserva a maior parte do dinheiro livre do mês."
+        );
+
+        return 0;
+    }
+
     private PurchaseDecisionStatus determineStatus(int score) {
         if (score >= MAKES_SENSE_MINIMUM_SCORE) {
             return PurchaseDecisionStatus.MAKES_SENSE;
@@ -152,7 +269,8 @@ public class PurchaseAdviceService {
             return PurchaseDecisionStatus.THINK_AGAIN;
         }
 
-        return PurchaseDecisionStatus.PROBABLY_NOT_WORTH_IT;
+        return PurchaseDecisionStatus
+                .PROBABLY_NOT_WORTH_IT;
     }
 
     private int normalizeScore(int score) {
