@@ -32,6 +32,9 @@ public class MainController {
     @FXML
     private Button insightsButton;
 
+    @FXML
+    private Button settingsButton;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -113,6 +116,15 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void showSettings() {
+        showView(
+                "/com/kayque/compensa/settings/settings-view.fxml",
+                settingsButton,
+                "Não foi possível abrir as configurações."
+        );
+    }
+
     private void setActiveButton(Button activeButton) {
         todayButton.getStyleClass().setAll(
                 "nav-button"
@@ -135,6 +147,10 @@ public class MainController {
         );
 
         financialProfileButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        settingsButton.getStyleClass().setAll(
                 "nav-button"
         );
 

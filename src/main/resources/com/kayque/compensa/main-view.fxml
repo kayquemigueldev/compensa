@@ -76,9 +76,12 @@
                         onAction="#showFinancialProfile"
                         styleClass="nav-button"/>
 
-                <Button text="Configurações"
+                <Button fx:id="settingsButton"
+                        text="Configurações"
                         maxWidth="Infinity"
+                        onAction="#showSettings"
                         styleClass="nav-button"/>
+
             </VBox>
 
             <VBox spacing="8.0"

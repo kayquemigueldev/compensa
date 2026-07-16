@@ -862,3 +862,70 @@
 .new-analysis-button:hover {
     -fx-background-color: rgba(142, 234, 60, 0.10);
 }
+
+.settings-card,
+.settings-author-card,
+.settings-future-card {
+    -fx-background-color: #171c24;
+    -fx-border-color: #29313d;
+    -fx-border-width: 1px;
+    -fx-background-radius: 14px;
+    -fx-border-radius: 14px;
+    -fx-padding: 24px;
+}
+
+.settings-card {
+    -fx-min-height: 210px;
+}
+
+.settings-card-title {
+    -fx-text-fill: #9ba4b2;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.settings-main-value,
+.settings-author-title {
+    -fx-text-fill: #f4f6f8;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.settings-label,
+.settings-description,
+.settings-author-message {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 14px;
+}
+
+.settings-value {
+    -fx-text-fill: #f4f6f8;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+}
+
+.settings-privacy-highlight {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 13px;
+}
+
+.settings-author-card {
+    -fx-border-color: #4a632c;
+}
+
+.settings-author-name {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.settings-future-card {
+    -fx-background-color: #151812;
+    -fx-border-color: #4a5128;
+}
+
+.settings-future-title {
+    -fx-text-fill: #f6b82c;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}

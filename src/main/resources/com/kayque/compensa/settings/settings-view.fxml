@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.settings.controller.SettingsController"
+      spacing="28.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Configurações"
+               styleClass="page-title"/>
+
+        <Label text="Informações do aplicativo e preferências locais."
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="16.0">
+
+        <VBox spacing="12.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="settings-card">
+
+            <Label text="Aplicativo"
+                   styleClass="settings-card-title"/>
+
+            <Label text="Compensa?"
+                   styleClass="settings-main-value"/>
+
+            <HBox spacing="6.0">
+                <Label text="Versão"
+                       styleClass="settings-label"/>
+
+                <Label fx:id="applicationVersionLabel"
+                       text="1.0.0"
+                       styleClass="settings-value"/>
+            </HBox>
+
+            <Label text="Java 21 • JavaFX • SQLite"
+                   styleClass="settings-description"/>
+        </VBox>
+
+        <VBox spacing="12.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="settings-card">
+
+            <Label text="Privacidade"
+                   styleClass="settings-card-title"/>
+
+            <Label text="Seus dados ficam com você"
+                   wrapText="true"
+                   styleClass="settings-main-value"/>
+
+            <Label text="O perfil financeiro, as análises e o histórico são armazenados localmente no seu computador."
+                   wrapText="true"
+                   styleClass="settings-description"/>
+
+            <Label text="Nenhuma informação é enviada para serviços externos nesta versão."
+                   wrapText="true"
+                   styleClass="settings-privacy-highlight"/>
+        </VBox>
+
+    </HBox>
+
+    <VBox spacing="12.0"
+          styleClass="settings-author-card">
+
+        <Label text="Sobre o projeto"
+               styleClass="settings-card-title"/>
+
+        <Label text="Compensa?"
+               styleClass="settings-author-title"/>
+
+        <Label text="Uma ferramenta para transformar compras impulsivas em decisões conscientes."
+               wrapText="true"
+               styleClass="settings-description"/>
+
+        <Label text="Desenvolvido por Kayque Miguel"
+               styleClass="settings-author-name"/>
+
+        <Label text="Feito com Java, curiosidade e vontade de construir algo útil."
+               styleClass="settings-author-message"/>
+    </VBox>
+
+    <VBox spacing="8.0"
+          styleClass="settings-future-card">
+
+        <Label text="O projeto continua evoluindo"
+               styleClass="settings-future-title"/>
+
+        <Label text="Novas preferências, versão mobile e sincronização poderão chegar em versões futuras."
+               wrapText="true"
+               styleClass="settings-description"/>
+    </VBox>
+
+</VBox>
