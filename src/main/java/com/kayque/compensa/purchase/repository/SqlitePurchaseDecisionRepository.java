@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SqlitePurchaseDecisionRepository
         implements PurchaseDecisionRepository {
 
@@ -95,6 +96,15 @@ public class SqlitePurchaseDecisionRepository
             evaluated_at = CURRENT_TIMESTAMP
         WHERE id = ?
           AND outcome = 'PURCHASED'
+        """;
+
+    private static final String SUM_PURCHASED_AMOUNT_BETWEEN = """
+        SELECT COALESCE(SUM(price), 0)
+            AS purchased_amount
+        FROM purchase_decision
+        WHERE outcome = 'PURCHASED'
+          AND created_at >= ?
+          AND created_at < ?
         """;
 
     @Override
@@ -273,6 +283,81 @@ public class SqlitePurchaseDecisionRepository
         }
     }
 
+    @Override
+    public BigDecimal sumPurchasedAmountBetween(
+            Instant startInclusive,
+            Instant endExclusive
+    ) {
+        validatePeriod(startInclusive, endExclusive);
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                SUM_PURCHASED_AMOUNT_BETWEEN
+                        )
+        ) {
+            statement.setString(
+                    1,
+                    formatDatabaseDate(startInclusive)
+            );
+
+            statement.setString(
+                    2,
+                    formatDatabaseDate(endExclusive)
+            );
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                if (!resultSet.next()) {
+                    return BigDecimal.ZERO;
+                }
+
+                return new BigDecimal(
+                        resultSet.getString(
+                                "purchased_amount"
+                        )
+                );
+            }
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível calcular as compras do período.",
+                    exception
+            );
+        }
+    }
+
+    private void validatePeriod(
+            Instant startInclusive,
+            Instant endExclusive
+    ) {
+        if (startInclusive == null
+                || endExclusive == null) {
+            throw new IllegalArgumentException(
+                    "O período das compras é obrigatório."
+            );
+        }
+
+        if (!startInclusive.isBefore(endExclusive)) {
+            throw new IllegalArgumentException(
+                    "O início do período deve ser anterior ao fim."
+            );
+        }
+    }
+
+    private String formatDatabaseDate(Instant instant) {
+        return DATABASE_DATE_FORMAT.format(
+                LocalDateTime.ofInstant(
+                        instant,
+                        ZoneOffset.UTC
+                )
+        );
+    }
+
     private PurchaseDecisionHistoryItem mapHistoryItem(
             ResultSet resultSet
     ) throws SQLException {
@@ -428,5 +513,4 @@ public class SqlitePurchaseDecisionRepository
             );
         }
     }
-
 }
