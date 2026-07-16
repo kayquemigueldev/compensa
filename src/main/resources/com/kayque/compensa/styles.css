@@ -325,19 +325,19 @@
     -fx-background-radius: 12px;
     -fx-border-color: #4d5438;
     -fx-border-radius: 12px;
-    -fx-padding: 18px;
+    -fx-padding: 14px 16px;
 }
 
 .reflection-title {
     -fx-text-fill: #f2b84b;
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
 .reflection-text {
     -fx-text-fill: #c8c2b5;
-    -fx-font-size: 13px;
-    -fx-line-spacing: 3px;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 1px;
 }
 
 .form-section-title {

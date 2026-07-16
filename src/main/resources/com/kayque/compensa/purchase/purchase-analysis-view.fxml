@@ -142,7 +142,7 @@
 
         </VBox>
 
-        <VBox spacing="20.0"
+        <VBox spacing="14.0"
               maxWidth="Infinity"
               HBox.hgrow="ALWAYS"
               styleClass="card">
@@ -237,7 +237,7 @@
                        styleClass="dream-impact-text"/>
             </VBox>
 
-            <VBox spacing="10.0"
+            <VBox spacing="7.0"
                   VBox.vgrow="ALWAYS"
                   styleClass="analysis-reflection">
 
