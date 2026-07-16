@@ -135,11 +135,18 @@ public final class DatabaseInitializer {
 
             current_dream TEXT NOT NULL DEFAULT ''
                 CHECK (length(current_dream) <= 120),
+            
+            current_dream_target_amount NUMERIC
+                CHECK (
+                    current_dream_target_amount IS NULL
+                    OR current_dream_target_amount > 0
+                ),
 
             updated_at TEXT NOT NULL
                 DEFAULT CURRENT_TIMESTAMP
         )
         """;
+    
 
     private DatabaseInitializer() {
     }
@@ -158,6 +165,7 @@ public final class DatabaseInitializer {
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
+            migrateUserProfileTable(connection);
 
             System.out.println(
                     "Banco inicializado em: "
@@ -220,6 +228,23 @@ public final class DatabaseInitializer {
                 "purchase_decision",
                 "evaluated_at",
                 "evaluated_at TEXT"
+        );
+    }
+
+    private static void migrateUserProfileTable(
+            Connection connection
+    ) throws SQLException {
+        addColumnIfMissing(
+                connection,
+                "user_profile",
+                "current_dream_target_amount",
+                """
+                current_dream_target_amount NUMERIC
+                    CHECK (
+                        current_dream_target_amount IS NULL
+                        OR current_dream_target_amount > 0
+                    )
+                """
         );
     }
 

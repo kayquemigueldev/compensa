@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.math.BigDecimal;
+import java.sql.Types;
 
 public class SqliteUserProfileRepository
         implements UserProfileRepository {
@@ -17,33 +19,37 @@ public class SqliteUserProfileRepository
     private static final int PROFILE_ID = 1;
 
     private static final String FIND_PROFILE = """
-            SELECT
-                display_name,
-                main_goal,
-                recommendation_tone,
-                current_dream
-            FROM user_profile
-            WHERE id = ?
-            """;
+        SELECT
+            display_name,
+            main_goal,
+            recommendation_tone,
+            current_dream,
+            current_dream_target_amount
+        FROM user_profile
+        WHERE id = ?
+        """;
 
     private static final String SAVE_PROFILE = """
-            INSERT INTO user_profile (
-                id,
-                display_name,
-                main_goal,
-                recommendation_tone,
-                current_dream,
-                updated_at
-            )
-            VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-            ON CONFLICT(id) DO UPDATE SET
-                display_name = excluded.display_name,
-                main_goal = excluded.main_goal,
-                recommendation_tone =
-                    excluded.recommendation_tone,
-                current_dream = excluded.current_dream,
-                updated_at = CURRENT_TIMESTAMP
-            """;
+        INSERT INTO user_profile (
+            id,
+            display_name,
+            main_goal,
+            recommendation_tone,
+            current_dream,
+            current_dream_target_amount,
+            updated_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(id) DO UPDATE SET
+            display_name = excluded.display_name,
+            main_goal = excluded.main_goal,
+            recommendation_tone =
+                excluded.recommendation_tone,
+            current_dream = excluded.current_dream,
+            current_dream_target_amount =
+                excluded.current_dream_target_amount,
+            updated_at = CURRENT_TIMESTAMP
+        """;
 
     @Override
     public Optional<UserProfile> find() {
@@ -93,6 +99,15 @@ public class SqliteUserProfileRepository
             statement.setString(5, profile.currentDream());
             statement.executeUpdate();
 
+            if (profile.hasCurrentDreamTargetAmount()) {
+                statement.setBigDecimal(
+                        6,
+                        profile.currentDreamTargetAmount()
+                );
+            } else {
+                statement.setNull(6, Types.NUMERIC);
+            }
+
         } catch (SQLException exception) {
             throw new IllegalStateException(
                     "Não foi possível salvar o perfil do usuário.",
@@ -117,7 +132,11 @@ public class SqliteUserProfileRepository
                         )
                 ),
 
-                resultSet.getString("current_dream")
+                resultSet.getString("current_dream"),
+
+                resultSet.getBigDecimal(
+                        "current_dream_target_amount"
+                )
         );
     }
 }
