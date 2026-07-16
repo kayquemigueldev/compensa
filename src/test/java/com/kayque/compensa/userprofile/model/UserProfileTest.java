@@ -121,4 +121,55 @@ class UserProfileTest {
                 )
         );
     }
+
+    @Test
+    void shouldCreateProfileWithSavedDreamAmount() {
+        UserProfile profile = new UserProfile(
+                "Kayque",
+                UserGoal.REDUCE_IMPULSE_PURCHASES,
+                RecommendationTone.DIRECT,
+                "Montar meu computador",
+                new BigDecimal("5000"),
+                new BigDecimal("1200")
+        );
+
+        assertEquals(
+                new BigDecimal("1200"),
+                profile.currentDreamSavedAmount()
+        );
+
+        assertTrue(profile.hasCurrentDreamSavedAmount());
+        assertFalse(profile.isCurrentDreamCompleted());
+    }
+
+    @Test
+    void shouldRejectNegativeSavedDreamAmount() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new UserProfile(
+                        "Kayque",
+                        UserGoal.SAVE_MONEY,
+                        RecommendationTone.BALANCED,
+                        "Montar meu computador",
+                        new BigDecimal("5000"),
+                        new BigDecimal("-100")
+                )
+        );
+    }
+
+    @Test
+    void shouldRejectSavedAmountWithoutTargetAmount() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new UserProfile(
+                        "Kayque",
+                        UserGoal.SAVE_MONEY,
+                        RecommendationTone.BALANCED,
+                        "Montar meu computador",
+                        null,
+                        new BigDecimal("500")
+                )
+        );
+    }
+
 }

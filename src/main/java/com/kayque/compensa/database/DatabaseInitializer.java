@@ -135,15 +135,19 @@ public final class DatabaseInitializer {
 
             current_dream TEXT NOT NULL DEFAULT ''
                 CHECK (length(current_dream) <= 120),
-            
+                                         
             current_dream_target_amount NUMERIC
                 CHECK (
                     current_dream_target_amount IS NULL
                     OR current_dream_target_amount > 0
                 ),
-
+                                         
+            current_dream_saved_amount NUMERIC NOT NULL
+                DEFAULT 0
+                CHECK (current_dream_saved_amount >= 0),
+                                         
             updated_at TEXT NOT NULL
-                DEFAULT CURRENT_TIMESTAMP
+            DEFAULT CURRENT_TIMESTAMP
         )
         """;
     
@@ -246,6 +250,20 @@ public final class DatabaseInitializer {
                     )
                 """
         );
+
+        addColumnIfMissing(
+                connection,
+                "user_profile",
+                "current_dream_saved_amount",
+                """
+                current_dream_saved_amount NUMERIC
+                    NOT NULL DEFAULT 0
+                    CHECK (
+                        current_dream_saved_amount >= 0
+                    )
+                """
+        );
+
     }
 
     private static void addColumnIfMissing(
