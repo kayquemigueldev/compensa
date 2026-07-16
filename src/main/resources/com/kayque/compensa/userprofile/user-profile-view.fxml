@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.userprofile.controller.UserProfileController"
+      spacing="28.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Meu perfil"
+               styleClass="page-title"/>
+
+        <Label text="Personalize como o Compensa? conversa com você."
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="18.0"
+          VBox.vgrow="ALWAYS">
+
+        <VBox spacing="20.0"
+              prefWidth="0.0"
+              minWidth="0.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="card">
+
+            <Label text="Sobre você"
+                   styleClass="card-title"/>
+
+            <VBox spacing="8.0">
+                <Label text="Como devemos chamar você?"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="displayNameField"
+                           maxWidth="Infinity"
+                           styleClass="user-profile-field"/>
+            </VBox>
+
+            <VBox spacing="8.0">
+                <Label text="Qual é seu principal objetivo?"
+                       styleClass="field-label"/>
+
+                <ComboBox fx:id="mainGoalComboBox"
+                          promptText="Selecione um objetivo"
+                          maxWidth="Infinity"
+                          styleClass="user-profile-combo"/>
+            </VBox>
+
+            <VBox spacing="8.0">
+                <Label text="Como prefere receber recomendações?"
+                       styleClass="field-label"/>
+
+                <ComboBox fx:id="recommendationToneComboBox"
+                          promptText="Selecione o tom"
+                          maxWidth="Infinity"
+                          styleClass="user-profile-combo"/>
+            </VBox>
+        </VBox>
+
+        <VBox spacing="20.0"
+              prefWidth="0.0"
+              minWidth="0.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="card">
+
+            <Label text="Seu objetivo atual"
+                   styleClass="card-title"/>
+
+            <Label text="Este campo é opcional. Futuramente ele ajudará a comparar uma compra com algo que você realmente deseja conquistar."
+                   wrapText="true"
+                   styleClass="settings-description"/>
+
+            <VBox spacing="8.0">
+                <Label text="O que você quer conquistar?"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="currentDreamField"
+                           promptText="Ex.: montar meu computador"
+                           maxWidth="Infinity"
+                           styleClass="user-profile-field"/>
+            </VBox>
+
+            <VBox spacing="8.0"
+                  styleClass="user-profile-tip">
+
+                <Label text="Por que isso é útil?"
+                       styleClass="user-profile-tip-title"/>
+
+                <Label text="O objetivo não é coletar informações pessoais. Esses dados serão usados somente para tornar as análises mais relevantes para você."
+                       wrapText="true"
+                       styleClass="settings-description"/>
+            </VBox>
+
+            <Label fx:id="profileFeedbackLabel"
+                   text=""
+                   wrapText="true"
+                   styleClass="feedback-label"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button fx:id="saveProfileButton"
+                    text="Salvar meu perfil"
+                    maxWidth="Infinity"
+                    onAction="#saveProfile"
+                    styleClass="primary-button"/>
+        </VBox>
+    </HBox>
+
+</VBox>

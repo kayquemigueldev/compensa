@@ -35,6 +35,9 @@ public class MainController {
     @FXML
     private Button settingsButton;
 
+    @FXML
+    private Button userProfileButton;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -55,6 +58,15 @@ public class MainController {
     private void showPurchaseAnalysis() {
         mainBorderPane.setCenter(purchaseAnalysisView);
         setActiveButton(analyzePurchaseButton);
+    }
+
+    @FXML
+    private void showUserProfile() {
+        showView(
+                "/com/kayque/compensa/userprofile/user-profile-view.fxml",
+                userProfileButton,
+                "Não foi possível abrir o perfil do usuário."
+        );
     }
 
     @FXML
@@ -143,6 +155,10 @@ public class MainController {
         );
 
         insightsButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        userProfileButton.getStyleClass().setAll(
                 "nav-button"
         );
 

@@ -70,6 +70,12 @@
 
                 <Region VBox.vgrow="ALWAYS"/>
 
+                <Button fx:id="userProfileButton"
+                        text="Meu perfil"
+                        maxWidth="Infinity"
+                        onAction="#showUserProfile"
+                        styleClass="nav-button"/>
+
                 <Button fx:id="financialProfileButton"
                         text="Perfil financeiro"
                         maxWidth="Infinity"
