@@ -3,8 +3,6 @@ package com.kayque.compensa.dashboard.controller;
 import com.kayque.compensa.dashboard.model.DashboardSummary;
 import com.kayque.compensa.dashboard.repository.DashboardRepository;
 import com.kayque.compensa.dashboard.repository.SqliteDashboardRepository;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import com.kayque.compensa.profile.model.FinancialProfile;
 import com.kayque.compensa.profile.model.MonthlyBudgetSummary;
 import com.kayque.compensa.profile.model.MonthlyBudgetUsage;
@@ -15,6 +13,9 @@ import com.kayque.compensa.profile.service.MonthlyBudgetUsageService;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -81,6 +82,9 @@ public class DashboardController {
 
     @FXML
     private Label dashboardFeedbackLabel;
+
+    @FXML
+    private ProgressBar budgetUsageProgressBar;
 
     @FXML
     private void initialize() {
@@ -184,6 +188,8 @@ public class DashboardController {
                     formatBudgetUsagePercentage(currentBudget)
             );
 
+            configureBudgetProgress(currentBudget);
+
         } catch (IllegalStateException exception) {
             showMissingBudget();
 
@@ -224,6 +230,60 @@ public class DashboardController {
         );
     }
 
+    private void configureBudgetProgress(
+            MonthlyBudgetUsage budget
+    ) {
+        BigDecimal plannedAmount =
+                budget.plannedAvailableAmount();
+
+        if (plannedAmount.signum() <= 0) {
+            budgetUsageProgressBar.setProgress(0);
+
+            budgetUsageProgressBar
+                    .getStyleClass()
+                    .setAll(
+                            "budget-progress-bar",
+                            "budget-progress-warning"
+                    );
+
+            return;
+        }
+
+        BigDecimal usageRatio =
+                budget.purchasedAmount()
+                        .divide(
+                                plannedAmount,
+                                4,
+                                RoundingMode.HALF_UP
+                        );
+
+        double progress = Math.max(
+                0,
+                Math.min(usageRatio.doubleValue(), 1)
+        );
+
+        budgetUsageProgressBar.setProgress(progress);
+
+        String statusStyle;
+
+        if (usageRatio.compareTo(new BigDecimal("0.90")) >= 0) {
+            statusStyle = "budget-progress-negative";
+        } else if (
+                usageRatio.compareTo(new BigDecimal("0.70")) >= 0
+        ) {
+            statusStyle = "budget-progress-warning";
+        } else {
+            statusStyle = "budget-progress-positive";
+        }
+
+        budgetUsageProgressBar
+                .getStyleClass()
+                .setAll(
+                        "budget-progress-bar",
+                        statusStyle
+                );
+    }
+
     private void showMissingBudget() {
         plannedBudgetLabel.setText("--");
         purchasedThisMonthLabel.setText("--");
@@ -231,6 +291,16 @@ public class DashboardController {
         budgetUsagePercentageLabel.setText(
                 "Configure seu perfil financeiro"
         );
+
+        budgetUsageProgressBar.setProgress(0);
+
+        budgetUsageProgressBar
+                .getStyleClass()
+                .setAll(
+                        "budget-progress-bar",
+                        "budget-progress-warning"
+                );
+
     }
 
     private String formatWorkTime(long totalMinutes) {

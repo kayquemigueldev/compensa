@@ -815,3 +815,33 @@
     -fx-background-radius: 11px;
     -fx-padding: 13px 16px;
 }
+
+.budget-progress-bar {
+    -fx-pref-height: 10px;
+    -fx-min-height: 10px;
+    -fx-max-height: 10px;
+}
+
+.budget-progress-bar .track {
+    -fx-background-color: #252d38;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+}
+
+.budget-progress-bar .bar {
+    -fx-background-insets: 0;
+    -fx-background-radius: 999px;
+    -fx-padding: 5px;
+}
+
+.budget-progress-positive .bar {
+    -fx-background-color: #8eea3c;
+}
+
+.budget-progress-warning .bar {
+    -fx-background-color: #f6b82c;
+}
+
+.budget-progress-negative .bar {
+    -fx-background-color: #ff5f68;
+}

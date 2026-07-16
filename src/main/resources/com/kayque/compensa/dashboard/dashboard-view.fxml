@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ProgressBar?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -152,6 +153,12 @@
                    text="--"
                    wrapText="true"
                    styleClass="dashboard-card-description"/>
+
+            <ProgressBar fx:id="budgetUsageProgressBar"
+                         progress="0.0"
+                         maxWidth="Infinity"
+                         styleClass="budget-progress-bar"/>
+
         </VBox>
 
         <VBox maxWidth="Infinity"
