@@ -5,6 +5,7 @@ import com.kayque.compensa.userprofile.model.UserGoal;
 import com.kayque.compensa.userprofile.model.UserProfile;
 import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
 import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+import com.kayque.compensa.userprofile.service.PurchaseDreamImpactService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
