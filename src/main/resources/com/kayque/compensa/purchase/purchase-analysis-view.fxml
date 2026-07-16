@@ -134,10 +134,12 @@
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <Button text="Analisar compra"
+            <Button fx:id="analysisSubmitButton"
+                    text="Analisar compra"
                     maxWidth="Infinity"
                     onAction="#analyzePurchase"
                     styleClass="primary-button"/>
+
         </VBox>
 
         <VBox spacing="20.0"
@@ -262,6 +264,14 @@
                    text=""
                    wrapText="true"
                    styleClass="feedback-label"/>
+
+            <Button fx:id="newAnalysisButton"
+                    text="Fazer nova análise"
+                    maxWidth="Infinity"
+                    visible="false"
+                    managed="false"
+                    onAction="#startNewAnalysis"
+                    styleClass="new-analysis-button"/>
 
             <Label text="A decisão continua sendo sua."
                    styleClass="decision-message"/>

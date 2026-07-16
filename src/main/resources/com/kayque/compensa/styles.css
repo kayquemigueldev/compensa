@@ -845,3 +845,20 @@
 .budget-progress-negative .bar {
     -fx-background-color: #ff5f68;
 }
+
+.new-analysis-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #8eea3c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-padding: 12px 18px;
+    -fx-cursor: hand;
+}
+
+.new-analysis-button:hover {
+    -fx-background-color: rgba(142, 234, 60, 0.10);
+}

@@ -133,6 +133,12 @@ public class PurchaseAnalysisController {
     private Button declineDecisionButton;
 
     @FXML
+    private Button analysisSubmitButton;
+
+    @FXML
+    private Button newAnalysisButton;
+
+    @FXML
     private void initialize() {
         configureFrequencyComboBox();
         configureBooleanComboBox(plannedComboBox);
@@ -141,6 +147,7 @@ public class PurchaseAnalysisController {
         configureMotivationComboBox();
 
         setDecisionButtonsDisabled(true);
+        setNewAnalysisButtonVisible(false);
     }
 
     @FXML
@@ -243,10 +250,39 @@ public class PurchaseAnalysisController {
 
             showDecisionSaved(outcome, generatedId);
             setDecisionButtonsDisabled(true);
+            clearCurrentAnalysis();
+
+            analysisSubmitButton.setDisable(true);
+            setNewAnalysisButtonVisible(true);
 
         } catch (IllegalStateException exception) {
             showError(exception.getMessage());
         }
+    }
+
+    @FXML
+    private void startNewAnalysis() {
+        purchaseNameField.clear();
+        purchasePriceField.clear();
+
+        frequencyComboBox.setValue(
+                PurchaseFrequency.ONCE
+        );
+
+        plannedComboBox.setValue(null);
+        alternativeComboBox.setValue(null);
+        urgentComboBox.setValue(null);
+        motivationComboBox.setValue(null);
+
+        clearCurrentAnalysis();
+        clearFeedback();
+        resetAnalysisResult();
+
+        setDecisionButtonsDisabled(true);
+        analysisSubmitButton.setDisable(false);
+        setNewAnalysisButtonVisible(false);
+
+        purchaseNameField.requestFocus();
     }
 
     private Purchase createPurchase() {
@@ -618,6 +654,49 @@ public class PurchaseAnalysisController {
         currentBudgetImpact = null;
         currentContext = null;
         currentAdvice = null;
+
+    }
+
+    private void resetAnalysisResult() {
+        analysisStatusLabel.setText(
+                "SUA DECISÃO COMEÇA AQUI"
+        );
+
+        analysisDescriptionLabel.setText(
+                "Informe os dados e responda às perguntas para receber uma análise consciente."
+        );
+
+        analysisStatusLabel.getStyleClass().setAll(
+                "analysis-status"
+        );
+
+        professionalTimeLabel.setText("--");
+        realTimeLabel.setText("--");
+        yearlyCostLabel.setText("--");
+
+        budgetImpactPercentageLabel.setText("--");
+        budgetImpactDetailLabel.setText(
+                "Impacto no dinheiro livre"
+        );
+
+        budgetImpactPercentageLabel
+                .getStyleClass()
+                .setAll("metric-value");
+
+        budgetImpactDetailLabel
+                .getStyleClass()
+                .setAll("budget-impact-detail");
+
+        reflectionTextLabel.setText(
+                "Os fatores positivos e pontos de atenção aparecerão aqui."
+        );
+    }
+
+    private void setNewAnalysisButtonVisible(
+            boolean visible
+    ) {
+        newAnalysisButton.setVisible(visible);
+        newAnalysisButton.setManaged(visible);
     }
 
     private void setDecisionButtonsDisabled(
