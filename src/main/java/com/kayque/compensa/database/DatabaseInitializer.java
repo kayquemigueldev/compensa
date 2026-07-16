@@ -106,6 +106,41 @@ public final class DatabaseInitializer {
             )
             """;
 
+    private static final String CREATE_USER_PROFILE_TABLE = """
+        CREATE TABLE IF NOT EXISTS user_profile (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+
+            display_name TEXT NOT NULL
+                CHECK (
+                    length(trim(display_name))
+                    BETWEEN 1 AND 50
+                ),
+
+            main_goal TEXT NOT NULL CHECK (
+                main_goal IN (
+                    'SAVE_MONEY',
+                    'REDUCE_IMPULSE_PURCHASES',
+                    'PLAN_A_PURCHASE',
+                    'ORGANIZE_BUDGET'
+                )
+            ),
+
+            recommendation_tone TEXT NOT NULL CHECK (
+                recommendation_tone IN (
+                    'GENTLE',
+                    'BALANCED',
+                    'DIRECT'
+                )
+            ),
+
+            current_dream TEXT NOT NULL DEFAULT ''
+                CHECK (length(current_dream) <= 120),
+
+            updated_at TEXT NOT NULL
+                DEFAULT CURRENT_TIMESTAMP
+        )
+        """;
+
     private DatabaseInitializer() {
     }
 
@@ -119,6 +154,7 @@ public final class DatabaseInitializer {
         ) {
             statement.execute(CREATE_FINANCIAL_PROFILE_TABLE);
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
+            statement.execute(CREATE_USER_PROFILE_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
