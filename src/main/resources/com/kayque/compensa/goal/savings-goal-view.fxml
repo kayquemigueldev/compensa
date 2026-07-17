@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.goal.controller.SavingsGoalController"
+      spacing="28.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Meu objetivo"
+               styleClass="page-title"/>
+
+        <Label text="Acompanhe sua próxima conquista e veja cada escolha aproximar você dela."
+               wrapText="true"
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="18.0"
+          VBox.vgrow="ALWAYS">
+
+        <VBox spacing="20.0"
+              prefWidth="390.0"
+              minWidth="330.0"
+              styleClass="card">
+
+            <Label text="Planeje sua conquista"
+                   styleClass="card-title"/>
+
+            <VBox spacing="8.0">
+                <Label text="O que você quer conquistar?"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="goalNameField"
+                           promptText="Ex.: montar meu computador"
+                           maxWidth="Infinity"
+                           styleClass="user-profile-field"/>
+            </VBox>
+
+            <VBox spacing="8.0">
+                <Label text="Quanto você precisa?"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="targetAmountField"
+                           promptText="Ex.: R$ 5.000,00"
+                           maxWidth="Infinity"
+                           styleClass="user-profile-field"/>
+            </VBox>
+
+            <VBox spacing="8.0">
+                <Label text="Quanto você já guardou?"
+                       styleClass="field-label"/>
+
+                <TextField fx:id="savedAmountField"
+                           promptText="Ex.: R$ 1.200,00"
+                           maxWidth="Infinity"
+                           styleClass="user-profile-field"/>
+
+                <Label text="Você pode atualizar esse valor sempre que guardar mais dinheiro."
+                       wrapText="true"
+                       styleClass="settings-description"/>
+            </VBox>
+
+            <VBox spacing="8.0"
+                  styleClass="goal-form-tip">
+
+                <Label text="Uma conquista de cada vez"
+                       styleClass="goal-form-tip-title"/>
+
+                <Label text="O Compensa? usará esse objetivo para mostrar quanto cada compra representa em relação ao que você deseja conquistar."
+                       wrapText="true"
+                       styleClass="settings-description"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Label fx:id="goalFeedbackLabel"
+                   text=""
+                   wrapText="true"
+                   styleClass="feedback-label"/>
+
+            <Button text="Salvar objetivo"
+                    maxWidth="Infinity"
+                    onAction="#saveGoal"
+                    styleClass="primary-button"/>
+        </VBox>
+
+        <VBox spacing="22.0"
+              minWidth="0.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="card">
+
+            <VBox spacing="8.0">
+                <Label text="Seu progresso"
+                       styleClass="goal-section-label"/>
+
+                <Label fx:id="goalTitleLabel"
+                       text="Defina sua próxima conquista"
+                       wrapText="true"
+                       styleClass="goal-main-title"/>
+            </VBox>
+
+            <VBox spacing="10.0"
+                  styleClass="goal-progress-container">
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Progresso atual"
+                           styleClass="goal-progress-caption"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label fx:id="progressPercentageLabel"
+                           text="0%"
+                           styleClass="goal-progress-percentage"/>
+                </HBox>
+
+                <ProgressBar fx:id="goalProgressBar"
+                             progress="0"
+                             maxWidth="Infinity"
+                             styleClass="goal-progress-bar"/>
+            </VBox>
+
+            <HBox spacing="16.0">
+
+                <VBox spacing="8.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="goal-summary-card">
+
+                    <Label text="Já guardado"
+                           styleClass="goal-summary-title"/>
+
+                    <Label fx:id="savedAmountLabel"
+                           text="--"
+                           styleClass="goal-summary-value"/>
+                </VBox>
+
+                <VBox spacing="8.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="goal-summary-card">
+
+                    <Label text="Ainda falta"
+                           styleClass="goal-summary-title"/>
+
+                    <Label fx:id="remainingAmountLabel"
+                           text="--"
+                           styleClass="goal-summary-value-highlight"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="10.0"
+                  styleClass="goal-status-card">
+
+                <Label text="Como está sua jornada?"
+                       styleClass="goal-status-title"/>
+
+                <Label fx:id="progressStatusLabel"
+                       text="Preencha os dados ao lado para começar a acompanhar seu progresso."
+                       wrapText="true"
+                       styleClass="goal-status, goal-status-warning"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox spacing="10.0"
+                  styleClass="goal-future-card">
+
+                <Label text="Próximos passos"
+                       styleClass="goal-future-title"/>
+
+                <Label text="Em breve você poderá registrar contribuições separadamente e acompanhar a evolução do objetivo ao longo do tempo."
+                       wrapText="true"
+                       styleClass="settings-description"/>
+            </VBox>
+        </VBox>
+    </HBox>
+</VBox>

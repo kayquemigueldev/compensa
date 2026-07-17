@@ -1078,3 +1078,139 @@
     -fx-text-fill: #b7bdc7;
     -fx-font-size: 12px;
 }
+
+.goal-form-tip {
+    -fx-background-color: #151812;
+    -fx-background-radius: 12px;
+    -fx-border-color: #4a5128;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.goal-form-tip-title {
+    -fx-text-fill: #f6b82c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.goal-section-label {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+}
+
+.goal-main-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 27px;
+    -fx-font-weight: 800;
+}
+
+.goal-progress-container {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 12px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.goal-progress-caption {
+    -fx-text-fill: #9da5b1;
+    -fx-font-size: 12px;
+}
+
+.goal-progress-percentage {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.goal-progress-bar {
+    -fx-pref-height: 12px;
+    -fx-min-height: 12px;
+    -fx-max-height: 12px;
+}
+
+.goal-progress-bar .track {
+    -fx-background-color: #26303b;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+}
+
+.goal-progress-bar .bar {
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+    -fx-padding: 6px;
+}
+
+.goal-summary-card {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 12px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 12px;
+    -fx-padding: 20px;
+}
+
+.goal-summary-title {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 12px;
+}
+
+.goal-summary-value,
+.goal-summary-value-highlight {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+}
+
+.goal-summary-value {
+    -fx-text-fill: #f4f1ea;
+}
+
+.goal-summary-value-highlight {
+    -fx-text-fill: #8eea3c;
+}
+
+.goal-status-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 12px;
+    -fx-border-color: #31421f;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.goal-status-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.goal-status {
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.goal-status-warning {
+    -fx-text-fill: #f2b84b;
+}
+
+.goal-status-progress {
+    -fx-text-fill: #8eea3c;
+}
+
+.goal-status-completed {
+    -fx-text-fill: #54c7ec;
+}
+
+.goal-future-card {
+    -fx-background-color: #151812;
+    -fx-background-radius: 12px;
+    -fx-border-color: #4a5128;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.goal-future-title {
+    -fx-text-fill: #f6b82c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}

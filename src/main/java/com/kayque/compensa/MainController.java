@@ -38,6 +38,9 @@ public class MainController {
     @FXML
     private Button userProfileButton;
 
+    @FXML
+    private Button savingsGoalButton;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -105,6 +108,15 @@ public class MainController {
         );
     }
 
+    @FXML
+    private void showSavingsGoal() {
+        showView(
+                "/com/kayque/compensa/goal/savings-goal-view.fxml",
+                savingsGoalButton,
+                "Não foi possível abrir o objetivo financeiro."
+        );
+    }
+
     private void showView(
             String resource,
             Button activeButton,
@@ -155,6 +167,10 @@ public class MainController {
         );
 
         insightsButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        savingsGoalButton.getStyleClass().setAll(
                 "nav-button"
         );
 

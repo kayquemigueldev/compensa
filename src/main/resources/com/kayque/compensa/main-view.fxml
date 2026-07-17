@@ -68,6 +68,12 @@
                         onAction="#showInsights"
                         styleClass="nav-button"/>
 
+                <Button fx:id="savingsGoalButton"
+                        text="Meu objetivo"
+                        maxWidth="Infinity"
+                        onAction="#showSavingsGoal"
+                        styleClass="nav-button"/>
+
                 <Region VBox.vgrow="ALWAYS"/>
 
                 <Button fx:id="userProfileButton"
