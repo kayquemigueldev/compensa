@@ -174,6 +174,25 @@ public final class DatabaseInitializer {
             DEFAULT CURRENT_TIMESTAMP
     )
     """;
+
+    private static final String
+            CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE = """
+    CREATE TABLE IF NOT EXISTS savings_goal_contribution (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        goal_id INTEGER NOT NULL DEFAULT 1,
+
+        amount NUMERIC NOT NULL
+            CHECK (amount > 0),
+
+        contributed_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (goal_id)
+            REFERENCES savings_goal(id)
+            ON DELETE CASCADE
+    )
+    """;
     
 
     private DatabaseInitializer() {
@@ -191,6 +210,7 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
             statement.execute(CREATE_USER_PROFILE_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_TABLE);
+            statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
