@@ -63,7 +63,7 @@
             </VBox>
 
             <VBox spacing="8.0">
-                <Label text="Quanto você já guardou?"
+                <Label text="Saldo inicial"
                        styleClass="field-label"/>
 
                 <TextField fx:id="savedAmountField"
@@ -71,7 +71,7 @@
                            maxWidth="Infinity"
                            styleClass="user-profile-field"/>
 
-                <Label text="Você pode atualizar esse valor sempre que guardar mais dinheiro."
+                <Label text="Após salvar o objetivo, utilize contribuições para aumentar esse valor."
                        wrapText="true"
                        styleClass="settings-description"/>
             </VBox>
@@ -179,15 +179,45 @@
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox spacing="10.0"
-                  styleClass="goal-future-card">
+            <VBox spacing="14.0"
+                  styleClass="goal-contribution-card">
 
-                <Label text="Próximos passos"
-                       styleClass="goal-future-title"/>
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="3.0">
+                        <Label text="Adicionar contribuição"
+                               styleClass="goal-contribution-title"/>
 
-                <Label text="Em breve você poderá registrar contribuições separadamente e acompanhar a evolução do objetivo ao longo do tempo."
+                        <Label text="Registre cada valor guardado separadamente."
+                               styleClass="goal-contribution-subtitle"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <HBox spacing="10.0"
+                          alignment="CENTER_RIGHT">
+
+                        <TextField fx:id="contributionAmountField"
+                                   promptText="Ex.: R$ 250,00"
+                                   prefWidth="170.0"
+                                   styleClass="user-profile-field"/>
+
+                        <Button fx:id="addContributionButton"
+                                text="Adicionar"
+                                onAction="#addContribution"
+                                styleClass="goal-contribution-button"/>
+                    </HBox>
+                </HBox>
+
+                <Label text="Contribuições recentes"
+                       styleClass="goal-contribution-history-title"/>
+
+                <Label fx:id="contributionEmptyLabel"
+                       text="Nenhuma contribuição registrada ainda."
                        wrapText="true"
-                       styleClass="settings-description"/>
+                       styleClass="goal-contribution-empty"/>
+
+                <VBox fx:id="contributionHistoryContainer"
+                      spacing="8.0"/>
             </VBox>
         </VBox>
     </HBox>
