@@ -390,6 +390,16 @@ public class SavingsGoalController {
                 "goal-contribution-value"
         );
 
+        Button undoButton = new Button("Desfazer");
+
+        undoButton.getStyleClass().add(
+                "goal-contribution-undo-button"
+        );
+
+        undoButton.setOnAction(event ->
+                undoContribution(contribution)
+        );
+
         Region spacer = new Region();
         HBox.setHgrow(
                 spacer,
@@ -400,7 +410,8 @@ public class SavingsGoalController {
                 12,
                 information,
                 spacer,
-                amountLabel
+                amountLabel,
+                undoButton
         );
 
         row.setAlignment(
@@ -412,6 +423,33 @@ public class SavingsGoalController {
         );
 
         return row;
+    }
+
+    private void undoContribution(
+            SavingsGoalContribution contribution
+    ) {
+        clearFeedback();
+
+        try {
+            contributionRepository.remove(
+                    contribution.id()
+            );
+
+            loadGoal();
+            loadContributions();
+
+            showSuccess(
+                    "Contribuição de "
+                            + currencyFormat.format(
+                            contribution.amount()
+                    )
+                            + " desfeita com sucesso."
+            );
+
+        } catch (IllegalArgumentException
+                 | IllegalStateException exception) {
+            showError(exception.getMessage());
+        }
     }
 
     private void renderEmptyState() {

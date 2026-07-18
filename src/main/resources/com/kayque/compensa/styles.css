@@ -1287,3 +1287,21 @@
     -fx-text-fill: #737d8a;
     -fx-font-size: 11px;
 }
+
+.goal-contribution-undo-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #56606d;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #aeb6c2;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 10px;
+    -fx-cursor: hand;
+}
+
+.goal-contribution-undo-button:hover {
+    -fx-background-color: #2a1d20;
+    -fx-border-color: #ef646f;
+    -fx-text-fill: #ef646f;
+}

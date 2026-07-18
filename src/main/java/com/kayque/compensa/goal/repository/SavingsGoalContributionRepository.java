@@ -9,5 +9,7 @@ public interface SavingsGoalContributionRepository {
 
     void add(BigDecimal amount);
 
+    void remove(long contributionId);
+
     List<SavingsGoalContribution> findAll();
 }

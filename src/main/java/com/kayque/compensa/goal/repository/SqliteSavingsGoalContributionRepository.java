@@ -51,6 +51,28 @@ public class SqliteSavingsGoalContributionRepository
         ORDER BY contributed_at DESC, id DESC
         """;
 
+    private static final String FIND_AMOUNT_BY_ID = """
+    SELECT amount
+    FROM savings_goal_contribution
+    WHERE id = ?
+      AND goal_id = ?
+    """;
+
+    private static final String SUBTRACT_GOAL_AMOUNT = """
+    UPDATE savings_goal
+    SET
+        saved_amount = saved_amount - ?,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+      AND saved_amount >= ?
+    """;
+
+    private static final String DELETE_CONTRIBUTION = """
+    DELETE FROM savings_goal_contribution
+    WHERE id = ?
+      AND goal_id = ?
+    """;
+
     @Override
     public void add(BigDecimal amount) {
         validateAmount(amount);
@@ -76,6 +98,49 @@ public class SqliteSavingsGoalContributionRepository
         } catch (SQLException exception) {
             throw new IllegalStateException(
                     "Não foi possível registrar a contribuição.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public void remove(long contributionId) {
+        if (contributionId <= 0) {
+            throw new IllegalArgumentException(
+                    "A contribuição informada é inválida."
+            );
+        }
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection()
+        ) {
+            connection.setAutoCommit(false);
+
+            try {
+                BigDecimal amount = findContributionAmount(
+                        connection,
+                        contributionId
+                );
+
+                subtractGoalAmount(connection, amount);
+
+                deleteContribution(
+                        connection,
+                        contributionId
+                );
+
+                connection.commit();
+
+            } catch (SQLException
+                     | RuntimeException exception) {
+                rollback(connection);
+                throw exception;
+            }
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível desfazer a contribuição.",
                     exception
             );
         }
@@ -149,6 +214,78 @@ public class SqliteSavingsGoalContributionRepository
             statement.setInt(1, CURRENT_GOAL_ID);
             statement.setBigDecimal(2, amount);
             statement.executeUpdate();
+        }
+    }
+
+    private BigDecimal findContributionAmount(
+            Connection connection,
+            long contributionId
+    ) throws SQLException {
+        try (
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                FIND_AMOUNT_BY_ID
+                        )
+        ) {
+            statement.setLong(1, contributionId);
+            statement.setInt(2, CURRENT_GOAL_ID);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    throw new IllegalArgumentException(
+                            "A contribuição não foi encontrada."
+                    );
+                }
+
+                return resultSet.getBigDecimal("amount");
+            }
+        }
+    }
+
+    private void subtractGoalAmount(
+            Connection connection,
+            BigDecimal amount
+    ) throws SQLException {
+        try (
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                SUBTRACT_GOAL_AMOUNT
+                        )
+        ) {
+            statement.setBigDecimal(1, amount);
+            statement.setInt(2, CURRENT_GOAL_ID);
+            statement.setBigDecimal(3, amount);
+
+            int updatedRows = statement.executeUpdate();
+
+            if (updatedRows != 1) {
+                throw new IllegalStateException(
+                        "O saldo do objetivo não permite desfazer esta contribuição."
+                );
+            }
+        }
+    }
+
+    private void deleteContribution(
+            Connection connection,
+            long contributionId
+    ) throws SQLException {
+        try (
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                DELETE_CONTRIBUTION
+                        )
+        ) {
+            statement.setLong(1, contributionId);
+            statement.setInt(2, CURRENT_GOAL_ID);
+
+            int deletedRows = statement.executeUpdate();
+
+            if (deletedRows != 1) {
+                throw new IllegalStateException(
+                        "A contribuição não pôde ser removida."
+                );
+            }
         }
     }
 
