@@ -182,31 +182,35 @@
             <VBox spacing="14.0"
                   styleClass="goal-contribution-card">
 
-                <HBox alignment="CENTER_LEFT">
+                <VBox spacing="12.0">
+
                     <VBox spacing="3.0">
                         <Label text="Adicionar contribuição"
                                styleClass="goal-contribution-title"/>
 
-                        <Label text="Registre cada valor guardado separadamente."
+                        <Label text="Registre separadamente cada valor guardado para acompanhar sua evolução."
+                               wrapText="true"
                                styleClass="goal-contribution-subtitle"/>
                     </VBox>
 
-                    <Region HBox.hgrow="ALWAYS"/>
-
-                    <HBox spacing="10.0"
-                          alignment="CENTER_RIGHT">
+                    <HBox spacing="12.0"
+                          alignment="CENTER_LEFT">
 
                         <TextField fx:id="contributionAmountField"
                                    promptText="Ex.: R$ 250,00"
-                                   prefWidth="170.0"
+                                   maxWidth="Infinity"
+                                   HBox.hgrow="ALWAYS"
                                    styleClass="user-profile-field"/>
 
                         <Button fx:id="addContributionButton"
                                 text="Adicionar"
+                                minWidth="125.0"
+                                prefWidth="125.0"
                                 onAction="#addContribution"
                                 styleClass="goal-contribution-button"/>
                     </HBox>
-                </HBox>
+
+                </VBox>
 
                 <Label text="Contribuições recentes"
                        styleClass="goal-contribution-history-title"/>
@@ -218,6 +222,7 @@
 
                 <VBox fx:id="contributionHistoryContainer"
                       spacing="8.0"/>
+
             </VBox>
         </VBox>
     </HBox>
