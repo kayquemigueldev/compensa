@@ -16,6 +16,12 @@ import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
 import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
 import com.kayque.compensa.userprofile.repository.UserProfileRepository;
 
+import com.kayque.compensa.goal.model.SavingsGoalProgress;
+import com.kayque.compensa.goal.repository.SavingsGoalRepository;
+import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
+import com.kayque.compensa.goal.service.SavingsGoalProgressService;
+
+import javafx.scene.layout.VBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -35,6 +41,13 @@ public class DashboardController {
 
     private final PurchaseDecisionRepository decisionRepository =
             new SqlitePurchaseDecisionRepository();
+
+    private final SavingsGoalRepository savingsGoalRepository =
+            new SqliteSavingsGoalRepository();
+
+    private final SavingsGoalProgressService
+            savingsGoalProgressService =
+            new SavingsGoalProgressService();
 
     private final MonthlyBudgetService budgetService =
             new MonthlyBudgetService();
@@ -96,10 +109,29 @@ public class DashboardController {
     private Label dashboardGreetingLabel;
 
     @FXML
+    private VBox dashboardGoalCard;
+
+    @FXML
+    private Label dashboardGoalNameLabel;
+
+    @FXML
+    private Label dashboardGoalPercentageLabel;
+
+    @FXML
+    private Label dashboardGoalSavedLabel;
+
+    @FXML
+    private Label dashboardGoalRemainingLabel;
+
+    @FXML
+    private ProgressBar dashboardGoalProgressBar;
+
+    @FXML
     private void initialize() {
         loadGreeting();
         loadSummary();
         loadMonthlyBudget();
+        loadSavingsGoal();
     }
 
     private void loadGreeting() {
@@ -308,6 +340,78 @@ public class DashboardController {
                         "budget-progress-bar",
                         statusStyle
                 );
+    }
+
+    private void loadSavingsGoal() {
+        try {
+            savingsGoalRepository.find().ifPresentOrElse(
+                    goal -> {
+                        SavingsGoalProgress progress =
+                                savingsGoalProgressService.calculate(
+                                        goal
+                                );
+
+                        dashboardGoalNameLabel.setText(
+                                goal.name()
+                        );
+
+                        dashboardGoalPercentageLabel.setText(
+                                formatGoalPercentage(
+                                        progress.percentage()
+                                )
+                        );
+
+                        dashboardGoalSavedLabel.setText(
+                                currencyFormat.format(
+                                        progress.savedAmount()
+                                )
+                        );
+
+                        dashboardGoalRemainingLabel.setText(
+                                currencyFormat.format(
+                                        progress.remainingAmount()
+                                )
+                        );
+
+                        double progressValue = progress.percentage()
+                                .divide(
+                                        new BigDecimal("100"),
+                                        4,
+                                        RoundingMode.HALF_UP
+                                )
+                                .doubleValue();
+
+                        dashboardGoalProgressBar.setProgress(
+                                Math.max(
+                                        0,
+                                        Math.min(progressValue, 1)
+                                )
+                        );
+
+                        dashboardGoalCard.setVisible(true);
+                        dashboardGoalCard.setManaged(true);
+                    },
+                    this::hideSavingsGoal
+            );
+
+        } catch (IllegalStateException exception) {
+            hideSavingsGoal();
+        }
+    }
+
+    private String formatGoalPercentage(
+            BigDecimal percentage
+    ) {
+        return percentage
+                .stripTrailingZeros()
+                .toPlainString()
+                .replace(".", ",")
+                + "%";
+    }
+
+    private void hideSavingsGoal() {
+        dashboardGoalCard.setVisible(false);
+        dashboardGoalCard.setManaged(false);
     }
 
     private void showMissingBudget() {

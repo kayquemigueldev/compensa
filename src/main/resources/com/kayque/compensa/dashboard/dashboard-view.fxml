@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.Region?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -180,16 +181,82 @@
 
     </HBox>
 
-    <VBox spacing="10.0"
-          styleClass="dashboard-insight-card">
+    <HBox spacing="16.0">
 
-        <Label text="Uma escolha de cada vez"
-               styleClass="dashboard-insight-title"/>
+        <VBox fx:id="dashboardGoalCard"
+              spacing="12.0"
+              maxWidth="Infinity"
+              visible="false"
+              managed="false"
+              HBox.hgrow="ALWAYS"
+              styleClass="dashboard-goal-card">
 
-        <Label text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
-               wrapText="true"
-               styleClass="dashboard-insight-text"/>
-    </VBox>
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="3.0">
+                    <Label text="Sua próxima conquista"
+                           styleClass="dashboard-goal-section-label"/>
+
+                    <Label fx:id="dashboardGoalNameLabel"
+                           text="Objetivo"
+                           styleClass="dashboard-goal-title"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="dashboardGoalPercentageLabel"
+                       text="0%"
+                       styleClass="dashboard-goal-percentage"/>
+            </HBox>
+
+            <ProgressBar fx:id="dashboardGoalProgressBar"
+                         progress="0.0"
+                         maxWidth="Infinity"
+                         styleClass="dashboard-goal-progress-bar"/>
+
+            <HBox spacing="16.0">
+
+                <VBox spacing="3.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Guardado"
+                           styleClass="dashboard-goal-detail-label"/>
+
+                    <Label fx:id="dashboardGoalSavedLabel"
+                           text="R$ 0,00"
+                           styleClass="dashboard-goal-detail-value"/>
+                </VBox>
+
+                <VBox spacing="3.0"
+                      alignment="TOP_RIGHT"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Ainda falta"
+                           styleClass="dashboard-goal-detail-label"/>
+
+                    <Label fx:id="dashboardGoalRemainingLabel"
+                           text="R$ 0,00"
+                           styleClass="dashboard-goal-detail-highlight"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="dashboard-insight-card">
+
+            <Label text="Uma escolha de cada vez"
+                   styleClass="dashboard-insight-title"/>
+
+            <Label text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
+                   wrapText="true"
+                   styleClass="dashboard-insight-text"/>
+        </VBox>
+
+    </HBox>
 
     <Label fx:id="dashboardFeedbackLabel"
            text=""

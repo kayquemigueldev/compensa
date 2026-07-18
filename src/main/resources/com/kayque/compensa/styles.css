@@ -1305,3 +1305,65 @@
     -fx-border-color: #ef646f;
     -fx-text-fill: #ef646f;
 }
+
+.dashboard-goal-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 12px;
+    -fx-border-color: #31421f;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.dashboard-goal-section-label {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-goal-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-goal-percentage {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-goal-progress-bar {
+    -fx-pref-height: 10px;
+    -fx-min-height: 10px;
+    -fx-max-height: 10px;
+}
+
+.dashboard-goal-progress-bar .track {
+    -fx-background-color: #26303b;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+}
+
+.dashboard-goal-progress-bar .bar {
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 999px;
+    -fx-background-insets: 0;
+    -fx-padding: 5px;
+}
+
+.dashboard-goal-detail-label {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 12px;
+}
+
+.dashboard-goal-detail-value {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-goal-detail-highlight {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
