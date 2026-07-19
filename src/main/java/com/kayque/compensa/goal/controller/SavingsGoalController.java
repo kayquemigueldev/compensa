@@ -4,6 +4,10 @@ import com.kayque.compensa.goal.model.SavingsGoal;
 import com.kayque.compensa.goal.model.SavingsGoalContribution;
 import com.kayque.compensa.goal.model.SavingsGoalProgress;
 import com.kayque.compensa.goal.model.SavingsGoalProgressStatus;
+import com.kayque.compensa.goal.model.SavingsGoalForecast;
+import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
+import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
@@ -32,6 +36,7 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.time.LocalDate;
 
 public class SavingsGoalController {
 
@@ -55,6 +60,9 @@ public class SavingsGoalController {
             milestoneService =
             new SavingsGoalMilestoneService();
 
+    private final SavingsGoalForecastService forecastService =
+            new SavingsGoalForecastService();
+
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
                     Locale.of("pt", "BR")
@@ -66,6 +74,9 @@ public class SavingsGoalController {
             );
 
     private SavingsGoal currentGoal;
+
+    private List<SavingsGoalContribution>
+            currentContributions = List.of();
 
     @FXML
     private TextField goalNameField;
@@ -108,6 +119,15 @@ public class SavingsGoalController {
 
     @FXML
     private Label contributionEmptyLabel;
+
+    @FXML
+    private Label forecastTitleLabel;
+
+    @FXML
+    private Label forecastMessageLabel;
+
+    @FXML
+    private Label forecastDateLabel;
 
     @FXML
     private void initialize() {
@@ -389,12 +409,18 @@ public class SavingsGoalController {
 
     private void loadContributions() {
         try {
-            List<SavingsGoalContribution> contributions =
+            currentContributions =
                     contributionRepository.findAll();
 
-            renderContributionHistory(contributions);
+            renderContributionHistory(
+                    currentContributions
+            );
+
+            renderForecast();
 
         } catch (IllegalStateException exception) {
+            currentContributions = List.of();
+
             contributionHistoryContainer
                     .getChildren()
                     .clear();
@@ -405,7 +431,108 @@ public class SavingsGoalController {
 
             contributionEmptyLabel.setVisible(true);
             contributionEmptyLabel.setManaged(true);
+
+            renderForecastUnavailable();
         }
+    }
+
+    private void renderForecast() {
+        if (currentGoal == null) {
+            renderForecastUnavailable();
+            return;
+        }
+
+        SavingsGoalForecast forecast =
+                forecastService.calculate(
+                        currentGoal,
+                        currentContributions,
+                        LocalDate.now()
+                );
+
+        forecastTitleLabel.setText(
+                getForecastTitle(forecast.status())
+        );
+
+        forecastMessageLabel.setText(
+                forecast.message()
+        );
+
+        forecastDateLabel.setText(
+                forecast.completionDate()
+                        .map(date -> date.format(
+                                DateTimeFormatter.ofPattern(
+                                        "MMMM 'de' yyyy",
+                                        Locale.of("pt", "BR")
+                                )
+                        ))
+                        .orElse("")
+        );
+
+        forecastDateLabel.setVisible(
+                forecast.completionDate().isPresent()
+        );
+
+        forecastDateLabel.setManaged(
+                forecast.completionDate().isPresent()
+        );
+
+        forecastMessageLabel.getStyleClass().setAll(
+                "goal-forecast-message",
+                getForecastStyle(forecast.status())
+        );
+    }
+
+    private void renderForecastUnavailable() {
+        forecastTitleLabel.setText(
+                "Previsão da conquista"
+        );
+
+        forecastMessageLabel.setText(
+                "Registre contribuições para gerar uma previsão."
+        );
+
+        forecastMessageLabel.getStyleClass().setAll(
+                "goal-forecast-message",
+                "goal-forecast-neutral"
+        );
+
+        forecastDateLabel.setText("");
+        forecastDateLabel.setVisible(false);
+        forecastDateLabel.setManaged(false);
+    }
+
+    private String getForecastTitle(
+            SavingsGoalForecastStatus status
+    ) {
+        return switch (status) {
+            case NO_HISTORY ->
+                    "Previsão da conquista";
+
+            case CONTRIBUTIONS_NEEDED ->
+                    "Continue nesse ritmo";
+
+            case ESTIMATED_DATE ->
+                    "Quando você poderá chegar lá?";
+
+            case COMPLETED ->
+                    "Conquista alcançada";
+        };
+    }
+
+    private String getForecastStyle(
+            SavingsGoalForecastStatus status
+    ) {
+        return switch (status) {
+            case NO_HISTORY ->
+                    "goal-forecast-neutral";
+
+            case CONTRIBUTIONS_NEEDED,
+                 ESTIMATED_DATE ->
+                    "goal-forecast-progress";
+
+            case COMPLETED ->
+                    "goal-forecast-completed";
+        };
     }
 
     private void renderContributionHistory(
@@ -552,6 +679,10 @@ public class SavingsGoalController {
                 "goal-status",
                 "goal-status-warning"
         );
+
+        currentContributions = List.of();
+        renderForecastUnavailable();
+
     }
 
     private void setContributionFormEnabled(

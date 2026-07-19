@@ -1381,3 +1381,45 @@
             0
     );
 }
+
+.goal-forecast-card {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 12px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 12px;
+    -fx-padding: 16px 18px;
+}
+
+.goal-forecast-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.goal-forecast-message {
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.goal-forecast-neutral {
+    -fx-text-fill: #9da5b1;
+}
+
+.goal-forecast-progress {
+    -fx-text-fill: #8eea3c;
+}
+
+.goal-forecast-completed {
+    -fx-text-fill: #54c7ec;
+}
+
+.goal-forecast-date {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+}
+
+.goal-forecast-disclaimer {
+    -fx-text-fill: #697280;
+    -fx-font-size: 10px;
+}

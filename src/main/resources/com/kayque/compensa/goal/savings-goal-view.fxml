@@ -87,6 +87,30 @@
                        styleClass="settings-description"/>
             </VBox>
 
+            <VBox spacing="7.0"
+                  styleClass="goal-forecast-card">
+
+                <Label fx:id="forecastTitleLabel"
+                       text="Previsão da conquista"
+                       styleClass="goal-forecast-title"/>
+
+                <Label fx:id="forecastMessageLabel"
+                       text="Registre contribuições para gerar uma previsão."
+                       wrapText="true"
+                       styleClass="goal-forecast-message, goal-forecast-neutral"/>
+
+                <Label fx:id="forecastDateLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       styleClass="goal-forecast-date"/>
+
+                <Label text="Esta é apenas uma estimativa baseada no histórico registrado."
+                       wrapText="true"
+                       styleClass="goal-forecast-disclaimer"/>
+
+            </VBox>
+
             <Region VBox.vgrow="ALWAYS"/>
 
             <Label fx:id="goalFeedbackLabel"
