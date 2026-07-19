@@ -18,6 +18,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import com.kayque.compensa.goal.model.SavingsGoalMilestone;
+import com.kayque.compensa.goal.repository.SavingsGoalMilestoneRepository;
+import com.kayque.compensa.goal.repository.SqliteSavingsGoalMilestoneRepository;
+import com.kayque.compensa.goal.service.SavingsGoalMilestoneService;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +46,14 @@ public class SavingsGoalController {
 
     private final SavingsGoalProgressService progressService =
             new SavingsGoalProgressService();
+
+    private final SavingsGoalMilestoneRepository
+            milestoneRepository =
+            new SqliteSavingsGoalMilestoneRepository();
+
+    private final SavingsGoalMilestoneService
+            milestoneService =
+            new SavingsGoalMilestoneService();
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
@@ -273,6 +290,69 @@ public class SavingsGoalController {
         );
 
         renderStatus(progress.status());
+        celebrateNewMilestone(progress.percentage());
+    }
+
+    private void celebrateNewMilestone(
+            BigDecimal currentPercentage
+    ) {
+        try {
+            int lastCelebrated =
+                    milestoneRepository
+                            .findLastCelebratedMilestone();
+
+            milestoneService.findNewMilestone(
+                    currentPercentage,
+                    lastCelebrated
+            ).ifPresent(this::showMilestoneCelebration);
+
+        } catch (IllegalStateException exception) {
+            // A tela continua funcionando mesmo se a celebração falhar.
+        }
+    }
+
+    private void showMilestoneCelebration(
+            SavingsGoalMilestone milestone
+    ) {
+        milestoneRepository.saveLastCelebratedMilestone(
+                milestone.percentage()
+        );
+
+        progressStatusLabel.setText(
+                milestone.message()
+        );
+
+        progressStatusLabel.getStyleClass().setAll(
+                "goal-status",
+                "goal-milestone-celebration"
+        );
+
+        progressStatusLabel.setOpacity(0);
+        progressStatusLabel.setScaleX(0.92);
+        progressStatusLabel.setScaleY(0.92);
+
+        FadeTransition fade = new FadeTransition(
+                Duration.millis(650),
+                progressStatusLabel
+        );
+
+        fade.setFromValue(0);
+        fade.setToValue(1);
+
+        ScaleTransition scale = new ScaleTransition(
+                Duration.millis(650),
+                progressStatusLabel
+        );
+
+        scale.setFromX(0.92);
+        scale.setFromY(0.92);
+        scale.setToX(1);
+        scale.setToY(1);
+
+        ParallelTransition celebration =
+                new ParallelTransition(fade, scale);
+
+        celebration.play();
     }
 
     private void renderStatus(

@@ -1367,3 +1367,17 @@
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
+
+.goal-milestone-celebration {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(142, 234, 60, 0.28),
+            12,
+            0.25,
+            0,
+            0
+    );
+}

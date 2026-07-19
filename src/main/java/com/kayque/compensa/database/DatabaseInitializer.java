@@ -216,6 +216,7 @@ public final class DatabaseInitializer {
             migratePurchaseDecisionTable(connection);
             migrateUserProfileTable(connection);
             migrateLegacySavingsGoal(connection);
+            migrateSavingsGoalTable(connection);
 
             System.out.println(
                     "Banco inicializado em: "
@@ -341,6 +342,24 @@ public final class DatabaseInitializer {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         }
+    }
+
+    private static void migrateSavingsGoalTable(
+            Connection connection
+    ) throws SQLException {
+        addColumnIfMissing(
+                connection,
+                "savings_goal",
+                "last_celebrated_milestone",
+                """
+                last_celebrated_milestone INTEGER
+                    NOT NULL DEFAULT 0
+                    CHECK (
+                        last_celebrated_milestone
+                        IN (0, 25, 50, 75, 100)
+                    )
+                """
+        );
     }
 
     private static void addColumnIfMissing(
