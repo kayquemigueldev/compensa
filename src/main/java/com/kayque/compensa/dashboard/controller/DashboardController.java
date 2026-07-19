@@ -18,6 +18,16 @@ import com.kayque.compensa.userprofile.repository.UserProfileRepository;
 import com.kayque.compensa.dashboard.model.DashboardHighlight;
 import com.kayque.compensa.dashboard.service.DashboardHighlightService;
 import com.kayque.compensa.goal.model.SavingsGoal;
+import com.kayque.compensa.goal.model.SavingsGoalContribution;
+import com.kayque.compensa.goal.model.SavingsGoalForecast;
+import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
+import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
+import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
+import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.kayque.compensa.goal.model.SavingsGoalProgress;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
@@ -73,6 +83,20 @@ public class DashboardController {
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
+                    Locale.of("pt", "BR")
+            );
+
+    private final SavingsGoalContributionRepository
+            savingsGoalContributionRepository =
+            new SqliteSavingsGoalContributionRepository();
+
+    private final SavingsGoalForecastService
+            savingsGoalForecastService =
+            new SavingsGoalForecastService();
+
+    private final DateTimeFormatter goalForecastDateFormat =
+            DateTimeFormatter.ofPattern(
+                    "MMMM 'de' yyyy",
                     Locale.of("pt", "BR")
             );
 
@@ -145,6 +169,12 @@ public class DashboardController {
 
     @FXML
     private Label dashboardHighlightDescriptionLabel;
+
+    @FXML
+    private Label dashboardGoalForecastLabel;
+
+    @FXML
+    private Label dashboardGoalForecastDateLabel;
 
     @FXML
     private void initialize() {
@@ -396,6 +426,7 @@ public class DashboardController {
                         dashboardGoalRemainingLabel.setText(
                                 currencyFormat.format(
                                         progress.remainingAmount()
+
                                 )
                         );
 
@@ -414,6 +445,8 @@ public class DashboardController {
                                         Math.min(progressValue, 1)
                                 )
                         );
+
+                        renderGoalForecast(goal);
 
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
@@ -510,6 +543,9 @@ public class DashboardController {
     }
 
     private void hideSavingsGoal() {
+        dashboardGoalForecastLabel.setText("");
+        hideGoalForecastDate();
+
         dashboardGoalCard.setVisible(false);
         dashboardGoalCard.setManaged(false);
     }
@@ -547,4 +583,64 @@ public class DashboardController {
 
         return hours + "h " + minutes + "min";
     }
+
+    private void renderGoalForecast(
+            SavingsGoal goal
+    ) {
+        try {
+            List<SavingsGoalContribution> contributions =
+                    savingsGoalContributionRepository.findAll();
+
+            SavingsGoalForecast forecast =
+                    savingsGoalForecastService.calculate(
+                            goal,
+                            contributions,
+                            LocalDate.now()
+                    );
+
+            dashboardGoalForecastLabel.setText(
+                    forecast.message()
+            );
+
+            if (forecast.status()
+                    == SavingsGoalForecastStatus.ESTIMATED_DATE) {
+
+                forecast.completionDate().ifPresentOrElse(
+                        this::showGoalForecastDate,
+                        this::hideGoalForecastDate
+                );
+
+            } else {
+                hideGoalForecastDate();
+            }
+
+        } catch (IllegalStateException exception) {
+            dashboardGoalForecastLabel.setText(
+                    "A previsão ficará disponível quando o histórico puder ser carregado."
+            );
+
+            hideGoalForecastDate();
+        }
+    }
+
+    private void showGoalForecastDate(
+            LocalDate estimatedDate
+    ) {
+        String formattedDate = estimatedDate
+                .format(goalForecastDateFormat);
+
+        dashboardGoalForecastDateLabel.setText(
+                "Previsão atual: " + formattedDate
+        );
+
+        dashboardGoalForecastDateLabel.setVisible(true);
+        dashboardGoalForecastDateLabel.setManaged(true);
+    }
+
+    private void hideGoalForecastDate() {
+        dashboardGoalForecastDateLabel.setText("");
+        dashboardGoalForecastDateLabel.setVisible(false);
+        dashboardGoalForecastDateLabel.setManaged(false);
+    }
+
 }

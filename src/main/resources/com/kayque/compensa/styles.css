@@ -1593,3 +1593,27 @@
     -fx-background-color: #293326;
     -fx-text-fill: #8eea3c;
 }
+
+.dashboard-goal-forecast {
+    -fx-border-color: #31421f transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 11px 0 0 0;
+}
+
+.dashboard-goal-forecast-caption {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-goal-forecast-message {
+    -fx-text-fill: #b7bdc7;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
+}
+
+.dashboard-goal-forecast-date {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
