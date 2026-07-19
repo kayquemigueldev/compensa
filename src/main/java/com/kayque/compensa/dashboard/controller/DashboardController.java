@@ -15,6 +15,9 @@ import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
 import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
 import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+import com.kayque.compensa.dashboard.model.DashboardHighlight;
+import com.kayque.compensa.dashboard.service.DashboardHighlightService;
+import com.kayque.compensa.goal.model.SavingsGoal;
 
 import com.kayque.compensa.goal.model.SavingsGoalProgress;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
@@ -49,6 +52,10 @@ public class DashboardController {
             savingsGoalProgressService =
             new SavingsGoalProgressService();
 
+    private final DashboardHighlightService
+            dashboardHighlightService =
+            new DashboardHighlightService();
+
     private final MonthlyBudgetService budgetService =
             new MonthlyBudgetService();
 
@@ -68,6 +75,10 @@ public class DashboardController {
             NumberFormat.getCurrencyInstance(
                     Locale.of("pt", "BR")
             );
+
+    private DashboardSummary currentSummary;
+    private SavingsGoal currentSavingsGoal;
+    private SavingsGoalProgress currentGoalProgress;
 
     @FXML
     private Label plannedBudgetLabel;
@@ -127,11 +138,21 @@ public class DashboardController {
     private ProgressBar dashboardGoalProgressBar;
 
     @FXML
+    private VBox dashboardHighlightCard;
+
+    @FXML
+    private Label dashboardHighlightTitleLabel;
+
+    @FXML
+    private Label dashboardHighlightDescriptionLabel;
+
+    @FXML
     private void initialize() {
         loadGreeting();
         loadSummary();
         loadMonthlyBudget();
         loadSavingsGoal();
+        showDashboardHighlight();
     }
 
     private void loadGreeting() {
@@ -154,6 +175,7 @@ public class DashboardController {
         try {
             DashboardSummary summary =
                     repository.getSummary();
+            currentSummary = summary;
 
             totalDecisionsLabel.setText(
                     String.valueOf(summary.totalDecisions())
@@ -190,6 +212,7 @@ public class DashboardController {
             );
 
         } catch (IllegalStateException exception) {
+            currentSummary = null;
             dashboardFeedbackLabel.setText(
                     "Não foi possível carregar os indicadores."
             );
@@ -351,6 +374,9 @@ public class DashboardController {
                                         goal
                                 );
 
+                        currentSavingsGoal = goal;
+                        currentGoalProgress = progress;
+
                         dashboardGoalNameLabel.setText(
                                 goal.name()
                         );
@@ -373,13 +399,14 @@ public class DashboardController {
                                 )
                         );
 
-                        double progressValue = progress.percentage()
-                                .divide(
-                                        new BigDecimal("100"),
-                                        4,
-                                        RoundingMode.HALF_UP
-                                )
-                                .doubleValue();
+                        double progressValue =
+                                progress.percentage()
+                                        .divide(
+                                                new BigDecimal("100"),
+                                                4,
+                                                RoundingMode.HALF_UP
+                                        )
+                                        .doubleValue();
 
                         dashboardGoalProgressBar.setProgress(
                                 Math.max(
@@ -391,10 +418,16 @@ public class DashboardController {
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
                     },
-                    this::hideSavingsGoal
+                    () -> {
+                        currentSavingsGoal = null;
+                        currentGoalProgress = null;
+                        hideSavingsGoal();
+                    }
             );
 
         } catch (IllegalStateException exception) {
+            currentSavingsGoal = null;
+            currentGoalProgress = null;
             hideSavingsGoal();
         }
     }
@@ -407,6 +440,73 @@ public class DashboardController {
                 .toPlainString()
                 .replace(".", ",")
                 + "%";
+    }
+
+    private void showDashboardHighlight() {
+        if (currentSummary == null) {
+            showDefaultHighlight();
+            return;
+        }
+
+        String goalName = currentSavingsGoal == null
+                ? null
+                : currentSavingsGoal.name();
+
+        DashboardHighlight highlight =
+                dashboardHighlightService.create(
+                        currentSummary,
+                        goalName,
+                        currentGoalProgress
+                );
+
+        dashboardHighlightTitleLabel.setText(
+                highlight.title()
+        );
+
+        dashboardHighlightDescriptionLabel.setText(
+                highlight.description()
+        );
+
+        dashboardHighlightCard.getStyleClass().setAll(
+                "dashboard-insight-card",
+                getHighlightStyleClass(highlight)
+        );
+    }
+
+    private String getHighlightStyleClass(
+            DashboardHighlight highlight
+    ) {
+        return switch (highlight.type()) {
+            case SUCCESS ->
+                    "dashboard-highlight-success";
+
+            case GOAL ->
+                    "dashboard-highlight-goal";
+
+            case WARNING ->
+                    "dashboard-highlight-warning";
+
+            case PRESERVED_VALUE ->
+                    "dashboard-highlight-preserved";
+
+            case DEFAULT ->
+                    "dashboard-highlight-default";
+        };
+    }
+
+    private void showDefaultHighlight() {
+        dashboardHighlightTitleLabel.setText(
+                "Uma escolha de cada vez"
+        );
+
+        dashboardHighlightDescriptionLabel.setText(
+                "O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
+        );
+
+        dashboardHighlightCard.getStyleClass().setAll(
+                "dashboard-insight-card",
+                "dashboard-highlight-default"
+        );
     }
 
     private void hideSavingsGoal() {

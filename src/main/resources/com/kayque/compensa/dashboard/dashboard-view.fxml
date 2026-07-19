@@ -243,15 +243,19 @@
             </HBox>
         </VBox>
 
-        <VBox spacing="10.0"
+        <VBox fx:id="dashboardHighlightCard"
+              spacing="10.0"
               maxWidth="Infinity"
               HBox.hgrow="ALWAYS"
-              styleClass="dashboard-insight-card">
+              styleClass="dashboard-insight-card, dashboard-highlight-default">
 
-            <Label text="Uma escolha de cada vez"
+            <Label fx:id="dashboardHighlightTitleLabel"
+                   text="Uma escolha de cada vez"
+                   wrapText="true"
                    styleClass="dashboard-insight-title"/>
 
-            <Label text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
+            <Label fx:id="dashboardHighlightDescriptionLabel"
+                   text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
                    wrapText="true"
                    styleClass="dashboard-insight-text"/>
         </VBox>

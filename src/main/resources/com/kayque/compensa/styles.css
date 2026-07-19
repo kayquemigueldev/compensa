@@ -1423,3 +1423,44 @@
     -fx-text-fill: #697280;
     -fx-font-size: 10px;
 }
+
+.dashboard-highlight-default {
+    -fx-background-color: #181a16;
+    -fx-border-color: #4d5438;
+}
+
+.dashboard-highlight-goal {
+    -fx-background-color: #111914;
+    -fx-border-color: #395f25;
+}
+
+.dashboard-highlight-goal .dashboard-insight-title {
+    -fx-text-fill: #8eea3c;
+}
+
+.dashboard-highlight-success {
+    -fx-background-color: #10191a;
+    -fx-border-color: #287f73;
+}
+
+.dashboard-highlight-success .dashboard-insight-title {
+    -fx-text-fill: #54c7b0;
+}
+
+.dashboard-highlight-warning {
+    -fx-background-color: #1a1811;
+    -fx-border-color: #665027;
+}
+
+.dashboard-highlight-warning .dashboard-insight-title {
+    -fx-text-fill: #f2b84b;
+}
+
+.dashboard-highlight-preserved {
+    -fx-background-color: #121a13;
+    -fx-border-color: #42642e;
+}
+
+.dashboard-highlight-preserved .dashboard-insight-title {
+    -fx-text-fill: #a8e063;
+}
