@@ -1507,3 +1507,89 @@
 .history-waiting-declined:hover {
     -fx-background-color: #252b34;
 }
+
+.history-toolbar {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 12px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 12px;
+    -fx-padding: 12px;
+}
+
+.history-search-field,
+.history-filter-combo {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 9px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 9px;
+    -fx-text-fill: #f4f1ea;
+    -fx-prompt-text-fill: #737b87;
+    -fx-font-size: 13px;
+}
+
+.history-search-field {
+    -fx-padding: 11px 13px;
+}
+
+.history-search-field:focused,
+.history-filter-combo:focused {
+    -fx-border-color: #8eea3c;
+}
+
+.history-filter-combo {
+    -fx-padding: 4px 8px;
+}
+
+.history-filter-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c3c7ce;
+    -fx-padding: 7px 9px;
+}
+
+.history-filter-combo .arrow {
+    -fx-background-color: #8eea3c;
+}
+
+.history-filter-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.history-filter-combo-popup .list-view {
+    -fx-background-color: #171a21;
+    -fx-border-color: #303846;
+}
+
+.history-filter-combo-popup .list-cell {
+    -fx-background-color: #171a21;
+    -fx-text-fill: #c3c7ce;
+    -fx-padding: 10px 12px;
+}
+
+.history-filter-combo-popup .list-cell:hover,
+.history-filter-combo-popup .list-cell:selected {
+    -fx-background-color: #242a32;
+    -fx-text-fill: #8eea3c;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #171a21;
+    -fx-border-color: #303846;
+    -fx-border-width: 1px;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #171a21;
+    -fx-text-fill: #aeb4be;
+    -fx-padding: 11px 14px;
+}
+
+.combo-box-popup .list-cell:hover,
+.combo-box-popup .list-cell:focused {
+    -fx-background-color: #242a32;
+    -fx-text-fill: #f4f1ea;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #293326;
+    -fx-text-fill: #8eea3c;
+}

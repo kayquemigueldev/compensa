@@ -7,6 +7,9 @@ import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.WaitingDecisionService;
+import com.kayque.compensa.history.model.HistoryFilter;
+import com.kayque.compensa.history.service.HistoryFilterService;
+
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +21,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 
 import java.text.NumberFormat;
 import java.time.ZoneId;
@@ -32,6 +38,12 @@ public class HistoryController {
 
     private final WaitingDecisionService waitingDecisionService =
             new WaitingDecisionService(repository);
+
+    private final HistoryFilterService historyFilterService =
+            new HistoryFilterService();
+
+    private List<PurchaseDecisionHistoryItem> completeHistory =
+            List.of();
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
@@ -56,8 +68,15 @@ public class HistoryController {
     private Label historyActionFeedbackLabel;
 
     @FXML
+    private TextField historySearchField;
+
+    @FXML
+    private ComboBox<HistoryFilter> historyFilterComboBox;
+
+    @FXML
     private void initialize() {
         configureListView();
+        configureFilters();
         loadHistory();
     }
 
@@ -69,26 +88,69 @@ public class HistoryController {
         );
     }
 
+    private void configureFilters() {
+        historyFilterComboBox.getItems().setAll(
+                HistoryFilter.values()
+        );
+
+        historyFilterComboBox.setConverter(
+                new StringConverter<>() {
+                    @Override
+                    public String toString(
+                            HistoryFilter filter
+                    ) {
+                        if (filter == null) {
+                            return "";
+                        }
+
+                        return formatFilter(filter);
+                    }
+
+                    @Override
+                    public HistoryFilter fromString(
+                            String value
+                    ) {
+                        return null;
+                    }
+                }
+        );
+
+        historyFilterComboBox.setValue(
+                HistoryFilter.ALL
+        );
+
+        historySearchField.textProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                applyFilters()
+                );
+
+        historyFilterComboBox.valueProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                applyFilters()
+                );
+    }
+
+    private String formatFilter(HistoryFilter filter) {
+        return switch (filter) {
+            case ALL -> "Todas as decisões";
+            case PURCHASED -> "Compradas";
+            case DECLINED -> "Não compradas";
+            case WAITING -> "Aguardando decisão";
+        };
+    }
+
     private void loadHistory() {
         try {
-            List<PurchaseDecisionHistoryItem> history =
-                    repository.findAll();
+            completeHistory = repository.findAll();
 
-            historyListView.getItems().setAll(history);
-
-            boolean empty = history.isEmpty();
-
-            historyListView.setVisible(!empty);
-            historyListView.setManaged(!empty);
-
-            emptyStateLabel.setVisible(empty);
-            emptyStateLabel.setManaged(empty);
-
-            historySummaryLabel.setText(
-                    createSummary(history.size())
-            );
+            applyFilters();
 
         } catch (IllegalStateException exception) {
+            completeHistory = List.of();
+
+            historyListView.getItems().clear();
             historyListView.setVisible(false);
             historyListView.setManaged(false);
 
@@ -102,6 +164,94 @@ public class HistoryController {
                     "Tente novamente mais tarde."
             );
         }
+    }
+
+    private void applyFilters() {
+        List<PurchaseDecisionHistoryItem> filteredHistory =
+                historyFilterService.filter(
+                        completeHistory,
+                        historySearchField.getText(),
+                        historyFilterComboBox.getValue()
+                );
+
+        historyListView.getItems().setAll(
+                filteredHistory
+        );
+
+        boolean completeHistoryEmpty =
+                completeHistory.isEmpty();
+
+        boolean filteredHistoryEmpty =
+                filteredHistory.isEmpty();
+
+        historyListView.setVisible(
+                !filteredHistoryEmpty
+        );
+
+        historyListView.setManaged(
+                !filteredHistoryEmpty
+        );
+
+        emptyStateLabel.setVisible(
+                filteredHistoryEmpty
+        );
+
+        emptyStateLabel.setManaged(
+                filteredHistoryEmpty
+        );
+
+        if (completeHistoryEmpty) {
+            emptyStateLabel.setText(
+                    "Suas decisões aparecerão aqui depois da primeira análise."
+            );
+
+            historySummaryLabel.setText(
+                    createSummary(0)
+            );
+
+            return;
+        }
+
+        if (filteredHistoryEmpty) {
+            emptyStateLabel.setText(
+                    "Nenhuma decisão corresponde à busca ou ao filtro selecionado."
+            );
+        }
+
+        updateFilteredSummary(
+                filteredHistory.size()
+        );
+    }
+
+    private void updateFilteredSummary(
+            int filteredTotal
+    ) {
+        boolean searchActive =
+                historySearchField.getText() != null
+                        && !historySearchField
+                        .getText()
+                        .isBlank();
+
+        boolean filterActive =
+                historyFilterComboBox.getValue()
+                        != null
+                        && historyFilterComboBox.getValue()
+                        != HistoryFilter.ALL;
+
+        if (!searchActive && !filterActive) {
+            historySummaryLabel.setText(
+                    createSummary(completeHistory.size())
+            );
+
+            return;
+        }
+
+        historySummaryLabel.setText(
+                filteredTotal
+                        + " de "
+                        + completeHistory.size()
+                        + " decisões exibidas."
+        );
     }
 
     private String createSummary(int total) {

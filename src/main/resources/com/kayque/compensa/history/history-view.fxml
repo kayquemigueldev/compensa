@@ -4,6 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -33,6 +38,23 @@
            managed="false"
            wrapText="true"
            styleClass="feedback-label"/>
+
+    <HBox spacing="12.0"
+          alignment="CENTER_LEFT"
+          styleClass="history-toolbar">
+
+        <TextField fx:id="historySearchField"
+                   promptText="Buscar pelo nome da compra"
+                   maxWidth="Infinity"
+                   HBox.hgrow="ALWAYS"
+                   styleClass="history-search-field"/>
+
+        <ComboBox fx:id="historyFilterComboBox"
+                  promptText="Filtrar decisões"
+                  prefWidth="220.0"
+                  styleClass="history-filter-combo"/>
+
+    </HBox>
 
     <Label fx:id="emptyStateLabel"
            text="Suas decisões aparecerão aqui depois da primeira análise."
