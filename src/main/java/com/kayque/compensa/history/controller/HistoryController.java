@@ -6,6 +6,7 @@ import com.kayque.compensa.purchase.model.PurchaseDecisionStatus;
 import com.kayque.compensa.purchase.model.PurchaseSatisfaction;
 import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
+import com.kayque.compensa.purchase.service.WaitingDecisionService;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -29,6 +30,9 @@ public class HistoryController {
     private final PurchaseDecisionRepository repository =
             new SqlitePurchaseDecisionRepository();
 
+    private final WaitingDecisionService waitingDecisionService =
+            new WaitingDecisionService(repository);
+
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
                     Locale.of("pt", "BR")
@@ -47,6 +51,9 @@ public class HistoryController {
 
     @FXML
     private ListView<PurchaseDecisionHistoryItem> historyListView;
+
+    @FXML
+    private Label historyActionFeedbackLabel;
 
     @FXML
     private void initialize() {
@@ -219,7 +226,187 @@ public class HistoryController {
             );
         }
 
+        if (item.outcome() == PurchaseDecisionOutcome.WAITING) {
+            card.getChildren().add(
+                    createWaitingDecisionSection(item)
+            );
+        }
+
         return card;
+    }
+
+    private Node createWaitingDecisionSection(
+            PurchaseDecisionHistoryItem item
+    ) {
+        Label questionLabel = new Label(
+                "Você já decidiu o que fazer com esta compra?"
+        );
+
+        questionLabel.getStyleClass().add(
+                "history-waiting-question"
+        );
+
+        Label feedbackLabel = new Label();
+        feedbackLabel.setVisible(false);
+        feedbackLabel.setManaged(false);
+
+        feedbackLabel.getStyleClass().add(
+                "history-evaluation-error"
+        );
+
+        Button purchasedButton =
+                createWaitingDecisionButton(
+                        "Comprei",
+                        item,
+                        PurchaseDecisionOutcome.PURCHASED,
+                        feedbackLabel
+                );
+
+        purchasedButton.getStyleClass().add(
+                "history-waiting-purchased"
+        );
+
+        Button declinedButton =
+                createWaitingDecisionButton(
+                        "Não comprei",
+                        item,
+                        PurchaseDecisionOutcome.DECLINED,
+                        feedbackLabel
+                );
+
+        declinedButton.getStyleClass().add(
+                "history-waiting-declined"
+        );
+
+        HBox buttons = new HBox(
+                10,
+                purchasedButton,
+                declinedButton
+        );
+
+        buttons.setAlignment(Pos.CENTER_LEFT);
+
+        VBox section = new VBox(
+                9,
+                questionLabel,
+                buttons,
+                feedbackLabel
+        );
+
+        section.getStyleClass().add(
+                "history-waiting-section"
+        );
+
+        return section;
+    }
+
+    private Button createWaitingDecisionButton(
+            String text,
+            PurchaseDecisionHistoryItem item,
+            PurchaseDecisionOutcome outcome,
+            Label feedbackLabel
+    ) {
+        Button button = new Button(text);
+
+        button.getStyleClass().add(
+                "history-waiting-button"
+        );
+
+        button.setOnAction(event ->
+                finalizeWaitingDecision(
+                        item,
+                        outcome,
+                        feedbackLabel
+                )
+        );
+
+        return button;
+    }
+
+    private void finalizeWaitingDecision(
+            PurchaseDecisionHistoryItem item,
+            PurchaseDecisionOutcome outcome,
+            Label feedbackLabel
+    ) {
+        try {
+            boolean updated;
+
+            if (outcome == PurchaseDecisionOutcome.PURCHASED) {
+                updated = waitingDecisionService.markAsPurchased(
+                        item.id()
+                );
+            } else {
+                updated = waitingDecisionService.markAsDeclined(
+                        item.id()
+                );
+            }
+
+            if (!updated) {
+                showWaitingDecisionError(
+                        feedbackLabel,
+                        "Essa decisão já foi finalizada ou não está mais aguardando."
+                );
+
+                return;
+            }
+
+            showWaitingDecisionSuccess(
+                    item,
+                    outcome
+            );
+
+            loadHistory();
+
+        } catch (IllegalArgumentException exception) {
+            showWaitingDecisionError(
+                    feedbackLabel,
+                    exception.getMessage()
+            );
+
+        } catch (IllegalStateException exception) {
+            showWaitingDecisionError(
+                    feedbackLabel,
+                    "Não foi possível finalizar essa decisão."
+            );
+        }
+    }
+
+    private void showWaitingDecisionSuccess(
+            PurchaseDecisionHistoryItem item,
+            PurchaseDecisionOutcome outcome
+    ) {
+        String action = switch (outcome) {
+            case PURCHASED -> "marcada como comprada";
+            case DECLINED -> "marcada como não comprada";
+            case WAITING -> throw new IllegalArgumentException(
+                    "A decisão final não pode continuar aguardando."
+            );
+        };
+
+        historyActionFeedbackLabel.setText(
+                "“"
+                        + item.productName()
+                        + "” foi "
+                        + action
+                        + " com sucesso."
+        );
+
+        historyActionFeedbackLabel.getStyleClass().setAll(
+                "feedback-label",
+                "feedback-success"
+        );
+
+        historyActionFeedbackLabel.setVisible(true);
+        historyActionFeedbackLabel.setManaged(true);
+    }
+
+    private void showWaitingDecisionError(
+            Label feedbackLabel,
+            String message
+    ) {
+        feedbackLabel.setText(message);
+        feedbackLabel.setVisible(true);
+        feedbackLabel.setManaged(true);
     }
 
     private Node createSatisfactionSection(

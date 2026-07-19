@@ -1464,3 +1464,46 @@
 .dashboard-highlight-preserved .dashboard-insight-title {
     -fx-text-fill: #a8e063;
 }
+
+.history-waiting-section {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 10px;
+    -fx-border-color: #35404d;
+    -fx-border-radius: 10px;
+    -fx-padding: 14px;
+}
+
+.history-waiting-question {
+    -fx-text-fill: #f2b84b;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.history-waiting-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.history-waiting-purchased {
+    -fx-border-color: #8eea3c;
+    -fx-text-fill: #8eea3c;
+}
+
+.history-waiting-purchased:hover {
+    -fx-background-color: #1b2a16;
+}
+
+.history-waiting-declined {
+    -fx-border-color: #aeb4be;
+    -fx-text-fill: #d1d5db;
+}
+
+.history-waiting-declined:hover {
+    -fx-background-color: #252b34;
+}
