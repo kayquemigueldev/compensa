@@ -1617,3 +1617,32 @@
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
+
+.settings-backup-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 12px;
+    -fx-border-color: #31421f;
+    -fx-border-radius: 12px;
+    -fx-padding: 20px;
+}
+
+.settings-backup-detail {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 12px;
+}
+
+.settings-backup-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 9px;
+    -fx-border-color: #8eea3c;
+    -fx-border-radius: 9px;
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 11px 16px;
+    -fx-cursor: hand;
+}
+
+.settings-backup-button:hover {
+    -fx-background-color: #1b2a16;
+}

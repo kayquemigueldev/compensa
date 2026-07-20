@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -72,8 +73,33 @@
                    wrapText="true"
                    styleClass="settings-privacy-highlight"/>
         </VBox>
-
     </HBox>
+
+        <VBox spacing="12.0"
+              maxWidth="Infinity"
+              styleClass="settings-backup-card">
+
+            <Label text="Backup dos seus dados"
+                   styleClass="settings-card-title"/>
+
+            <Label text="Guarde uma cópia do perfil, das análises, do histórico e do seu objetivo financeiro."
+                   wrapText="true"
+                   styleClass="settings-description"/>
+
+            <Label text="O backup é um arquivo local e não será enviado para nenhum serviço externo."
+                   wrapText="true"
+                   styleClass="settings-backup-detail"/>
+
+            <Button text="Criar backup"
+                    maxWidth="Infinity"
+                    onAction="#createBackup"
+                    styleClass="settings-backup-button"/>
+
+            <Label fx:id="backupFeedbackLabel"
+                   text=""
+                   wrapText="true"
+                   styleClass="feedback-label"/>
+        </VBox>
 
     <VBox spacing="12.0"
           styleClass="settings-author-card">
