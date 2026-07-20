@@ -100,6 +100,7 @@ public class DashboardController {
                     Locale.of("pt", "BR")
             );
 
+
     private DashboardSummary currentSummary;
     private SavingsGoal currentSavingsGoal;
     private SavingsGoalProgress currentGoalProgress;
@@ -171,10 +172,10 @@ public class DashboardController {
     private Label dashboardHighlightDescriptionLabel;
 
     @FXML
-    private Label dashboardGoalForecastLabel;
+    private Label dashboardGoalForecastDateLabel;
 
     @FXML
-    private Label dashboardGoalForecastDateLabel;
+    private Label dashboardGoalForecastLabel;
 
     @FXML
     private void initialize() {
@@ -587,6 +588,8 @@ public class DashboardController {
     private void renderGoalForecast(
             SavingsGoal goal
     ) {
+        dashboardGoalForecastLabel.setVisible(true);
+        dashboardGoalForecastLabel.setManaged(true);
         try {
             List<SavingsGoalContribution> contributions =
                     savingsGoalContributionRepository.findAll();
@@ -642,5 +645,4 @@ public class DashboardController {
         dashboardGoalForecastDateLabel.setVisible(false);
         dashboardGoalForecastDateLabel.setManaged(false);
     }
-
 }

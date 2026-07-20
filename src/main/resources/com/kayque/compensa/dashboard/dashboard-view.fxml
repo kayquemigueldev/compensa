@@ -241,6 +241,7 @@
                            styleClass="dashboard-goal-detail-highlight"/>
                 </VBox>
 
+
             </HBox>
 
             <VBox spacing="4.0"
