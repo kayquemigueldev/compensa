@@ -213,7 +213,8 @@
                          maxWidth="Infinity"
                          styleClass="dashboard-goal-progress-bar"/>
 
-            <HBox spacing="16.0">
+            <HBox spacing="16.0"
+                  maxWidth="Infinity">
 
                 <VBox spacing="3.0"
                       maxWidth="Infinity"
@@ -240,27 +241,30 @@
                            styleClass="dashboard-goal-detail-highlight"/>
                 </VBox>
 
-                <VBox spacing="4.0"
-                      styleClass="dashboard-goal-forecast">
-
-                    <Label text="Previsão da conquista"
-                           styleClass="dashboard-goal-forecast-caption"/>
-
-                    <Label fx:id="dashboardGoalForecastLabel"
-                           text="Registre contribuições para calcular uma previsão."
-                           wrapText="true"
-                           styleClass="dashboard-goal-forecast-message"/>
-
-                    <Label fx:id="dashboardGoalForecastDateLabel"
-                           text=""
-                           visible="false"
-                           managed="false"
-                           wrapText="true"
-                           styleClass="dashboard-goal-forecast-date"/>
-
-                </VBox>
-
             </HBox>
+
+            <VBox spacing="4.0"
+                  maxWidth="Infinity"
+                  styleClass="dashboard-goal-forecast">
+
+                <Label text="Previsão da conquista"
+                       styleClass="dashboard-goal-forecast-caption"/>
+
+                <Label fx:id="dashboardGoalForecastLabel"
+                       text="Registre contribuições para calcular uma previsão."
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-forecast-message"/>
+
+                <Label fx:id="dashboardGoalForecastDateLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-forecast-date"/>
+
+            </VBox>
         </VBox>
 
         <VBox fx:id="dashboardHighlightCard"
