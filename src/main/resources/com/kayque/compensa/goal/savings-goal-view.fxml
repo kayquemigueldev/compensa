@@ -102,6 +102,29 @@
                        styleClass="settings-description"/>
             </VBox>
 
+            <VBox fx:id="targetPlanCard"
+                  spacing="7.0"
+                  visible="false"
+                  managed="false"
+                  styleClass="goal-target-plan-card">
+
+                <Label fx:id="targetPlanTitleLabel"
+                       text="Plano mensal"
+                       wrapText="true"
+                       styleClass="goal-target-plan-title"/>
+
+                <Label fx:id="targetPlanAmountLabel"
+                       text="R$ 0,00 por mês"
+                       wrapText="true"
+                       styleClass="goal-target-plan-amount"/>
+
+                <Label fx:id="targetPlanMessageLabel"
+                       text=""
+                       wrapText="true"
+                       styleClass="goal-target-plan-message"/>
+
+            </VBox>
+
             <VBox spacing="7.0"
                   styleClass="goal-forecast-card">
 

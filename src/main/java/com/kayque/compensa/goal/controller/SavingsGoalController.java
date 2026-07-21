@@ -13,6 +13,7 @@ import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
+import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,6 +30,8 @@ import com.kayque.compensa.goal.repository.SqliteSavingsGoalMilestoneRepository;
 import com.kayque.compensa.goal.service.SavingsGoalMilestoneService;
 import com.kayque.compensa.goal.model.SavingsGoalDeadlineStatus;
 import com.kayque.compensa.goal.service.SavingsGoalDeadlineService;
+import com.kayque.compensa.goal.model.SavingsGoalTargetPlan;
+import com.kayque.compensa.goal.model.SavingsGoalTargetPlanStatus;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -80,6 +83,10 @@ public class SavingsGoalController {
                     "dd/MM/yyyy 'às' HH:mm"
             );
 
+    private final SavingsGoalTargetPlanService
+            targetPlanService =
+            new SavingsGoalTargetPlanService();
+
     private SavingsGoal currentGoal;
 
     private List<SavingsGoalContribution>
@@ -102,6 +109,18 @@ public class SavingsGoalController {
 
     @FXML
     private Label goalTitleLabel;
+
+    @FXML
+    private VBox targetPlanCard;
+
+    @FXML
+    private Label targetPlanTitleLabel;
+
+    @FXML
+    private Label targetPlanAmountLabel;
+
+    @FXML
+    private Label targetPlanMessageLabel;
 
     @FXML
     private Label savedAmountLabel;
@@ -461,11 +480,137 @@ public class SavingsGoalController {
         }
     }
 
+    private void renderTargetPlan() {
+        if (currentGoal == null) {
+            hideTargetPlan();
+            return;
+        }
+
+        SavingsGoalTargetPlan plan =
+                targetPlanService.calculate(
+                        currentGoal,
+                        LocalDate.now()
+                );
+
+        switch (plan.status()) {
+            case ACTIVE -> renderActiveTargetPlan(plan);
+
+            case NO_TARGET_DATE -> hideTargetPlan();
+
+            case DEADLINE_PASSED ->
+                    renderExpiredTargetPlan(plan);
+
+            case COMPLETED ->
+                    renderCompletedTargetPlan();
+        }
+    }
+
+    private void renderActiveTargetPlan(
+            SavingsGoalTargetPlan plan
+    ) {
+        String monthText =
+                plan.monthsAvailable() == 1
+                        ? "1 mês disponível"
+                        : plan.monthsAvailable()
+                          + " meses disponíveis";
+
+        targetPlanTitleLabel.setText(
+                "Quanto guardar por mês"
+        );
+
+        targetPlanAmountLabel.setText(
+                currencyFormat.format(
+                        plan.requiredMonthlyAmount()
+                ) + " por mês"
+        );
+
+        targetPlanMessageLabel.setText(
+                monthText
+                        + " para completar os "
+                        + currencyFormat.format(
+                        plan.remainingAmount()
+                )
+                        + " restantes."
+        );
+
+        showTargetPlan(
+                "goal-target-plan-card",
+                "goal-target-plan-active"
+        );
+    }
+
+    private void renderExpiredTargetPlan(
+            SavingsGoalTargetPlan plan
+    ) {
+        targetPlanTitleLabel.setText(
+                "A data desejada já passou"
+        );
+
+        targetPlanAmountLabel.setText(
+                currencyFormat.format(
+                        plan.remainingAmount()
+                ) + " restantes"
+        );
+
+        targetPlanMessageLabel.setText(
+                "Escolha uma nova data para recalcular um plano mensal possível."
+        );
+
+        showTargetPlan(
+                "goal-target-plan-card",
+                "goal-target-plan-warning"
+        );
+    }
+
+    private void renderCompletedTargetPlan() {
+        targetPlanTitleLabel.setText(
+                "Plano concluído"
+        );
+
+        targetPlanAmountLabel.setText(
+                "Objetivo alcançado"
+        );
+
+        targetPlanMessageLabel.setText(
+                "Você completou o valor necessário para esta conquista."
+        );
+
+        showTargetPlan(
+                "goal-target-plan-card",
+                "goal-target-plan-completed"
+        );
+    }
+
+    private void showTargetPlan(
+            String baseStyle,
+            String statusStyle
+    ) {
+        targetPlanCard.setVisible(true);
+        targetPlanCard.setManaged(true);
+
+        targetPlanCard.getStyleClass().setAll(
+                baseStyle,
+                statusStyle
+        );
+    }
+
+    private void hideTargetPlan() {
+        targetPlanCard.setVisible(false);
+        targetPlanCard.setManaged(false);
+
+        targetPlanTitleLabel.setText("");
+        targetPlanAmountLabel.setText("");
+        targetPlanMessageLabel.setText("");
+    }
+
     private void renderForecast() {
         if (currentGoal == null) {
+            hideTargetPlan();
             renderForecastUnavailable();
             return;
         }
+
+        renderTargetPlan();
 
         SavingsGoalForecast forecast =
                 forecastService.calculate(
@@ -640,6 +785,8 @@ public class SavingsGoalController {
     }
 
     private void renderForecastUnavailable() {
+        renderTargetPlan();
+
         forecastTitleLabel.setText(
                 "Previsão da conquista"
         );

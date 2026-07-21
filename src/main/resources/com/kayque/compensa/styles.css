@@ -1778,3 +1778,49 @@
 .goal-forecast-warning {
     -fx-text-fill: #f2b84b;
 }
+
+.goal-target-plan-card {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 12px;
+    -fx-border-color: #31421f;
+    -fx-border-radius: 12px;
+    -fx-padding: 16px;
+}
+
+.goal-target-plan-active {
+    -fx-border-color: #3b5f22;
+}
+
+.goal-target-plan-warning {
+    -fx-border-color: #685126;
+}
+
+.goal-target-plan-completed {
+    -fx-border-color: #28718a;
+}
+
+.goal-target-plan-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.goal-target-plan-amount {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 19px;
+    -fx-font-weight: 800;
+}
+
+.goal-target-plan-warning .goal-target-plan-amount {
+    -fx-text-fill: #f2b84b;
+}
+
+.goal-target-plan-completed .goal-target-plan-amount {
+    -fx-text-fill: #54c7ec;
+}
+
+.goal-target-plan-message {
+    -fx-text-fill: #9da5b1;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}
