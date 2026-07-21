@@ -19,6 +19,7 @@ import com.kayque.compensa.dashboard.model.DashboardHighlight;
 import com.kayque.compensa.dashboard.service.DashboardHighlightService;
 import com.kayque.compensa.goal.model.SavingsGoal;
 import com.kayque.compensa.goal.model.SavingsGoalContribution;
+import com.kayque.compensa.goal.model.SavingsGoalTargetPlan;
 import com.kayque.compensa.goal.model.SavingsGoalForecast;
 import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
@@ -37,11 +38,13 @@ import com.kayque.compensa.goal.model.SavingsGoalProgress;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
+import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
 
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.Region;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -98,6 +101,10 @@ public class DashboardController {
             savingsGoalForecastService =
             new SavingsGoalForecastService();
 
+    private final SavingsGoalTargetPlanService
+            savingsGoalTargetPlanService =
+            new SavingsGoalTargetPlanService();
+
     private final GoalDashboardAlertService
             goalAlertService =
             new GoalDashboardAlertService();
@@ -112,6 +119,12 @@ public class DashboardController {
     private DashboardSummary currentSummary;
     private SavingsGoal currentSavingsGoal;
     private SavingsGoalProgress currentGoalProgress;
+
+    @FXML
+    private Label dashboardGoalForecastDateLabel;
+
+    @FXML
+    private Label dashboardGoalForecastLabel;
 
     @FXML
     private Label plannedBudgetLabel;
@@ -179,11 +192,6 @@ public class DashboardController {
     @FXML
     private Label dashboardHighlightDescriptionLabel;
 
-    @FXML
-    private Label dashboardGoalForecastDateLabel;
-
-    @FXML
-    private Label dashboardGoalForecastLabel;
 
     @FXML
     private VBox dashboardAlertCard;
@@ -196,6 +204,15 @@ public class DashboardController {
 
     @FXML
     private Label dashboardGoalLastContributionLabel;
+
+    @FXML
+    private Label dashboardGoalTargetPlanLabel;
+
+    @FXML
+    private Label dashboardGoalTargetPlanMessageLabel;
+
+    @FXML
+    private Region dashboardGoalTargetPlanSeparator;
 
     @FXML
     private void initialize() {
@@ -467,6 +484,7 @@ public class DashboardController {
                                 )
                         );
 
+                        renderGoalTargetPlan(goal);
                         renderGoalForecast(goal);
                         renderGoalAlert(progress);
                         renderLastGoalContribution();
@@ -566,7 +584,9 @@ public class DashboardController {
     }
 
     private void hideSavingsGoal() {
+        hideGoalTargetPlan();
         dashboardGoalForecastLabel.setText("");
+
         hideGoalForecastDate();
         hideDashboardAlert();
         hideLastGoalContribution();
@@ -607,6 +627,106 @@ public class DashboardController {
         }
 
         return hours + "h " + minutes + "min";
+    }
+
+    private void renderGoalTargetPlan(
+            SavingsGoal goal
+    ) {
+        SavingsGoalTargetPlan plan =
+                savingsGoalTargetPlanService.calculate(
+                        goal,
+                        LocalDate.now()
+                );
+
+        switch (plan.status()) {
+            case ACTIVE -> {
+                dashboardGoalTargetPlanLabel.setText(
+                        currencyFormat.format(
+                                plan.requiredMonthlyAmount()
+                        ) + " por mês"
+                );
+
+                String monthText =
+                        plan.monthsAvailable() == 1
+                                ? "1 mês disponível"
+                                : plan.monthsAvailable()
+                                  + " meses disponíveis";
+
+                dashboardGoalTargetPlanMessageLabel.setText(
+                        monthText
+                                + " até a data desejada."
+                );
+
+                showGoalTargetPlan(
+                        "dashboard-goal-target-plan"
+                );
+            }
+
+            case DEADLINE_PASSED -> {
+                dashboardGoalTargetPlanLabel.setText(
+                        "Atualize sua data desejada"
+                );
+
+                dashboardGoalTargetPlanMessageLabel.setText(
+                        "O prazo definido para este objetivo já passou."
+                );
+
+                showGoalTargetPlan(
+                        "dashboard-goal-target-plan-warning"
+                );
+            }
+
+            case COMPLETED -> {
+                dashboardGoalTargetPlanLabel.setText(
+                        "Objetivo alcançado"
+                );
+
+                dashboardGoalTargetPlanMessageLabel.setText(
+                        "O valor necessário para esta conquista foi completado."
+                );
+
+                showGoalTargetPlan(
+                        "dashboard-goal-target-plan-completed"
+                );
+            }
+
+            case NO_TARGET_DATE ->
+                    hideGoalTargetPlan();
+        }
+    }
+
+    private void showGoalTargetPlan(
+            String statusStyle
+    ) {
+        dashboardGoalTargetPlanLabel
+                .getStyleClass()
+                .setAll(
+                        "dashboard-goal-target-plan",
+                        statusStyle
+                );
+
+        dashboardGoalTargetPlanLabel.setVisible(true);
+        dashboardGoalTargetPlanLabel.setManaged(true);
+
+        dashboardGoalTargetPlanMessageLabel.setVisible(true);
+        dashboardGoalTargetPlanMessageLabel.setManaged(true);
+
+        dashboardGoalTargetPlanSeparator.setVisible(true);
+        dashboardGoalTargetPlanSeparator.setManaged(true);
+    }
+
+    private void hideGoalTargetPlan() {
+        dashboardGoalTargetPlanLabel.setText("");
+        dashboardGoalTargetPlanMessageLabel.setText("");
+
+        dashboardGoalTargetPlanLabel.setVisible(false);
+        dashboardGoalTargetPlanLabel.setManaged(false);
+
+        dashboardGoalTargetPlanMessageLabel.setVisible(false);
+        dashboardGoalTargetPlanMessageLabel.setManaged(false);
+
+        dashboardGoalTargetPlanSeparator.setVisible(false);
+        dashboardGoalTargetPlanSeparator.setManaged(false);
     }
 
     private void renderGoalForecast(

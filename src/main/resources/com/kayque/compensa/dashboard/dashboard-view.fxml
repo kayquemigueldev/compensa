@@ -260,6 +260,28 @@
                   maxWidth="Infinity"
                   styleClass="dashboard-goal-forecast">
 
+                <Label fx:id="dashboardGoalTargetPlanLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-target-plan"/>
+
+                <Label fx:id="dashboardGoalTargetPlanMessageLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-target-plan-message"/>
+
+                <Region fx:id="dashboardGoalTargetPlanSeparator"
+                        visible="false"
+                        managed="false"
+                        maxWidth="Infinity"
+                        styleClass="dashboard-goal-target-plan-separator"/>
+
                 <Label text="Previsão da conquista"
                        styleClass="dashboard-goal-forecast-caption"/>
 

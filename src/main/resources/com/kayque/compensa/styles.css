@@ -1824,3 +1824,30 @@
     -fx-font-size: 12px;
     -fx-line-spacing: 2px;
 }
+
+.dashboard-goal-target-plan {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.dashboard-goal-target-plan-message {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 11px;
+}
+
+.dashboard-goal-target-plan-warning {
+    -fx-text-fill: #f2b84b;
+}
+
+.dashboard-goal-target-plan-completed {
+    -fx-text-fill: #54c7ec;
+}
+
+.dashboard-goal-target-plan-separator {
+    -fx-min-height: 1px;
+    -fx-pref-height: 1px;
+    -fx-max-height: 1px;
+    -fx-background-color: #31421f;
+    -fx-padding: 0 0 4px 0;
+}
