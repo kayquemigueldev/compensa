@@ -1646,12 +1646,3 @@
 .settings-backup-button:hover {
     -fx-background-color: #1b2a16;
 }
-
-.dashboard-goal-forecast {
-    -fx-text-fill: #8f98a6;
-    -fx-font-size: 11px;
-    -fx-line-spacing: 2px;
-    -fx-padding: 7px 0 0 0;
-    -fx-border-color: #29323d transparent transparent transparent;
-    -fx-border-width: 1px 0 0 0;
-}
