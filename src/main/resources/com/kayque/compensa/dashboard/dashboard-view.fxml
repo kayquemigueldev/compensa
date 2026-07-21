@@ -181,30 +181,42 @@
 
     </HBox>
 
-    <HBox spacing="16.0">
+    <HBox spacing="16.0"
+          alignment="TOP_LEFT"
+          fillHeight="false"
+          maxWidth="Infinity">
 
         <VBox fx:id="dashboardGoalCard"
               spacing="12.0"
-              maxWidth="Infinity"
+              minWidth="380.0"
+              prefWidth="380.0"
+              maxWidth="380.0"
               visible="false"
               managed="false"
-              HBox.hgrow="ALWAYS"
               styleClass="dashboard-goal-card">
 
-            <HBox alignment="CENTER_LEFT">
-                <VBox spacing="3.0">
+            <HBox spacing="12.0"
+                  alignment="CENTER_LEFT"
+                  maxWidth="Infinity">
+
+                <VBox spacing="3.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS">
+
                     <Label text="Sua próxima conquista"
                            styleClass="dashboard-goal-section-label"/>
 
                     <Label fx:id="dashboardGoalNameLabel"
                            text="Objetivo"
+                           maxWidth="Infinity"
+                           wrapText="true"
                            styleClass="dashboard-goal-title"/>
                 </VBox>
 
-                <Region HBox.hgrow="ALWAYS"/>
-
                 <Label fx:id="dashboardGoalPercentageLabel"
                        text="0%"
+                       minWidth="58.0"
+                       alignment="CENTER_RIGHT"
                        styleClass="dashboard-goal-percentage"/>
             </HBox>
 
@@ -286,6 +298,24 @@
         </VBox>
 
     </HBox>
+
+    <VBox fx:id="dashboardAlertCard"
+          spacing="7.0"
+          visible="false"
+          managed="false"
+          styleClass="dashboard-alert-card">
+
+        <Label fx:id="dashboardAlertTitleLabel"
+               text=""
+               styleClass="dashboard-alert-title"/>
+
+        <Label fx:id="dashboardAlertMessageLabel"
+               text=""
+               wrapText="true"
+               maxWidth="Infinity"
+               styleClass="dashboard-alert-message"/>
+
+    </VBox>
 
     <Label fx:id="dashboardFeedbackLabel"
            text=""

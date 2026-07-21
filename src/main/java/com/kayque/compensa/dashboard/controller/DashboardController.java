@@ -24,6 +24,10 @@ import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+import com.kayque.compensa.dashboard.model.DashboardAlert;
+import com.kayque.compensa.dashboard.model.DashboardAlertLevel;
+import com.kayque.compensa.dashboard.service.GoalDashboardAlertService;
+import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +38,7 @@ import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
 
-import javafx.scene.layout.VBox;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -93,6 +97,10 @@ public class DashboardController {
     private final SavingsGoalForecastService
             savingsGoalForecastService =
             new SavingsGoalForecastService();
+
+    private final GoalDashboardAlertService
+            goalAlertService =
+            new GoalDashboardAlertService();
 
     private final DateTimeFormatter goalForecastDateFormat =
             DateTimeFormatter.ofPattern(
@@ -176,6 +184,15 @@ public class DashboardController {
 
     @FXML
     private Label dashboardGoalForecastLabel;
+
+    @FXML
+    private VBox dashboardAlertCard;
+
+    @FXML
+    private Label dashboardAlertTitleLabel;
+
+    @FXML
+    private Label dashboardAlertMessageLabel;
 
     @FXML
     private void initialize() {
@@ -448,6 +465,7 @@ public class DashboardController {
                         );
 
                         renderGoalForecast(goal);
+                        renderGoalAlert(progress);
 
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
@@ -546,6 +564,7 @@ public class DashboardController {
     private void hideSavingsGoal() {
         dashboardGoalForecastLabel.setText("");
         hideGoalForecastDate();
+        hideDashboardAlert();
 
         dashboardGoalCard.setVisible(false);
         dashboardGoalCard.setManaged(false);
@@ -645,4 +664,69 @@ public class DashboardController {
         dashboardGoalForecastDateLabel.setVisible(false);
         dashboardGoalForecastDateLabel.setManaged(false);
     }
+
+    private void renderGoalAlert(
+            SavingsGoalProgress progress
+    ) {
+        try {
+            List<SavingsGoalContribution> contributions =
+                    savingsGoalContributionRepository.findAll();
+
+            goalAlertService.create(
+                    progress,
+                    contributions,
+                    LocalDate.now()
+            ).ifPresentOrElse(
+                    this::showDashboardAlert,
+                    this::hideDashboardAlert
+            );
+
+        } catch (IllegalStateException exception) {
+            hideDashboardAlert();
+        }
+    }
+
+    private void showDashboardAlert(
+            DashboardAlert alert
+    ) {
+        dashboardAlertTitleLabel.setText(
+                alert.title()
+        );
+
+        dashboardAlertMessageLabel.setText(
+                alert.message()
+        );
+
+        dashboardAlertCard.getStyleClass().setAll(
+                "dashboard-alert-card",
+                getDashboardAlertStyle(alert.level())
+        );
+
+        dashboardAlertCard.setVisible(true);
+        dashboardAlertCard.setManaged(true);
+    }
+
+    private void hideDashboardAlert() {
+        dashboardAlertTitleLabel.setText("");
+        dashboardAlertMessageLabel.setText("");
+
+        dashboardAlertCard.setVisible(false);
+        dashboardAlertCard.setManaged(false);
+    }
+
+    private String getDashboardAlertStyle(
+            DashboardAlertLevel level
+    ) {
+        return switch (level) {
+            case INFORMATION ->
+                    "dashboard-alert-information";
+
+            case ATTENTION ->
+                    "dashboard-alert-attention";
+
+            case POSITIVE ->
+                    "dashboard-alert-positive";
+        };
+    }
+
 }

@@ -1646,3 +1646,35 @@
 .settings-backup-button:hover {
     -fx-background-color: #1b2a16;
 }
+
+.dashboard-alert-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-padding: 15px 18px;
+}
+
+.dashboard-alert-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.dashboard-alert-message {
+    -fx-text-fill: #aeb5c0;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}
+
+.dashboard-alert-information {
+    -fx-border-color: #31576a;
+}
+
+.dashboard-alert-attention {
+    -fx-border-color: #665225;
+}
+
+.dashboard-alert-positive {
+    -fx-border-color: #365522;
+}
