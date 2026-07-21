@@ -11,17 +11,17 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kayque.compensa.dashboard.controller.DashboardController"
-      spacing="28.0"
+      spacing="18.0"
       styleClass="main-content">
 
     <padding>
-        <Insets top="42.0"
-                right="44.0"
-                bottom="42.0"
-                left="44.0"/>
+        <Insets top="28.0"
+                right="34.0"
+                bottom="28.0"
+                left="34.0"/>
     </padding>
 
-    <VBox spacing="8.0">
+    <VBox spacing="5.0">
         <Label fx:id="dashboardGreetingLabel"
                text="Hoje"
                styleClass="page-title"/>
@@ -30,8 +30,8 @@
                styleClass="page-subtitle"/>
     </VBox>
 
-    <GridPane hgap="16.0"
-              vgap="16.0">
+    <GridPane hgap="12.0"
+              vgap="12.0">
 
         <VBox GridPane.columnIndex="0"
               GridPane.rowIndex="0"
@@ -122,7 +122,7 @@
 
     </GridPane>
 
-    <HBox spacing="16.0">
+    <HBox spacing="12.0">
 
         <VBox maxWidth="Infinity"
               HBox.hgrow="ALWAYS"
@@ -181,13 +181,13 @@
 
     </HBox>
 
-    <HBox spacing="16.0"
+    <HBox spacing="12.0"
           alignment="TOP_LEFT"
           fillHeight="false"
           maxWidth="Infinity">
 
         <VBox fx:id="dashboardGoalCard"
-              spacing="8.0"
+              spacing="6.0"
               minWidth="380.0"
               prefWidth="380.0"
               maxWidth="380.0"
@@ -312,7 +312,7 @@
         </VBox>
 
         <VBox fx:id="dashboardHighlightCard"
-              spacing="10.0"
+              spacing="8.0"
               maxWidth="Infinity"
               HBox.hgrow="ALWAYS"
               styleClass="dashboard-insight-card, dashboard-highlight-default">
