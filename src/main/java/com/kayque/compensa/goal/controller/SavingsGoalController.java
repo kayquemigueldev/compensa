@@ -27,6 +27,8 @@ import com.kayque.compensa.goal.model.SavingsGoalMilestone;
 import com.kayque.compensa.goal.repository.SavingsGoalMilestoneRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalMilestoneRepository;
 import com.kayque.compensa.goal.service.SavingsGoalMilestoneService;
+import com.kayque.compensa.goal.model.SavingsGoalDeadlineStatus;
+import com.kayque.compensa.goal.service.SavingsGoalDeadlineService;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -63,6 +65,10 @@ public class SavingsGoalController {
 
     private final SavingsGoalForecastService forecastService =
             new SavingsGoalForecastService();
+
+    private final SavingsGoalDeadlineService
+            deadlineService =
+            new SavingsGoalDeadlineService();
 
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
@@ -498,6 +504,138 @@ public class SavingsGoalController {
         forecastMessageLabel.getStyleClass().setAll(
                 "goal-forecast-message",
                 getForecastStyle(forecast.status())
+        );
+        renderDeadlineComparison(forecast);
+    }
+
+    private void renderDeadlineComparison(
+            SavingsGoalForecast forecast
+    ) {
+        SavingsGoalDeadlineStatus deadlineStatus =
+                deadlineService.evaluate(
+                        currentGoal,
+                        forecast
+                );
+
+        if (deadlineStatus
+                == SavingsGoalDeadlineStatus.NO_TARGET_DATE) {
+            return;
+        }
+
+        DateTimeFormatter dateFormatter =
+                DateTimeFormatter.ofPattern(
+                        "dd/MM/yyyy"
+                );
+
+        String targetDate = currentGoal
+                .targetDate()
+                .format(dateFormatter);
+
+        switch (deadlineStatus) {
+            case FORECAST_UNAVAILABLE -> {
+                forecastTitleLabel.setText(
+                        "Data desejada definida"
+                );
+
+                forecastMessageLabel.setText(
+                        "Você deseja alcançar este objetivo até "
+                                + targetDate
+                                + ". Registre mais contribuições para compararmos seu ritmo."
+                );
+
+                setDeadlineStyle(
+                        "goal-forecast-neutral"
+                );
+            }
+
+            case AHEAD_OF_SCHEDULE -> {
+                String forecastDate = forecast
+                        .completionDate()
+                        .orElseThrow()
+                        .format(dateFormatter);
+
+                forecastTitleLabel.setText(
+                        "Você pode chegar antes do planejado"
+                );
+
+                forecastMessageLabel.setText(
+                        "Mantendo esse ritmo, a previsão é "
+                                + forecastDate
+                                + ", antes da data desejada de "
+                                + targetDate
+                                + "."
+                );
+
+                setDeadlineStyle(
+                        "goal-forecast-progress"
+                );
+            }
+
+            case ON_SCHEDULE -> {
+                forecastTitleLabel.setText(
+                        "Seu ritmo está alinhado"
+                );
+
+                forecastMessageLabel.setText(
+                        "A previsão atual coincide com sua data desejada: "
+                                + targetDate
+                                + "."
+                );
+
+                setDeadlineStyle(
+                        "goal-forecast-progress"
+                );
+            }
+
+            case BEHIND_SCHEDULE -> {
+                String forecastDate = forecast
+                        .completionDate()
+                        .orElseThrow()
+                        .format(dateFormatter);
+
+                forecastTitleLabel.setText(
+                        "Seu ritmo precisa aumentar"
+                );
+
+                forecastMessageLabel.setText(
+                        "No ritmo atual, a previsão é "
+                                + forecastDate
+                                + ", depois da data desejada de "
+                                + targetDate
+                                + "."
+                );
+
+                setDeadlineStyle(
+                        "goal-forecast-warning"
+                );
+            }
+
+            case COMPLETED -> {
+                forecastTitleLabel.setText(
+                        "Conquista alcançada"
+                );
+
+                forecastMessageLabel.setText(
+                        "Você concluiu seu objetivo. Data desejada: "
+                                + targetDate
+                                + "."
+                );
+
+                setDeadlineStyle(
+                        "goal-forecast-completed"
+                );
+            }
+
+            case NO_TARGET_DATE -> {
+                // O texto padrão da previsão será mantido.
+            }
+        }
+    }
+
+    private void setDeadlineStyle(String styleClass) {
+        forecastMessageLabel.getStyleClass().setAll(
+                "goal-forecast-message",
+                styleClass
         );
     }
 

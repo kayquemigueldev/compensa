@@ -1774,3 +1774,7 @@
     -fx-shape: "";
     -fx-padding: 0;
 }
+
+.goal-forecast-warning {
+    -fx-text-fill: #f2b84b;
+}
