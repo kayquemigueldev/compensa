@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.DatePicker?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -60,6 +61,20 @@
                            promptText="Ex.: R$ 5.000,00"
                            maxWidth="Infinity"
                            styleClass="user-profile-field"/>
+            </VBox>
+
+            <VBox spacing="8.0">
+                <Label text="Quando deseja conquistar?"
+                       styleClass="field-label"/>
+
+                <DatePicker fx:id="targetDatePicker"
+                            promptText="Selecione uma data"
+                            maxWidth="Infinity"
+                            styleClass="user-profile-field"/>
+
+                <Label text="Campo opcional. Usaremos essa data para comparar seu prazo com a previsão atual."
+                       wrapText="true"
+                       styleClass="settings-description"/>
             </VBox>
 
             <VBox spacing="8.0">

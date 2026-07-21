@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 
 import java.io.IOException;
 
@@ -41,6 +42,9 @@ public class MainController {
     @FXML
     private Button savingsGoalButton;
 
+    @FXML
+    private ScrollPane mainContentScrollPane;
+
     private Node purchaseAnalysisView;
 
     @FXML
@@ -54,12 +58,13 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        purchaseAnalysisView = mainBorderPane.getCenter();
+        purchaseAnalysisView =
+                mainContentScrollPane.getContent();
     }
 
     @FXML
     private void showPurchaseAnalysis() {
-        mainBorderPane.setCenter(purchaseAnalysisView);
+        showContent(purchaseAnalysisView);
         setActiveButton(analyzePurchaseButton);
     }
 
@@ -129,7 +134,7 @@ public class MainController {
 
             Parent view = loader.load();
 
-            mainBorderPane.setCenter(view);
+            showContent(view);
             setActiveButton(activeButton);
 
         } catch (IOException exception) {
@@ -147,6 +152,12 @@ public class MainController {
                 settingsButton,
                 "Não foi possível abrir as configurações."
         );
+    }
+
+    private void showContent(Node view) {
+        mainContentScrollPane.setContent(view);
+        mainContentScrollPane.setVvalue(0);
+        mainContentScrollPane.setHvalue(0);
     }
 
     private void setActiveButton(Button activeButton) {

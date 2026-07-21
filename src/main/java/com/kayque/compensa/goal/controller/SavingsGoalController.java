@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.DatePicker;
 
 import com.kayque.compensa.goal.model.SavingsGoalMilestone;
 import com.kayque.compensa.goal.repository.SavingsGoalMilestoneRepository;
@@ -130,6 +131,9 @@ public class SavingsGoalController {
     private Label forecastDateLabel;
 
     @FXML
+    private DatePicker targetDatePicker;
+
+    @FXML
     private void initialize() {
         loadGoal();
         loadContributions();
@@ -147,6 +151,16 @@ public class SavingsGoalController {
                     )
                             : currentGoal.savedAmount();
 
+            LocalDate targetDate =
+                    targetDatePicker.getValue();
+
+            if (targetDate != null
+                    && targetDate.isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException(
+                        "A data desejada não pode estar no passado."
+                );
+            }
+
             SavingsGoal goal = new SavingsGoal(
                     goalNameField.getText(),
 
@@ -155,7 +169,9 @@ public class SavingsGoalController {
                             "Informe o valor necessário para o objetivo."
                     ),
 
-                    savedAmount
+                    savedAmount,
+
+                    targetDate
             );
 
             repository.save(goal);
@@ -259,6 +275,9 @@ public class SavingsGoalController {
 
     private void fillFields(SavingsGoal goal) {
         goalNameField.setText(goal.name());
+        targetDatePicker.setValue(
+                goal.targetDate()
+        );
 
         targetAmountField.setText(
                 currencyFormat.format(

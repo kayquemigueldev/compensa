@@ -360,6 +360,13 @@ public final class DatabaseInitializer {
                     )
                 """
         );
+
+        addColumnIfMissing(
+                connection,
+                "savings_goal",
+                "target_date",
+                "target_date TEXT"
+        );
     }
 
     private static void addColumnIfMissing(

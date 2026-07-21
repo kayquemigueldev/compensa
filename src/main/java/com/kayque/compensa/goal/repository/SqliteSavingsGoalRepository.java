@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,7 +21,8 @@ public class SqliteSavingsGoalRepository
         SELECT
             name,
             target_amount,
-            saved_amount
+            saved_amount,
+            target_date
         FROM savings_goal
         WHERE id = ?
         """;
@@ -30,10 +33,12 @@ public class SqliteSavingsGoalRepository
             name,
             target_amount,
             saved_amount,
+            target_date,
             created_at,
             updated_at
         )
         VALUES (
+            ?,
             ?,
             ?,
             ?,
@@ -45,6 +50,7 @@ public class SqliteSavingsGoalRepository
             name = excluded.name,
             target_amount = excluded.target_amount,
             saved_amount = excluded.saved_amount,
+            target_date = excluded.target_date,
             updated_at = CURRENT_TIMESTAMP
         """;
 
@@ -102,6 +108,18 @@ public class SqliteSavingsGoalRepository
                     goal.savedAmount()
             );
 
+            if (goal.hasTargetDate()) {
+                statement.setString(
+                        5,
+                        goal.targetDate().toString()
+                );
+            } else {
+                statement.setNull(
+                        5,
+                        Types.VARCHAR
+                );
+            }
+
             statement.executeUpdate();
 
         } catch (SQLException exception) {
@@ -115,6 +133,14 @@ public class SqliteSavingsGoalRepository
     private SavingsGoal mapGoal(
             ResultSet resultSet
     ) throws SQLException {
+        String targetDateValue =
+                resultSet.getString("target_date");
+
+        LocalDate targetDate =
+                targetDateValue == null
+                        ? null
+                        : LocalDate.parse(targetDateValue);
+
         return new SavingsGoal(
                 resultSet.getString("name"),
 
@@ -124,7 +150,9 @@ public class SqliteSavingsGoalRepository
 
                 resultSet.getBigDecimal(
                         "saved_amount"
-                )
+                ),
+
+                targetDate
         );
     }
 }

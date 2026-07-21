@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -113,7 +114,17 @@
     </left>
 
     <center>
-        <fx:include source="purchase/purchase-analysis-view.fxml"/>
+        <ScrollPane fx:id="mainContentScrollPane"
+                    fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    pannable="true"
+                    styleClass="main-scroll-pane">
+
+            <content>
+                <fx:include source="purchase/purchase-analysis-view.fxml"/>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>

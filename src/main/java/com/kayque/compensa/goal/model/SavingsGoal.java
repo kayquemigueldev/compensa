@@ -1,12 +1,27 @@
 package com.kayque.compensa.goal.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public record SavingsGoal(
         String name,
         BigDecimal targetAmount,
-        BigDecimal savedAmount
+        BigDecimal savedAmount,
+        LocalDate targetDate
 ) {
+
+    public SavingsGoal(
+            String name,
+            BigDecimal targetAmount,
+            BigDecimal savedAmount
+    ) {
+        this(
+                name,
+                targetAmount,
+                savedAmount,
+                null
+        );
+    }
 
     public SavingsGoal {
         if (name == null || name.isBlank()) {
@@ -54,5 +69,9 @@ public record SavingsGoal(
 
     public boolean isCompleted() {
         return savedAmount.compareTo(targetAmount) >= 0;
+    }
+
+    public boolean hasTargetDate() {
+        return targetDate != null;
     }
 }

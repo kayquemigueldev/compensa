@@ -1684,3 +1684,93 @@
     -fx-font-size: 10px;
     -fx-padding: 2px 0 0 0;
 }
+
+/* Campo de data do objetivo */
+
+.date-picker.user-profile-field {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 10px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 10px;
+    -fx-padding: 0;
+}
+
+.date-picker.user-profile-field > .text-field {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px 0 0 10px;
+    -fx-border-color: transparent;
+    -fx-text-fill: #f4f1ea;
+    -fx-prompt-text-fill: #68717e;
+    -fx-padding: 13px 14px;
+}
+
+.date-picker.user-profile-field > .arrow-button {
+    -fx-background-color: #1b222c;
+    -fx-background-radius: 0 9px 9px 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0 14px;
+}
+
+.date-picker.user-profile-field > .arrow-button:hover {
+    -fx-background-color: #26303b;
+}
+
+.date-picker.user-profile-field > .arrow-button > .arrow {
+    -fx-background-color: #8eea3c;
+}
+
+.date-picker.user-profile-field:focused {
+    -fx-border-color: #8eea3c;
+}
+
+.date-picker.user-profile-field:focused > .text-field {
+    -fx-background-color: transparent;
+}
+
+/* Rolagem global do conteúdo principal */
+
+.main-scroll-pane {
+    -fx-background-color: #0e1014;
+    -fx-background: #0e1014;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.main-scroll-pane > .viewport {
+    -fx-background-color: #0e1014;
+}
+
+.main-scroll-pane > .corner {
+    -fx-background-color: #0e1014;
+}
+
+.main-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #0e1014;
+    -fx-pref-width: 10px;
+}
+
+.main-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #161b22;
+    -fx-background-radius: 999px;
+}
+
+.main-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #394352;
+    -fx-background-radius: 999px;
+}
+
+.main-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #8eea3c;
+}
+
+.main-scroll-pane .increment-button,
+.main-scroll-pane .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.main-scroll-pane .increment-arrow,
+.main-scroll-pane .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
