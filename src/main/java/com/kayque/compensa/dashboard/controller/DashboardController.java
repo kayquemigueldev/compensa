@@ -195,6 +195,9 @@ public class DashboardController {
     private Label dashboardAlertMessageLabel;
 
     @FXML
+    private Label dashboardGoalLastContributionLabel;
+
+    @FXML
     private void initialize() {
         loadGreeting();
         loadSummary();
@@ -466,6 +469,7 @@ public class DashboardController {
 
                         renderGoalForecast(goal);
                         renderGoalAlert(progress);
+                        renderLastGoalContribution();
 
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
@@ -565,6 +569,7 @@ public class DashboardController {
         dashboardGoalForecastLabel.setText("");
         hideGoalForecastDate();
         hideDashboardAlert();
+        hideLastGoalContribution();
 
         dashboardGoalCard.setVisible(false);
         dashboardGoalCard.setManaged(false);
@@ -727,6 +732,51 @@ public class DashboardController {
             case POSITIVE ->
                     "dashboard-alert-positive";
         };
+    }
+
+    private void renderLastGoalContribution() {
+        try {
+            List<SavingsGoalContribution> contributions =
+                    savingsGoalContributionRepository.findAll();
+
+            if (contributions.isEmpty()) {
+                hideLastGoalContribution();
+                return;
+            }
+
+            SavingsGoalContribution contribution =
+                    contributions.getFirst();
+
+            String formattedDate =
+                    contribution.contributedAt()
+                            .format(
+                                    DateTimeFormatter.ofPattern(
+                                            "dd/MM/yyyy",
+                                            Locale.of("pt", "BR")
+                                    )
+                            );
+
+            dashboardGoalLastContributionLabel.setText(
+                    "Última contribuição: "
+                            + currencyFormat.format(
+                            contribution.amount()
+                    )
+                            + " em "
+                            + formattedDate
+            );
+
+            dashboardGoalLastContributionLabel.setVisible(true);
+            dashboardGoalLastContributionLabel.setManaged(true);
+
+        } catch (IllegalStateException exception) {
+            hideLastGoalContribution();
+        }
+    }
+
+    private void hideLastGoalContribution() {
+        dashboardGoalLastContributionLabel.setText("");
+        dashboardGoalLastContributionLabel.setVisible(false);
+        dashboardGoalLastContributionLabel.setManaged(false);
     }
 
 }

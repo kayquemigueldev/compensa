@@ -1678,3 +1678,9 @@
 .dashboard-alert-positive {
     -fx-border-color: #365522;
 }
+
+.dashboard-goal-last-contribution {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 10px;
+    -fx-padding: 2px 0 0 0;
+}

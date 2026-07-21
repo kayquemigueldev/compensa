@@ -187,7 +187,7 @@
           maxWidth="Infinity">
 
         <VBox fx:id="dashboardGoalCard"
-              spacing="12.0"
+              spacing="8.0"
               minWidth="380.0"
               prefWidth="380.0"
               maxWidth="380.0"
@@ -278,6 +278,15 @@
                        styleClass="dashboard-goal-forecast-date"/>
 
             </VBox>
+
+            <Label fx:id="dashboardGoalLastContributionLabel"
+                   text=""
+                   visible="false"
+                   managed="false"
+                   maxWidth="Infinity"
+                   wrapText="true"
+                   styleClass="dashboard-goal-last-contribution"/>
+
         </VBox>
 
         <VBox fx:id="dashboardHighlightCard"
