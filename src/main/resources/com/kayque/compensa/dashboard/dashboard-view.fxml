@@ -348,6 +348,24 @@
 
     </HBox>
 
+    <VBox fx:id="dashboardBudgetAlertCard"
+          spacing="7.0"
+          visible="false"
+          managed="false"
+          styleClass="dashboard-alert-card">
+
+        <Label fx:id="dashboardBudgetAlertTitleLabel"
+               text=""
+               styleClass="dashboard-alert-title"/>
+
+        <Label fx:id="dashboardBudgetAlertMessageLabel"
+               text=""
+               wrapText="true"
+               maxWidth="Infinity"
+               styleClass="dashboard-alert-message"/>
+
+    </VBox>
+
     <VBox fx:id="dashboardAlertCard"
           spacing="7.0"
           visible="false"

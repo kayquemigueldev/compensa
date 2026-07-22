@@ -26,6 +26,7 @@ import com.kayque.compensa.goal.model.SavingsGoalMonthlyPace;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+import com.kayque.compensa.dashboard.service.BudgetDashboardAlertService;
 import com.kayque.compensa.dashboard.model.DashboardAlert;
 import com.kayque.compensa.dashboard.model.DashboardAlertLevel;
 import com.kayque.compensa.dashboard.service.GoalDashboardAlertService;
@@ -115,6 +116,10 @@ public class DashboardController {
             goalAlertService =
             new GoalDashboardAlertService();
 
+    private final BudgetDashboardAlertService
+            budgetAlertService =
+            new BudgetDashboardAlertService();
+
     private final DateTimeFormatter goalForecastDateFormat =
             DateTimeFormatter.ofPattern(
                     "MMMM 'de' yyyy",
@@ -198,7 +203,6 @@ public class DashboardController {
     @FXML
     private Label dashboardHighlightDescriptionLabel;
 
-
     @FXML
     private VBox dashboardAlertCard;
 
@@ -207,6 +211,15 @@ public class DashboardController {
 
     @FXML
     private Label dashboardAlertMessageLabel;
+
+    @FXML
+    private VBox dashboardBudgetAlertCard;
+
+    @FXML
+    private Label dashboardBudgetAlertTitleLabel;
+
+    @FXML
+    private Label dashboardBudgetAlertMessageLabel;
 
     @FXML
     private Label dashboardGoalLastContributionLabel;
@@ -350,6 +363,7 @@ public class DashboardController {
             );
 
             configureBudgetProgress(currentBudget);
+            renderBudgetAlert(currentBudget);
 
         } catch (IllegalStateException exception) {
             showMissingBudget();
@@ -611,6 +625,8 @@ public class DashboardController {
     }
 
     private void showMissingBudget() {
+        hideBudgetAlert();
+
         plannedBudgetLabel.setText("--");
         purchasedThisMonthLabel.setText("--");
         currentAvailableBudgetLabel.setText("--");
@@ -938,6 +954,48 @@ public class DashboardController {
         dashboardGoalForecastDateLabel.setText("");
         dashboardGoalForecastDateLabel.setVisible(false);
         dashboardGoalForecastDateLabel.setManaged(false);
+    }
+
+    private void renderBudgetAlert(
+            MonthlyBudgetUsage budget
+    ) {
+        budgetAlertService.create(budget)
+                .ifPresentOrElse(
+                        this::showBudgetAlert,
+                        this::hideBudgetAlert
+                );
+    }
+
+    private void showBudgetAlert(
+            DashboardAlert alert
+    ) {
+        dashboardBudgetAlertTitleLabel.setText(
+                alert.title()
+        );
+
+        dashboardBudgetAlertMessageLabel.setText(
+                alert.message()
+        );
+
+        dashboardBudgetAlertCard
+                .getStyleClass()
+                .setAll(
+                        "dashboard-alert-card",
+                        getDashboardAlertStyle(
+                                alert.level()
+                        )
+                );
+
+        dashboardBudgetAlertCard.setVisible(true);
+        dashboardBudgetAlertCard.setManaged(true);
+    }
+
+    private void hideBudgetAlert() {
+        dashboardBudgetAlertTitleLabel.setText("");
+        dashboardBudgetAlertMessageLabel.setText("");
+
+        dashboardBudgetAlertCard.setVisible(false);
+        dashboardBudgetAlertCard.setManaged(false);
     }
 
     private void renderGoalAlert(
