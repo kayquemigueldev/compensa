@@ -22,6 +22,7 @@ import com.kayque.compensa.goal.model.SavingsGoalContribution;
 import com.kayque.compensa.goal.model.SavingsGoalTargetPlan;
 import com.kayque.compensa.goal.model.SavingsGoalForecast;
 import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
+import com.kayque.compensa.goal.model.SavingsGoalMonthlyPace;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
@@ -39,6 +40,7 @@ import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
 import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
+import com.kayque.compensa.goal.service.SavingsGoalMonthlyPaceService;
 
 
 import javafx.fxml.FXML;
@@ -104,6 +106,10 @@ public class DashboardController {
     private final SavingsGoalTargetPlanService
             savingsGoalTargetPlanService =
             new SavingsGoalTargetPlanService();
+
+    private final SavingsGoalMonthlyPaceService
+            savingsGoalMonthlyPaceService =
+            new SavingsGoalMonthlyPaceService();
 
     private final GoalDashboardAlertService
             goalAlertService =
@@ -213,6 +219,12 @@ public class DashboardController {
 
     @FXML
     private Region dashboardGoalTargetPlanSeparator;
+
+    @FXML
+    private Label dashboardGoalMonthlyPaceLabel;
+
+    @FXML
+    private Label dashboardGoalMonthlyPaceMessageLabel;
 
     @FXML
     private void initialize() {
@@ -485,6 +497,7 @@ public class DashboardController {
                         );
 
                         renderGoalTargetPlan(goal);
+                        renderGoalMonthlyPace(goal);
                         renderGoalForecast(goal);
                         renderGoalAlert(progress);
                         renderLastGoalContribution();
@@ -585,6 +598,8 @@ public class DashboardController {
 
     private void hideSavingsGoal() {
         hideGoalTargetPlan();
+        hideGoalMonthlyPace();
+
         dashboardGoalForecastLabel.setText("");
 
         hideGoalForecastDate();
@@ -629,6 +644,141 @@ public class DashboardController {
         return hours + "h " + minutes + "min";
     }
 
+    private void renderGoalMonthlyPace(
+            SavingsGoal goal
+    ) {
+        try {
+            SavingsGoalTargetPlan targetPlan =
+                    savingsGoalTargetPlanService.calculate(
+                            goal,
+                            LocalDate.now()
+                    );
+
+            List<SavingsGoalContribution> contributions =
+                    savingsGoalContributionRepository.findAll();
+
+            SavingsGoalMonthlyPace pace =
+                    savingsGoalMonthlyPaceService.calculate(
+                            targetPlan,
+                            contributions,
+                            LocalDate.now()
+                    );
+
+            switch (pace.status()) {
+                case NOT_STARTED ->
+                        renderGoalMonthlyPaceNotStarted(pace);
+
+                case IN_PROGRESS ->
+                        renderGoalMonthlyPaceInProgress(pace);
+
+                case MONTHLY_TARGET_REACHED ->
+                        renderGoalMonthlyPaceReached(pace);
+
+                case NO_ACTIVE_PLAN,
+                     GOAL_COMPLETED ->
+                        hideGoalMonthlyPace();
+            }
+
+        } catch (IllegalStateException exception) {
+            hideGoalMonthlyPace();
+        }
+    }
+
+    private void renderGoalMonthlyPaceNotStarted(
+            SavingsGoalMonthlyPace pace
+    ) {
+        dashboardGoalMonthlyPaceLabel.setText(
+                currencyFormat.format(BigDecimal.ZERO)
+                        + " de "
+                        + currencyFormat.format(
+                        pace.requiredMonthlyAmount()
+                )
+                        + " neste mês"
+        );
+
+        dashboardGoalMonthlyPaceMessageLabel.setText(
+                "Comece registrando uma contribuição para acompanhar o plano."
+        );
+
+        showGoalMonthlyPace(
+                "dashboard-goal-monthly-pace-warning"
+        );
+    }
+
+    private void renderGoalMonthlyPaceInProgress(
+            SavingsGoalMonthlyPace pace
+    ) {
+        dashboardGoalMonthlyPaceLabel.setText(
+                currencyFormat.format(
+                        pace.contributedThisMonth()
+                )
+                        + " de "
+                        + currencyFormat.format(
+                        pace.requiredMonthlyAmount()
+                )
+                        + " neste mês"
+        );
+
+        dashboardGoalMonthlyPaceMessageLabel.setText(
+                "Faltam "
+                        + currencyFormat.format(
+                        pace.remainingThisMonth()
+                )
+                        + " para acompanhar o plano mensal."
+        );
+
+        showGoalMonthlyPace(
+                "dashboard-goal-monthly-pace-progress"
+        );
+    }
+
+    private void renderGoalMonthlyPaceReached(
+            SavingsGoalMonthlyPace pace
+    ) {
+        dashboardGoalMonthlyPaceLabel.setText(
+                "Meta mensal alcançada"
+        );
+
+        dashboardGoalMonthlyPaceMessageLabel.setText(
+                currencyFormat.format(
+                        pace.contributedThisMonth()
+                )
+                        + " guardados neste mês."
+        );
+
+        showGoalMonthlyPace(
+                "dashboard-goal-monthly-pace-completed"
+        );
+    }
+
+    private void showGoalMonthlyPace(
+            String statusStyle
+    ) {
+        dashboardGoalMonthlyPaceLabel
+                .getStyleClass()
+                .setAll(
+                        "dashboard-goal-monthly-pace",
+                        statusStyle
+                );
+
+        dashboardGoalMonthlyPaceLabel.setVisible(true);
+        dashboardGoalMonthlyPaceLabel.setManaged(true);
+
+        dashboardGoalMonthlyPaceMessageLabel.setVisible(true);
+        dashboardGoalMonthlyPaceMessageLabel.setManaged(true);
+    }
+
+    private void hideGoalMonthlyPace() {
+        dashboardGoalMonthlyPaceLabel.setText("");
+        dashboardGoalMonthlyPaceMessageLabel.setText("");
+
+        dashboardGoalMonthlyPaceLabel.setVisible(false);
+        dashboardGoalMonthlyPaceLabel.setManaged(false);
+
+        dashboardGoalMonthlyPaceMessageLabel.setVisible(false);
+        dashboardGoalMonthlyPaceMessageLabel.setManaged(false);
+    }
+
     private void renderGoalTargetPlan(
             SavingsGoal goal
     ) {
@@ -658,7 +808,7 @@ public class DashboardController {
                 );
 
                 showGoalTargetPlan(
-                        "dashboard-goal-target-plan"
+                        "dashboard-goal-target-plan-active"
                 );
             }
 

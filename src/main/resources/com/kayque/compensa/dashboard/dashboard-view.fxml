@@ -261,6 +261,7 @@
                   styleClass="dashboard-goal-forecast">
 
                 <Label fx:id="dashboardGoalTargetPlanLabel"
+                       id="dashboardGoalTargetPlanLabel"
                        text=""
                        visible="false"
                        managed="false"
@@ -275,6 +276,23 @@
                        maxWidth="Infinity"
                        wrapText="true"
                        styleClass="dashboard-goal-target-plan-message"/>
+
+                <Label fx:id="dashboardGoalMonthlyPaceLabel"
+                       id="dashboardGoalMonthlyPaceLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-monthly-pace"/>
+
+                <Label fx:id="dashboardGoalMonthlyPaceMessageLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-monthly-pace-message"/>
 
                 <Region fx:id="dashboardGoalTargetPlanSeparator"
                         visible="false"

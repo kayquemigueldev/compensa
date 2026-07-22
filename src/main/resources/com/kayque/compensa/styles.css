@@ -1855,18 +1855,15 @@
     -fx-line-spacing: 1px;
 }
 
-.goal-monthly-pace-warning
-.goal-monthly-pace-amount {
+.goal-monthly-pace-warning .goal-monthly-pace-amount {
     -fx-text-fill: #f2b84b;
 }
 
-.goal-monthly-pace-progress
-.goal-monthly-pace-amount {
+.goal-monthly-pace-progress .goal-monthly-pace-amount {
     -fx-text-fill: #8eea3c;
 }
 
-.goal-monthly-pace-completed
-.goal-monthly-pace-amount {
+.goal-monthly-pace-completed .goal-monthly-pace-amount {
     -fx-text-fill: #54c7ec;
 }
 
@@ -1881,11 +1878,47 @@
     -fx-font-size: 11px;
 }
 
-.dashboard-goal-target-plan-warning {
+.dashboard-goal-monthly-pace {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-padding: 3px 0 0 0;
+}
+
+.dashboard-goal-monthly-pace-message {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 10px;
+}
+
+#dashboardGoalMonthlyPaceLabel {
+    -fx-text-fill: #8eea3c;
+}
+
+#dashboardGoalMonthlyPaceLabel.dashboard-goal-monthly-pace-warning {
     -fx-text-fill: #f2b84b;
 }
 
-.dashboard-goal-target-plan-completed {
+#dashboardGoalMonthlyPaceLabel.dashboard-goal-monthly-pace-progress {
+    -fx-text-fill: #8eea3c;
+}
+
+#dashboardGoalMonthlyPaceLabel.dashboard-goal-monthly-pace-completed {
+    -fx-text-fill: #54c7ec;
+}
+
+#dashboardGoalTargetPlanLabel {
+    -fx-text-fill: #8eea3c;
+}
+
+#dashboardGoalTargetPlanLabel.dashboard-goal-target-plan-active {
+    -fx-text-fill: #8eea3c;
+}
+
+#dashboardGoalTargetPlanLabel.dashboard-goal-target-plan-warning {
+    -fx-text-fill: #f2b84b;
+}
+
+#dashboardGoalTargetPlanLabel.dashboard-goal-target-plan-completed {
     -fx-text-fill: #54c7ec;
 }
 
