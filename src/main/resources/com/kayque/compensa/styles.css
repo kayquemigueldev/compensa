@@ -263,15 +263,6 @@
     -fx-background-color: #a8e063;
 }
 
-.form-combo .combo-box-popup .list-view {
-    -fx-background-color: #171a21;
-    -fx-border-color: #303641;
-}
-
-.form-combo .combo-box-popup .list-cell:hover {
-    -fx-background-color: #242a32;
-}
-
 .analysis-status {
     -fx-text-fill: #a8e063;
     -fx-font-size: 22px;
@@ -1042,24 +1033,6 @@
     -fx-background-color: #8eea3c;
 }
 
-.user-profile-combo .combo-box-popup .list-view {
-    -fx-background-color: #171c24;
-    -fx-border-color: #303846;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-}
-
-.user-profile-combo .combo-box-popup .list-cell {
-    -fx-background-color: #171c24;
-    -fx-text-fill: #d9dde3;
-    -fx-padding: 11px 14px;
-}
-
-.user-profile-combo .combo-box-popup .list-cell:hover {
-    -fx-background-color: #242a32;
-    -fx-text-fill: #8eea3c;
-}
-
 .dream-impact-card {
     -fx-background-color: #12171a;
     -fx-background-radius: 10px;
@@ -1552,23 +1525,6 @@
 
 .history-filter-combo .arrow-button {
     -fx-background-color: transparent;
-}
-
-.history-filter-combo-popup .list-view {
-    -fx-background-color: #171a21;
-    -fx-border-color: #303846;
-}
-
-.history-filter-combo-popup .list-cell {
-    -fx-background-color: #171a21;
-    -fx-text-fill: #c3c7ce;
-    -fx-padding: 10px 12px;
-}
-
-.history-filter-combo-popup .list-cell:hover,
-.history-filter-combo-popup .list-cell:selected {
-    -fx-background-color: #242a32;
-    -fx-text-fill: #8eea3c;
 }
 
 .combo-box-popup .list-view {
