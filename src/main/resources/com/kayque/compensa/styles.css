@@ -1825,6 +1825,51 @@
     -fx-line-spacing: 2px;
 }
 
+.goal-monthly-pace-section {
+    -fx-padding: 5px 0 0 0;
+}
+
+.goal-monthly-pace-separator {
+    -fx-min-height: 1px;
+    -fx-pref-height: 1px;
+    -fx-max-height: 1px;
+    -fx-background-color: #31421f;
+    -fx-padding: 0 0 5px 0;
+}
+
+.goal-monthly-pace-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+.goal-monthly-pace-amount {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}
+
+.goal-monthly-pace-message {
+    -fx-text-fill: #9da5b1;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 1px;
+}
+
+.goal-monthly-pace-warning
+.goal-monthly-pace-amount {
+    -fx-text-fill: #f2b84b;
+}
+
+.goal-monthly-pace-progress
+.goal-monthly-pace-amount {
+    -fx-text-fill: #8eea3c;
+}
+
+.goal-monthly-pace-completed
+.goal-monthly-pace-amount {
+    -fx-text-fill: #54c7ec;
+}
+
 .dashboard-goal-target-plan {
     -fx-text-fill: #8eea3c;
     -fx-font-size: 14px;

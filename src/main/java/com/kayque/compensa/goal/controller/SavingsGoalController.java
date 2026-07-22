@@ -28,10 +28,13 @@ import com.kayque.compensa.goal.model.SavingsGoalMilestone;
 import com.kayque.compensa.goal.repository.SavingsGoalMilestoneRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalMilestoneRepository;
 import com.kayque.compensa.goal.service.SavingsGoalMilestoneService;
+import com.kayque.compensa.goal.service.SavingsGoalMonthlyPaceService;
 import com.kayque.compensa.goal.model.SavingsGoalDeadlineStatus;
 import com.kayque.compensa.goal.service.SavingsGoalDeadlineService;
 import com.kayque.compensa.goal.model.SavingsGoalTargetPlan;
 import com.kayque.compensa.goal.model.SavingsGoalTargetPlanStatus;
+import com.kayque.compensa.goal.model.SavingsGoalMonthlyPace;
+import com.kayque.compensa.goal.model.SavingsGoalMonthlyPaceStatus;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -87,6 +90,10 @@ public class SavingsGoalController {
             targetPlanService =
             new SavingsGoalTargetPlanService();
 
+    private final SavingsGoalMonthlyPaceService
+            monthlyPaceService =
+            new SavingsGoalMonthlyPaceService();
+
     private SavingsGoal currentGoal;
 
     private List<SavingsGoalContribution>
@@ -121,6 +128,18 @@ public class SavingsGoalController {
 
     @FXML
     private Label targetPlanMessageLabel;
+
+    @FXML
+    private VBox monthlyPaceSection;
+
+    @FXML
+    private Label monthlyPaceTitleLabel;
+
+    @FXML
+    private Label monthlyPaceAmountLabel;
+
+    @FXML
+    private Label monthlyPaceMessageLabel;
 
     @FXML
     private Label savedAmountLabel;
@@ -493,16 +512,147 @@ public class SavingsGoalController {
                 );
 
         switch (plan.status()) {
-            case ACTIVE -> renderActiveTargetPlan(plan);
+            case ACTIVE -> {
+                renderActiveTargetPlan(plan);
+                renderMonthlyPace(plan);
+            }
 
-            case NO_TARGET_DATE -> hideTargetPlan();
+            case NO_TARGET_DATE -> {
+                hideMonthlyPace();
+                hideTargetPlan();
+            }
 
-            case DEADLINE_PASSED ->
-                    renderExpiredTargetPlan(plan);
+            case DEADLINE_PASSED -> {
+                hideMonthlyPace();
+                renderExpiredTargetPlan(plan);
+            }
 
-            case COMPLETED ->
-                    renderCompletedTargetPlan();
+            case COMPLETED -> {
+                hideMonthlyPace();
+                renderCompletedTargetPlan();
+            }
         }
+    }
+
+    private void renderMonthlyPace(
+            SavingsGoalTargetPlan targetPlan
+    ) {
+        SavingsGoalMonthlyPace pace =
+                monthlyPaceService.calculate(
+                        targetPlan,
+                        currentContributions,
+                        LocalDate.now()
+                );
+
+        monthlyPaceTitleLabel.setText(
+                "Seu ritmo neste mês"
+        );
+
+        switch (pace.status()) {
+            case NOT_STARTED ->
+                    renderMonthlyPaceNotStarted(pace);
+
+            case IN_PROGRESS ->
+                    renderMonthlyPaceInProgress(pace);
+
+            case MONTHLY_TARGET_REACHED ->
+                    renderMonthlyPaceReached(pace);
+
+            case NO_ACTIVE_PLAN,
+                 GOAL_COMPLETED ->
+                    hideMonthlyPace();
+        }
+    }
+
+    private void renderMonthlyPaceNotStarted(
+            SavingsGoalMonthlyPace pace
+    ) {
+        monthlyPaceAmountLabel.setText(
+                currencyFormat.format(BigDecimal.ZERO)
+                        + " de "
+                        + currencyFormat.format(
+                        pace.requiredMonthlyAmount()
+                )
+        );
+
+        monthlyPaceMessageLabel.setText(
+                "Comece registrando uma contribuição. "
+                        + currencyFormat.format(
+                        pace.remainingThisMonth()
+                )
+                        + " ainda precisam ser guardados neste mês."
+        );
+
+        showMonthlyPace(
+                "goal-monthly-pace-warning"
+        );
+    }
+
+    private void renderMonthlyPaceInProgress(
+            SavingsGoalMonthlyPace pace
+    ) {
+        monthlyPaceAmountLabel.setText(
+                currencyFormat.format(
+                        pace.contributedThisMonth()
+                )
+                        + " de "
+                        + currencyFormat.format(
+                        pace.requiredMonthlyAmount()
+                )
+        );
+
+        monthlyPaceMessageLabel.setText(
+                "Faltam "
+                        + currencyFormat.format(
+                        pace.remainingThisMonth()
+                )
+                        + " para acompanhar seu plano mensal."
+        );
+
+        showMonthlyPace(
+                "goal-monthly-pace-progress"
+        );
+    }
+
+    private void renderMonthlyPaceReached(
+            SavingsGoalMonthlyPace pace
+    ) {
+        monthlyPaceAmountLabel.setText(
+                "Meta mensal alcançada"
+        );
+
+        monthlyPaceMessageLabel.setText(
+                "Você guardou "
+                        + currencyFormat.format(
+                        pace.contributedThisMonth()
+                )
+                        + " neste mês. Excelente progresso!"
+        );
+
+        showMonthlyPace(
+                "goal-monthly-pace-completed"
+        );
+    }
+
+    private void showMonthlyPace(
+            String statusStyle
+    ) {
+        monthlyPaceSection.setVisible(true);
+        monthlyPaceSection.setManaged(true);
+
+        monthlyPaceSection.getStyleClass().setAll(
+                "goal-monthly-pace-section",
+                statusStyle
+        );
+    }
+
+    private void hideMonthlyPace() {
+        monthlyPaceSection.setVisible(false);
+        monthlyPaceSection.setManaged(false);
+
+        monthlyPaceTitleLabel.setText("");
+        monthlyPaceAmountLabel.setText("");
+        monthlyPaceMessageLabel.setText("");
     }
 
     private void renderActiveTargetPlan(
@@ -595,6 +745,8 @@ public class SavingsGoalController {
     }
 
     private void hideTargetPlan() {
+        hideMonthlyPace();
+
         targetPlanCard.setVisible(false);
         targetPlanCard.setManaged(false);
 

@@ -123,6 +123,31 @@
                        wrapText="true"
                        styleClass="goal-target-plan-message"/>
 
+                <VBox fx:id="monthlyPaceSection"
+                      spacing="4.0"
+                      visible="false"
+                      managed="false"
+                      styleClass="goal-monthly-pace-section">
+
+                    <Region styleClass="goal-monthly-pace-separator"/>
+
+                    <Label fx:id="monthlyPaceTitleLabel"
+                           text="Seu ritmo neste mês"
+                           wrapText="true"
+                           styleClass="goal-monthly-pace-title"/>
+
+                    <Label fx:id="monthlyPaceAmountLabel"
+                           text="R$ 0,00 de R$ 0,00"
+                           wrapText="true"
+                           styleClass="goal-monthly-pace-amount"/>
+
+                    <Label fx:id="monthlyPaceMessageLabel"
+                           text=""
+                           wrapText="true"
+                           styleClass="goal-monthly-pace-message"/>
+
+                </VBox>
+
             </VBox>
 
             <VBox spacing="7.0"
