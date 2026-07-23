@@ -110,5 +110,9 @@ class WaitingDecisionServiceTest {
         ) {
             return BigDecimal.ZERO;
         }
+        @Override
+        public boolean deleteById(long decisionId) {
+            return false;
+        }
     }
 }

@@ -1898,3 +1898,93 @@
 .dashboard-goal-last-contribution {
     -fx-padding: 2px 0 0 0;
 }
+
+.history-delete-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #7d343d;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #e87979;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 11px;
+    -fx-cursor: hand;
+}
+
+.history-delete-button:hover {
+    -fx-background-color: #2e1c1f;
+    -fx-border-color: #ff596b;
+    -fx-text-fill: #ff7a87;
+}
+
+.history-delete-button:pressed {
+    -fx-background-color: #3a2025;
+}
+
+.delete-confirmation-dialog {
+    -fx-background-color: #171a21;
+    -fx-border-color: #353b46;
+    -fx-border-width: 1px;
+}
+
+.delete-confirmation-dialog > .content.label {
+    -fx-text-fill: #aeb4be;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+    -fx-padding: 8px 4px 18px 4px;
+}
+
+.delete-confirmation-dialog > .header-panel {
+    -fx-background-color: #171a21;
+    -fx-padding: 22px 22px 10px 22px;
+}
+
+.delete-confirmation-dialog > .header-panel > .label {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.delete-confirmation-dialog > .button-bar {
+    -fx-background-color: #171a21;
+    -fx-padding: 12px 18px 18px 18px;
+}
+
+.delete-dialog-cancel-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #4a5260;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #c2c7cf;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 16px;
+    -fx-cursor: hand;
+}
+
+.delete-dialog-cancel-button:hover {
+    -fx-background-color: #252a33;
+    -fx-border-color: #697281;
+    -fx-text-fill: #f4f1ea;
+}
+
+.delete-dialog-confirm-button {
+    -fx-background-color: #ff4f64;
+    -fx-background-radius: 8px;
+    -fx-border-color: #ff4f64;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 16px;
+    -fx-cursor: hand;
+}
+
+.delete-dialog-confirm-button:hover {
+    -fx-background-color: #ff6577;
+    -fx-border-color: #ff6577;
+}
+
+.delete-dialog-confirm-button:pressed {
+    -fx-background-color: #db3f53;
+    -fx-border-color: #db3f53;
+}

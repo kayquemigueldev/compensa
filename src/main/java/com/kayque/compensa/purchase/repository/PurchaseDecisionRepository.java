@@ -26,4 +26,6 @@ import java.util.List;
             PurchaseSatisfaction satisfaction
     );
 
+        boolean deleteById(long decisionId);
+
 }

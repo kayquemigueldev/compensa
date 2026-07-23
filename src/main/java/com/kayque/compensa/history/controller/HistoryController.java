@@ -23,6 +23,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.util.StringConverter;
 
 import java.text.NumberFormat;
@@ -352,6 +355,8 @@ public class HistoryController {
                 getOutcomeStyle(item.outcome())
         );
 
+        Button deleteButton = createDeleteButton(item);
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -362,7 +367,8 @@ public class HistoryController {
                 priceBox,
                 timeBox,
                 recommendationLabel,
-                outcomeLabel
+                outcomeLabel,
+                deleteButton
         );
 
         informationRow.setAlignment(Pos.CENTER_LEFT);
@@ -383,6 +389,156 @@ public class HistoryController {
         }
 
         return card;
+    }
+
+    private Button createDeleteButton(
+            PurchaseDecisionHistoryItem item
+    ) {
+        Button button = new Button("Excluir");
+
+        button.getStyleClass().add(
+                "history-delete-button"
+        );
+
+        button.setOnAction(event ->
+                confirmDecisionDeletion(item)
+        );
+
+        return button;
+    }
+
+    private void confirmDecisionDeletion(
+            PurchaseDecisionHistoryItem item
+    ) {
+        ButtonType cancelButtonType = new ButtonType(
+                "Cancelar",
+                ButtonBar.ButtonData.CANCEL_CLOSE
+        );
+
+        ButtonType deleteButtonType = new ButtonType(
+                "Excluir decisão",
+                ButtonBar.ButtonData.OK_DONE
+        );
+
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "",
+                cancelButtonType,
+                deleteButtonType
+        );
+
+        alert.setTitle("Excluir decisão");
+        alert.setHeaderText(
+                "Excluir “" + item.productName() + "”?"
+        );
+
+        alert.setContentText(
+                "Essa decisão será removida permanentemente do histórico. "
+                        + "Os valores e indicadores do painel serão recalculados."
+        );
+
+        alert.setGraphic(null);
+
+        alert.getDialogPane()
+                .getStylesheets()
+                .add(
+                        HistoryController.class
+                                .getResource(
+                                        "/com/kayque/compensa/styles.css"
+                                )
+                                .toExternalForm()
+                );
+
+        alert.getDialogPane()
+                .getStyleClass()
+                .add("delete-confirmation-dialog");
+
+        Button cancelButton = (Button) alert
+                .getDialogPane()
+                .lookupButton(cancelButtonType);
+
+        cancelButton.getStyleClass().add(
+                "delete-dialog-cancel-button"
+        );
+
+        Button deleteButton = (Button) alert
+                .getDialogPane()
+                .lookupButton(deleteButtonType);
+
+        deleteButton.getStyleClass().add(
+                "delete-dialog-confirm-button"
+        );
+
+        alert.showAndWait()
+                .filter(result ->
+                        result == deleteButtonType
+                )
+                .ifPresent(result ->
+                        deleteDecision(item)
+                );
+    }
+
+    private void deleteDecision(
+            PurchaseDecisionHistoryItem item
+    ) {
+        try {
+            boolean deleted = repository.deleteById(
+                    item.id()
+            );
+
+            if (!deleted) {
+                showDeletionError(
+                        "Essa decisão não existe mais no histórico."
+                );
+
+                loadHistory();
+                return;
+            }
+
+            showDeletionSuccess(
+                    "A decisão “"
+                            + item.productName()
+                            + "” foi excluída."
+            );
+
+            loadHistory();
+
+        } catch (IllegalArgumentException exception) {
+            showDeletionError(exception.getMessage());
+
+        } catch (IllegalStateException exception) {
+            showDeletionError(
+                    "Não foi possível excluir essa decisão."
+            );
+        }
+    }
+
+    private void showDeletionSuccess(String message) {
+        historyActionFeedbackLabel.setText(message);
+
+        historyActionFeedbackLabel
+                .getStyleClass()
+                .setAll(
+                        "feedback-label",
+                        "feedback-success"
+                );
+
+        historyActionFeedbackLabel.setVisible(true);
+        historyActionFeedbackLabel.setManaged(true);
+    }
+
+    private void showDeletionError(String message) {
+        historyActionFeedbackLabel.setText(message);
+
+        historyActionFeedbackLabel
+                .getStyleClass()
+                .setAll(
+                        "feedback-label",
+                        "feedback-error"
+                );
+
+        historyActionFeedbackLabel.setVisible(true);
+        historyActionFeedbackLabel.setManaged(true);
     }
 
     private Node createWaitingDecisionSection(

@@ -98,6 +98,11 @@ public class SqlitePurchaseDecisionRepository
           AND outcome = 'PURCHASED'
         """;
 
+    private static final String DELETE_DECISION = """
+    DELETE FROM purchase_decision
+    WHERE id = ?
+    """;
+
     private static final String SUM_PURCHASED_AMOUNT_BETWEEN = """
         SELECT COALESCE(SUM(price), 0)
             AS purchased_amount
@@ -278,6 +283,33 @@ public class SqlitePurchaseDecisionRepository
         } catch (SQLException exception) {
             throw new IllegalStateException(
                     "Não foi possível avaliar a compra.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public boolean deleteById(long decisionId) {
+        validateDecisionId(decisionId);
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                DELETE_DECISION
+                        )
+        ) {
+            statement.setLong(1, decisionId);
+
+            int deletedRows = statement.executeUpdate();
+
+            return deletedRows == 1;
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível excluir a decisão.",
                     exception
             );
         }
@@ -474,15 +506,19 @@ public class SqlitePurchaseDecisionRepository
         );
     }
 
-    private void validateFinalization(
-            long decisionId,
-            PurchaseDecisionOutcome finalOutcome
-    ) {
+    private void validateDecisionId(long decisionId) {
         if (decisionId <= 0) {
             throw new IllegalArgumentException(
                     "O ID da decisão deve ser positivo."
             );
         }
+    }
+
+    private void validateFinalization(
+            long decisionId,
+            PurchaseDecisionOutcome finalOutcome
+    ) {
+        validateDecisionId(decisionId);
 
         if (finalOutcome == null) {
             throw new IllegalArgumentException(
@@ -501,11 +537,7 @@ public class SqlitePurchaseDecisionRepository
             long decisionId,
             PurchaseSatisfaction satisfaction
     ) {
-        if (decisionId <= 0) {
-            throw new IllegalArgumentException(
-                    "O ID da decisão deve ser positivo."
-            );
-        }
+        validateDecisionId(decisionId);
 
         if (satisfaction == null) {
             throw new IllegalArgumentException(
