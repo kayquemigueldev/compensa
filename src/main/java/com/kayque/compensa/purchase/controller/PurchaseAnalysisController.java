@@ -24,9 +24,19 @@ import com.kayque.compensa.purchase.repository.PurchaseDecisionRepository;
 import com.kayque.compensa.purchase.repository.SqlitePurchaseDecisionRepository;
 import com.kayque.compensa.purchase.service.CurrentMonthPurchasedAmountService;
 import com.kayque.compensa.purchase.service.PurchaseAdviceMessageService;
-import com.kayque.compensa.purchase.service.PurchaseAdviceService;
 import com.kayque.compensa.purchase.service.PurchaseAnalysisService;
 import com.kayque.compensa.purchase.service.PurchaseBudgetImpactService;
+import com.kayque.compensa.purchase.score.model.PurchaseScore;
+import com.kayque.compensa.purchase.score.model.PurchaseScoreContext;
+import com.kayque.compensa.purchase.score.service.PurchaseScoreAdviceAdapter;
+import com.kayque.compensa.purchase.score.service.PurchaseScoreContextFactory;
+import com.kayque.compensa.purchase.score.service.PurchaseScoreService;
+import com.kayque.compensa.userprofile.model.PurchaseDreamImpact;
+import com.kayque.compensa.userprofile.repository.SqliteUserProfileRepository;
+import com.kayque.compensa.userprofile.repository.UserProfileRepository;
+import com.kayque.compensa.userprofile.service.PurchaseDreamImpactService;
+
+import java.util.Optional;
 
 import com.kayque.compensa.userprofile.model.PurchaseDreamImpact;
 import com.kayque.compensa.userprofile.model.RecommendationTone;
@@ -58,9 +68,6 @@ public class PurchaseAnalysisController {
     private final PurchaseBudgetImpactService budgetImpactService =
             new PurchaseBudgetImpactService();
 
-    private final PurchaseAdviceService adviceService =
-            new PurchaseAdviceService();
-
     private final PurchaseAdviceMessageService
             adviceMessageService =
             new PurchaseAdviceMessageService();
@@ -87,6 +94,25 @@ public class PurchaseAnalysisController {
     private final MonthlyBudgetUsageService budgetUsageService =
             new MonthlyBudgetUsageService();
 
+    private final PurchaseScoreContextFactory
+            scoreContextFactory =
+            new PurchaseScoreContextFactory();
+
+    private final PurchaseScoreService scoreService =
+            new PurchaseScoreService();
+
+    private final PurchaseScoreAdviceAdapter
+            scoreAdviceAdapter =
+            new PurchaseScoreAdviceAdapter();
+
+    private final UserProfileRepository
+            scoreUserProfileRepository =
+            new SqliteUserProfileRepository();
+
+    private final PurchaseDreamImpactService
+            scoreDreamImpactService =
+            new PurchaseDreamImpactService();
+
     private final NumberFormat currencyFormat =
             NumberFormat.getCurrencyInstance(
                     Locale.of("pt", "BR")
@@ -96,6 +122,7 @@ public class PurchaseAnalysisController {
     private PurchaseBudgetImpact currentBudgetImpact;
     private PurchaseDecisionContext currentContext;
     private PurchaseAdvice currentAdvice;
+    private PurchaseScore currentScore;
 
     @FXML
     private TextField purchaseNameField;
@@ -217,17 +244,29 @@ public class PurchaseAnalysisController {
             PurchaseDecisionContext context =
                     createDecisionContext();
 
-            PurchaseAdvice advice =
-                    adviceService.evaluate(
+            Optional<PurchaseDreamImpact> dreamImpact =
+                    calculateScoreDreamImpact(purchase);
+
+            PurchaseScoreContext scoreContext =
+                    scoreContextFactory.create(
                             analysis,
                             context,
-                            budgetImpact
+                            budgetImpact,
+                            profile,
+                            dreamImpact
                     );
+
+            PurchaseScore score =
+                    scoreService.calculate(scoreContext);
+
+            PurchaseAdvice advice =
+                    scoreAdviceAdapter.adapt(score);
 
             currentAnalysis = analysis;
             currentBudgetImpact = budgetImpact;
             currentContext = context;
             currentAdvice = advice;
+            currentScore = score;
 
             showAnalysis(analysis);
             showBudgetImpact(budgetImpact);
@@ -396,6 +435,24 @@ public class PurchaseAnalysisController {
                         "budget-impact-detail",
                         styleClass
                 );
+    }
+
+    private Optional<PurchaseDreamImpact>
+    calculateScoreDreamImpact(Purchase purchase) {
+        try {
+            return scoreUserProfileRepository
+                    .find()
+                    .flatMap(profile ->
+                            scoreDreamImpactService.calculate(
+                                    profile,
+                                    purchase.price()
+                            )
+                    );
+
+        } catch (IllegalArgumentException
+                 | IllegalStateException exception) {
+            return Optional.empty();
+        }
     }
 
     private void showDreamImpact(Purchase purchase) {
@@ -718,7 +775,8 @@ public class PurchaseAnalysisController {
         return currentAnalysis != null
                 && currentBudgetImpact != null
                 && currentContext != null
-                && currentAdvice != null;
+                && currentAdvice != null
+                && currentScore != null;
     }
 
     private void clearCurrentAnalysis() {
@@ -726,7 +784,7 @@ public class PurchaseAnalysisController {
         currentBudgetImpact = null;
         currentContext = null;
         currentAdvice = null;
-
+        currentScore = null;
     }
 
     private void resetAnalysisResult() {
