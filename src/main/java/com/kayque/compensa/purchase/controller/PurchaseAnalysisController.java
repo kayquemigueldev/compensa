@@ -50,6 +50,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
@@ -194,6 +195,18 @@ public class PurchaseAnalysisController {
     private Button newAnalysisButton;
 
     @FXML
+    private HBox purchaseScoreCard;
+
+    @FXML
+    private Label scoreValueLabel;
+
+    @FXML
+    private Label scoreClassificationLabel;
+
+    @FXML
+    private Label scoreJustificationLabel;
+
+    @FXML
     private void initialize() {
         configureFrequencyComboBox();
         configureBooleanComboBox(plannedComboBox);
@@ -272,6 +285,7 @@ public class PurchaseAnalysisController {
             showBudgetImpact(budgetImpact);
             showDreamImpact(purchase);
             showAdvice(advice);
+            showScore(score);
             setDecisionButtonsDisabled(false);
 
         } catch (IllegalArgumentException |
@@ -586,6 +600,88 @@ public class PurchaseAnalysisController {
         showSuccess("Análise concluída.");
     }
 
+    private void showScore(PurchaseScore score) {
+        scoreValueLabel.setText(
+                score.value() + "/100"
+        );
+
+        scoreClassificationLabel.setText(
+                score.classificationDescription()
+        );
+
+        scoreJustificationLabel.setText(
+                score.justification()
+        );
+
+        String colorStyle = getScoreColorStyle(score);
+
+        purchaseScoreCard.getStyleClass().setAll(
+                "purchase-score-card",
+                colorStyle
+        );
+
+        scoreValueLabel.getStyleClass().setAll(
+                "purchase-score-value",
+                colorStyle + "-text"
+        );
+
+        scoreClassificationLabel
+                .getStyleClass()
+                .setAll(
+                        "purchase-score-classification",
+                        colorStyle + "-text"
+                );
+
+        reflectionTextLabel.setText(
+                formatScoreFactors(score)
+        );
+    }
+
+    private String formatScoreFactors(
+            PurchaseScore score
+    ) {
+        StringBuilder text = new StringBuilder();
+
+        if (!score.positiveFactors().isEmpty()) {
+            text.append("Pontos positivos");
+
+            score.positiveFactors().forEach(factor ->
+                    text.append("\n✓ ")
+                            .append(factor.description())
+            );
+        }
+
+        if (!score.negativeFactors().isEmpty()) {
+            if (!text.isEmpty()) {
+                text.append("\n\n");
+            }
+
+            text.append("Pontos de atenção");
+
+            score.negativeFactors().forEach(factor ->
+                    text.append("\n• ")
+                            .append(factor.description())
+            );
+        }
+
+        if (text.isEmpty()) {
+            return score.justification();
+        }
+
+        return text.toString();
+    }
+
+    private String getScoreColorStyle(
+            PurchaseScore score
+    ) {
+        return switch (score.color()) {
+            case GREEN -> "purchase-score-green";
+            case YELLOW -> "purchase-score-yellow";
+            case ORANGE -> "purchase-score-orange";
+            case RED -> "purchase-score-red";
+        };
+    }
+
     private RecommendationTone loadRecommendationTone() {
         try {
             return userProfileRepository
@@ -795,6 +891,7 @@ public class PurchaseAnalysisController {
         analysisDescriptionLabel.setText(
                 "Informe os dados e responda às perguntas para receber uma análise consciente."
         );
+        resetScoreResult();
 
         analysisStatusLabel.getStyleClass().setAll(
                 "analysis-status"
@@ -823,6 +920,32 @@ public class PurchaseAnalysisController {
         reflectionTextLabel.setText(
                 "Os fatores positivos e pontos de atenção aparecerão aqui."
         );
+    }
+
+    private void resetScoreResult() {
+        scoreValueLabel.setText("--");
+
+        scoreClassificationLabel.setText(
+                "Aguardando análise"
+        );
+
+        scoreJustificationLabel.setText(
+                "A pontuação aparecerá após a análise da compra."
+        );
+
+        purchaseScoreCard.getStyleClass().setAll(
+                "purchase-score-card"
+        );
+
+        scoreValueLabel.getStyleClass().setAll(
+                "purchase-score-value"
+        );
+
+        scoreClassificationLabel
+                .getStyleClass()
+                .setAll(
+                        "purchase-score-classification"
+                );
     }
 
     private void setNewAnalysisButtonVisible(

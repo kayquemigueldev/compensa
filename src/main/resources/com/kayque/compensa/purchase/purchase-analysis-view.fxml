@@ -158,6 +158,47 @@
                        styleClass="result-description-left"/>
             </VBox>
 
+            <HBox fx:id="purchaseScoreCard"
+                  spacing="14.0"
+                  alignment="CENTER_LEFT"
+                  styleClass="purchase-score-card">
+
+                <VBox spacing="3.0"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Score Compensa?"
+                           styleClass="purchase-score-caption"/>
+
+                    <Label fx:id="scoreClassificationLabel"
+                           text="Aguardando análise"
+                           styleClass="purchase-score-classification"/>
+
+                    <Label fx:id="scoreJustificationLabel"
+                           text="A pontuação aparecerá após a análise da compra."
+                           wrapText="true"
+                           styleClass="purchase-score-justification"/>
+                </VBox>
+
+                <VBox spacing="1.0"
+                      alignment="CENTER_RIGHT"
+                      minWidth="105.0"
+                      prefWidth="105.0"
+                      maxWidth="105.0">
+
+                    <Label fx:id="scoreValueLabel"
+                           text="--"
+                           maxWidth="Infinity"
+                           alignment="CENTER_RIGHT"
+                           styleClass="purchase-score-value"/>
+
+                    <Label text="de 100 pontos"
+                           maxWidth="Infinity"
+                           alignment="CENTER_RIGHT"
+                           styleClass="purchase-score-scale"/>
+                </VBox>
+            </HBox>
+
             <HBox spacing="12.0">
 
                 <VBox spacing="7.0"
@@ -241,7 +282,7 @@
                   VBox.vgrow="ALWAYS"
                   styleClass="analysis-reflection">
 
-                <Label text="Por que chegamos a isso?"
+                <Label text="Fatores do Score Compensa?"
                        styleClass="reflection-title"/>
 
                 <Label fx:id="reflectionTextLabel"
