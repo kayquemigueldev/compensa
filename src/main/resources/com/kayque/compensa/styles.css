@@ -2162,3 +2162,57 @@
 .purchase-score-red-text {
     -fx-text-fill: #eb6a72;
 }
+
+.dashboard-smart-alert-section-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-smart-alert-card {
+    -fx-background-color: #12171a;
+    -fx-background-radius: 11px;
+    -fx-border-radius: 11px;
+    -fx-border-width: 1px;
+    -fx-padding: 12px 14px;
+}
+
+.dashboard-smart-alert-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-smart-alert-message {
+    -fx-text-fill: #9da5b1;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 1px;
+}
+
+.dashboard-smart-alert-informational {
+    -fx-border-color: #31576a;
+}
+
+.dashboard-smart-alert-informational
+.dashboard-smart-alert-title {
+    -fx-text-fill: #54c7ec;
+}
+
+.dashboard-smart-alert-attention {
+    -fx-border-color: #665225;
+}
+
+.dashboard-smart-alert-attention
+.dashboard-smart-alert-title {
+    -fx-text-fill: #f2b84b;
+}
+
+.dashboard-smart-alert-critical {
+    -fx-background-color: #1b1417;
+    -fx-border-color: #71343c;
+}
+
+.dashboard-smart-alert-critical
+.dashboard-smart-alert-title {
+    -fx-text-fill: #e87979;
+}

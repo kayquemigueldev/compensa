@@ -30,8 +30,12 @@ import com.kayque.compensa.dashboard.service.BudgetDashboardAlertService;
 import com.kayque.compensa.dashboard.model.DashboardAlert;
 import com.kayque.compensa.dashboard.model.DashboardAlertLevel;
 import com.kayque.compensa.dashboard.service.GoalDashboardAlertService;
-import javafx.scene.layout.VBox;
+import com.kayque.compensa.alerts.service.SmartAlertService;
+import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
+import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
+import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
 
+import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -48,6 +52,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.HBox;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -119,6 +125,15 @@ public class DashboardController {
     private final BudgetDashboardAlertService
             budgetAlertService =
             new BudgetDashboardAlertService();
+
+    private static final int SMART_ALERT_LIMIT = 3;
+
+    private final SmartAlertService smartAlertService =
+            SmartAlertServiceFactory.createDefault();
+
+    private final DashboardSmartAlertPresentationService
+            smartAlertPresentationService =
+            new DashboardSmartAlertPresentationService();
 
     private final DateTimeFormatter goalForecastDateFormat =
             DateTimeFormatter.ofPattern(
@@ -240,12 +255,19 @@ public class DashboardController {
     private Label dashboardGoalMonthlyPaceMessageLabel;
 
     @FXML
+    private VBox dashboardSmartAlertsSection;
+
+    @FXML
+    private HBox dashboardSmartAlertsContainer;
+
+    @FXML
     private void initialize() {
         loadGreeting();
         loadSummary();
         loadMonthlyBudget();
         loadSavingsGoal();
         showDashboardHighlight();
+        loadSmartAlerts();
     }
 
     private void loadGreeting() {
@@ -1105,6 +1127,93 @@ public class DashboardController {
         dashboardGoalLastContributionLabel.setText("");
         dashboardGoalLastContributionLabel.setVisible(false);
         dashboardGoalLastContributionLabel.setManaged(false);
+    }
+
+    private void loadSmartAlerts() {
+        try {
+            List<DashboardSmartAlertView> alerts =
+                    smartAlertPresentationService.prepare(
+                            smartAlertService.generateAlerts(),
+                            SMART_ALERT_LIMIT
+                    );
+
+            renderSmartAlerts(alerts);
+
+        } catch (RuntimeException exception) {
+            hideSmartAlerts();
+        }
+    }
+
+    private void renderSmartAlerts(
+            List<DashboardSmartAlertView> alerts
+    ) {
+        dashboardSmartAlertsContainer
+                .getChildren()
+                .clear();
+
+        if (alerts.isEmpty()) {
+            hideSmartAlerts();
+            return;
+        }
+
+        alerts.stream()
+                .map(this::createSmartAlertCard)
+                .forEach(card ->
+                        dashboardSmartAlertsContainer
+                                .getChildren()
+                                .add(card)
+                );
+
+        dashboardSmartAlertsSection.setVisible(true);
+        dashboardSmartAlertsSection.setManaged(true);
+    }
+
+    private VBox createSmartAlertCard(
+            DashboardSmartAlertView alert
+    ) {
+        Label titleLabel = new Label(alert.title());
+
+        titleLabel.getStyleClass().add(
+                "dashboard-smart-alert-title"
+        );
+
+        Label messageLabel = new Label(alert.message());
+
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(Double.MAX_VALUE);
+
+        messageLabel.getStyleClass().add(
+                "dashboard-smart-alert-message"
+        );
+
+        VBox card = new VBox(
+                5,
+                titleLabel,
+                messageLabel
+        );
+
+        card.setMaxWidth(Double.MAX_VALUE);
+
+        card.getStyleClass().addAll(
+                "dashboard-smart-alert-card",
+                alert.styleClass()
+        );
+
+        HBox.setHgrow(
+                card,
+                Priority.ALWAYS
+        );
+
+        return card;
+    }
+
+    private void hideSmartAlerts() {
+        dashboardSmartAlertsContainer
+                .getChildren()
+                .clear();
+
+        dashboardSmartAlertsSection.setVisible(false);
+        dashboardSmartAlertsSection.setManaged(false);
     }
 
 }

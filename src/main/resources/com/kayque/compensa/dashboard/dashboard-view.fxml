@@ -30,6 +30,18 @@
                styleClass="page-subtitle"/>
     </VBox>
 
+    <VBox fx:id="dashboardSmartAlertsSection"
+          spacing="8.0"
+          visible="false"
+          managed="false">
+
+        <Label text="Alertas inteligentes"
+               styleClass="dashboard-smart-alert-section-title"/>
+
+        <HBox fx:id="dashboardSmartAlertsContainer"
+              spacing="10.0"/>
+    </VBox>
+
     <GridPane hgap="12.0"
               vgap="12.0">
 
