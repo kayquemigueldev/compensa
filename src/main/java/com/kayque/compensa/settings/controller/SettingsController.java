@@ -11,6 +11,7 @@ import javafx.scene.control.DialogPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.application.Platform;
 
 
 import java.io.File;
@@ -112,12 +113,7 @@ public class SettingsController {
                             LocalDateTime.now()
                     );
 
-            showBackupSuccess(
-                    "Backup restaurado com sucesso. "
-                            + "Reinicie o Compensa? para carregar os dados. "
-                            + "Uma cópia de segurança do banco anterior foi criada em: "
-                            + safetyBackup.getFileName()
-            );
+            showRestoreCompleted(safetyBackup);
 
         } catch (IllegalArgumentException
                  | IllegalStateException exception) {
@@ -163,9 +159,64 @@ public class SettingsController {
 
         confirmation.setGraphic(null);
 
-        DialogPane dialogPane =
-                confirmation.getDialogPane();
+        applyDialogStyle(
+                confirmation.getDialogPane()
+        );
 
+        Optional<ButtonType> selectedButton =
+                confirmation.showAndWait();
+
+        return selectedButton.isPresent()
+                && selectedButton.get() == restoreButton;
+    }
+
+    private void showRestoreCompleted(
+            Path safetyBackup
+    ) {
+        ButtonType closeButton = new ButtonType(
+                "Fechar aplicativo",
+                ButtonBar.ButtonData.OK_DONE
+        );
+
+        Alert completedAlert = new Alert(
+                Alert.AlertType.INFORMATION,
+                "",
+                closeButton
+        );
+
+        completedAlert.initOwner(getWindow());
+
+        completedAlert.setTitle(
+                "Restauração concluída"
+        );
+
+        completedAlert.setHeaderText(
+                "Seus dados foram restaurados"
+        );
+
+        completedAlert.setContentText(
+                "O backup foi restaurado com sucesso.\n\n"
+                        + "Uma cópia de segurança dos dados anteriores "
+                        + "foi criada em:\n"
+                        + safetyBackup.getFileName()
+                        + "\n\nO Compensa? será fechado para carregar "
+                        + "os dados restaurados com segurança na próxima abertura."
+        );
+
+        completedAlert.setGraphic(null);
+
+        applyDialogStyle(
+                completedAlert.getDialogPane()
+        );
+
+        completedAlert.showAndWait();
+
+        Platform.exit();
+    }
+
+    private void applyDialogStyle(
+            DialogPane dialogPane
+    ) {
         dialogPane.getStylesheets().add(
                 SettingsController.class
                         .getResource(
@@ -177,12 +228,6 @@ public class SettingsController {
         dialogPane.getStyleClass().add(
                 "compensa-dialog"
         );
-
-        Optional<ButtonType> selectedButton =
-                confirmation.showAndWait();
-
-        return selectedButton.isPresent()
-                && selectedButton.get() == restoreButton;
     }
 
     private Window getWindow() {
