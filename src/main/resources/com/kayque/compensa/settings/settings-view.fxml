@@ -90,10 +90,21 @@
                    wrapText="true"
                    styleClass="settings-backup-detail"/>
 
-            <Button text="Criar backup"
-                    maxWidth="Infinity"
-                    onAction="#createBackup"
-                    styleClass="settings-backup-button"/>
+            <HBox spacing="12.0">
+
+                <Button text="Criar backup"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        onAction="#createBackup"
+                        styleClass="settings-backup-button"/>
+
+                <Button text="Restaurar backup"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        onAction="#restoreBackup"
+                        styleClass="settings-restore-button"/>
+
+            </HBox>
 
             <Label fx:id="backupFeedbackLabel"
                    text=""

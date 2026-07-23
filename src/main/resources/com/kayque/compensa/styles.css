@@ -2007,3 +2007,84 @@
 .history-export-button:pressed {
     -fx-background-color: #78d62c;
 }
+
+.settings-restore-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 9px;
+    -fx-border-color: #68717f;
+    -fx-border-radius: 9px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #d8dce3;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 13px 18px;
+    -fx-cursor: hand;
+}
+
+.settings-restore-button:hover {
+    -fx-background-color: #242a32;
+    -fx-border-color: #9da5b1;
+    -fx-text-fill: #f4f1ea;
+}
+
+.compensa-dialog {
+    -fx-background-color: #171a21;
+    -fx-border-color: #303641;
+    -fx-border-width: 1px;
+}
+
+.compensa-dialog > .content.label {
+    -fx-text-fill: #b7bdc7;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 18px 22px;
+}
+
+.compensa-dialog:header .header-panel {
+    -fx-background-color: #11151b;
+    -fx-padding: 20px 22px;
+}
+
+.compensa-dialog:header .header-panel .label {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.compensa-dialog > .button-bar {
+    -fx-background-color: #171a21;
+    -fx-padding: 10px 18px 18px 18px;
+}
+
+.compensa-dialog > .button-bar > .container {
+    -fx-background-color: #171a21;
+}
+
+.compensa-dialog .button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #68717f;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #d8dce3;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 18px;
+    -fx-cursor: hand;
+}
+
+.compensa-dialog .button:hover {
+    -fx-background-color: #242a32;
+    -fx-border-color: #9da5b1;
+    -fx-text-fill: #f4f1ea;
+}
+
+.compensa-dialog .button:default {
+    -fx-background-color: #8eea3c;
+    -fx-border-color: #8eea3c;
+    -fx-text-fill: #10140d;
+}
+
+.compensa-dialog .button:default:hover {
+    -fx-background-color: #a8f060;
+    -fx-border-color: #a8f060;
+}
