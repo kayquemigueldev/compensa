@@ -31,7 +31,9 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class SmartAlertSnapshotProvider {
+
+public class SmartAlertSnapshotProvider
+        implements SmartAlertSnapshotSource {
 
     private static final BigDecimal ONE_HUNDRED =
             new BigDecimal("100");
@@ -122,6 +124,7 @@ public class SmartAlertSnapshotProvider {
         this.clock = Objects.requireNonNull(clock);
     }
 
+    @Override
     public SmartAlertSnapshot createSnapshot() {
         LocalDate currentDate = LocalDate.now(clock);
 
