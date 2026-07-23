@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -53,6 +54,11 @@
                   promptText="Filtrar decisões"
                   prefWidth="220.0"
                   styleClass="history-filter-combo"/>
+
+        <Button fx:id="exportHistoryButton"
+                text="Exportar CSV"
+                onAction="#exportHistory"
+                styleClass="history-export-button"/>
 
     </HBox>
 

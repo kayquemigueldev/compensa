@@ -1988,3 +1988,22 @@
     -fx-background-color: #db3f53;
     -fx-border-color: #db3f53;
 }
+
+.history-export-button {
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 10px;
+    -fx-border-color: transparent;
+    -fx-text-fill: #10140d;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-padding: 13px 18px;
+    -fx-cursor: hand;
+}
+
+.history-export-button:hover {
+    -fx-background-color: #a1f25d;
+}
+
+.history-export-button:pressed {
+    -fx-background-color: #78d62c;
+}

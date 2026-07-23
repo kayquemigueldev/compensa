@@ -27,7 +27,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.util.StringConverter;
+import com.kayque.compensa.history.service.HistoryCsvExportService;
 
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.text.NumberFormat;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +50,9 @@ public class HistoryController {
 
     private final HistoryFilterService historyFilterService =
             new HistoryFilterService();
+
+    private final HistoryCsvExportService csvExportService =
+            new HistoryCsvExportService();
 
     private List<PurchaseDecisionHistoryItem> completeHistory =
             List.of();
@@ -75,6 +84,9 @@ public class HistoryController {
 
     @FXML
     private ComboBox<HistoryFilter> historyFilterComboBox;
+
+    @FXML
+    private Button exportHistoryButton;
 
     @FXML
     private void initialize() {
@@ -267,6 +279,82 @@ public class HistoryController {
         }
 
         return total + " decisões registradas.";
+    }
+
+    @FXML
+    private void exportHistory() {
+        List<PurchaseDecisionHistoryItem> visibleHistory =
+                List.copyOf(
+                        historyListView.getItems()
+                );
+
+        if (visibleHistory.isEmpty()) {
+            showHistoryActionError(
+                    "Não existem decisões visíveis para exportar."
+            );
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle(
+                "Exportar histórico do Compensa?"
+        );
+
+        fileChooser.setInitialFileName(
+                "historico-compensa-"
+                        + LocalDate.now()
+                        + ".csv"
+        );
+
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter(
+                        "Arquivo CSV",
+                        "*.csv"
+                )
+        );
+
+        File selectedFile = fileChooser.showSaveDialog(
+                historyListView
+                        .getScene()
+                        .getWindow()
+        );
+
+        if (selectedFile == null) {
+            return;
+        }
+
+        try {
+            csvExportService.export(
+                    visibleHistory,
+                    selectedFile.toPath()
+            );
+
+            showHistoryActionSuccess(
+                    visibleHistory.size()
+                            + createExportSuccessMessage(
+                            visibleHistory.size()
+                    )
+            );
+
+        } catch (IOException exception) {
+            showHistoryActionError(
+                    "Não foi possível salvar o arquivo CSV."
+            );
+
+        } catch (IllegalArgumentException exception) {
+            showHistoryActionError(
+                    exception.getMessage()
+            );
+        }
+    }
+
+    private String createExportSuccessMessage(int total) {
+        if (total == 1) {
+            return " decisão exportada com sucesso.";
+        }
+
+        return " decisões exportadas com sucesso.";
     }
 
     private final class HistoryListCell
@@ -844,6 +932,18 @@ public class HistoryController {
         feedbackLabel.setText(message);
         feedbackLabel.setVisible(true);
         feedbackLabel.setManaged(true);
+    }
+
+    private void showHistoryActionSuccess(
+            String message
+    ) {
+        showDeletionSuccess(message);
+    }
+
+    private void showHistoryActionError(
+            String message
+    ) {
+        showDeletionError(message);
     }
 
     private String formatSatisfaction(
