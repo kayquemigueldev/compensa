@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.nio.charset.StandardCharsets;
 
 class DatabaseBackupServiceTest {
 
@@ -114,4 +116,127 @@ class DatabaseBackupServiceTest {
                 )
         );
     }
+
+    @Test
+    void shouldRestoreDatabaseAndCreateSafetyBackup()
+            throws IOException {
+
+        byte[] currentDatabaseContent =
+                createSqliteContent("banco atual");
+
+        byte[] backupContent =
+                createSqliteContent("dados restaurados");
+
+        Path databaseFile =
+                temporaryDirectory.resolve("compensa.db");
+
+        Path backupFile =
+                temporaryDirectory.resolve(
+                        "compensa-backup.db"
+                );
+
+        Files.write(
+                databaseFile,
+                currentDatabaseContent
+        );
+
+        Files.write(
+                backupFile,
+                backupContent
+        );
+
+        Path safetyBackup =
+                service.restoreBackup(
+                        backupFile,
+                        databaseFile,
+                        LocalDateTime.of(
+                                2026,
+                                7,
+                                23,
+                                17,
+                                30,
+                                15
+                        )
+                );
+
+        assertTrue(Files.exists(safetyBackup));
+
+        assertArrayEquals(
+                currentDatabaseContent,
+                Files.readAllBytes(safetyBackup)
+        );
+
+        assertArrayEquals(
+                backupContent,
+                Files.readAllBytes(databaseFile)
+        );
+    }
+
+    @Test
+    void shouldRejectInvalidBackupFile()
+            throws IOException {
+
+        Path databaseFile =
+                temporaryDirectory.resolve("compensa.db");
+
+        Path invalidBackup =
+                temporaryDirectory.resolve(
+                        "arquivo-invalido.db"
+                );
+
+        Files.write(
+                databaseFile,
+                createSqliteContent("banco atual")
+        );
+
+        Files.writeString(
+                invalidBackup,
+                "isto não é um banco SQLite"
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.restoreBackup(
+                        invalidBackup,
+                        databaseFile,
+                        LocalDateTime.now()
+                )
+        );
+    }
+
+    @Test
+    void shouldRejectRestoringDatabaseFromItself()
+            throws IOException {
+
+        Path databaseFile =
+                temporaryDirectory.resolve("compensa.db");
+
+        Files.write(
+                databaseFile,
+                createSqliteContent("banco atual")
+        );
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> service.restoreBackup(
+                                databaseFile,
+                                databaseFile,
+                                LocalDateTime.now()
+                        )
+                );
+
+        assertEquals(
+                "Escolha um arquivo de backup diferente do banco atual.",
+                exception.getMessage()
+        );
+    }
+
+    private byte[] createSqliteContent(String content) {
+        return (
+                "SQLite format 3\0"
+                        + content
+        ).getBytes(StandardCharsets.UTF_8);
+    }
+
 }
