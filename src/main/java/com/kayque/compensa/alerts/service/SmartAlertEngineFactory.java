@@ -8,6 +8,7 @@ import com.kayque.compensa.alerts.rule.PreservedValueAlertRule;
 import com.kayque.compensa.alerts.rule.PurchaseBehaviorAlertRule;
 import com.kayque.compensa.alerts.rule.SmartAlertRule;
 import com.kayque.compensa.alerts.rule.WorkTimeAlertRule;
+import com.kayque.compensa.alerts.rule.PurchaseEvaluationAlertRule;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public final class SmartAlertEngineFactory {
                 new FinancialGoalProgressAlertRule(),
                 new PurchaseBehaviorAlertRule(),
                 new PendingDecisionAlertRule(),
+                new PurchaseEvaluationAlertRule(),
                 new WorkTimeAlertRule(),
                 new PreservedValueAlertRule()
         );

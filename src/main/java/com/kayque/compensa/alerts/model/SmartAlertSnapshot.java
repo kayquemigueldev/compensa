@@ -14,6 +14,7 @@ public record SmartAlertSnapshot(
         int purchasesAvoided,
         int pendingDecisions,
         int overduePendingDecisions,
+        int unevaluatedPurchases,
         long totalWorkMinutes,
         BigDecimal preservedAmountThisYear
 ) {
@@ -79,6 +80,12 @@ public record SmartAlertSnapshot(
             );
         }
 
+        if (unevaluatedPurchases < 0) {
+            throw new IllegalArgumentException(
+                    "A quantidade de compras sem avaliação não pode ser negativa."
+            );
+        }
+
         if (totalWorkMinutes < 0) {
             throw new IllegalArgumentException(
                     "O tempo total de trabalho não pode ser negativo."
@@ -89,6 +96,41 @@ public record SmartAlertSnapshot(
                 preservedAmountThisYear,
                 "O valor preservado no ano não pode ser negativo."
         );
+    }
+
+    public SmartAlertSnapshot(
+            BigDecimal budgetUsagePercentage,
+            BigDecimal availableBudget,
+            BigDecimal monthlyGoalContributions,
+            BigDecimal monthlyGoalTarget,
+            BigDecimal goalProgressPercentage,
+            BigDecimal expectedGoalProgressPercentage,
+            int purchasesMade,
+            int purchasesAvoided,
+            int pendingDecisions,
+            int overduePendingDecisions,
+            long totalWorkMinutes,
+            BigDecimal preservedAmountThisYear
+    ) {
+        this(
+                budgetUsagePercentage,
+                availableBudget,
+                monthlyGoalContributions,
+                monthlyGoalTarget,
+                goalProgressPercentage,
+                expectedGoalProgressPercentage,
+                purchasesMade,
+                purchasesAvoided,
+                pendingDecisions,
+                overduePendingDecisions,
+                0,
+                totalWorkMinutes,
+                preservedAmountThisYear
+        );
+    }
+
+    public boolean hasUnevaluatedPurchases() {
+        return unevaluatedPurchases > 0;
     }
 
     public boolean hasMonthlyGoal() {

@@ -72,6 +72,18 @@ public class SqliteSmartAlertMetricsRepository
                 ),
                 0
             ) AS overdue_pending_decisions,
+            
+                        COALESCE(
+                            SUM(
+                                CASE
+                                    WHEN outcome = 'PURCHASED'
+                                        AND satisfaction IS NULL
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            ),
+                            0
+                        ) AS unevaluated_purchases,
 
             COALESCE(
                 SUM(
@@ -100,6 +112,7 @@ public class SqliteSmartAlertMetricsRepository
 
         FROM purchase_decision
         """;
+
 
     @Override
     public SmartAlertDecisionMetrics getDecisionMetrics(
@@ -209,11 +222,16 @@ public class SqliteSmartAlertMetricsRepository
                                 "overdue_pending_decisions"
                         ),
 
+                        resultSet.getInt(
+                                "unevaluated_purchases"
+                        ),
+
                         resultSet.getLong(
                                 "work_minutes_this_month"
                         ),
 
                         preservedAmount
+
                 );
             }
 
@@ -256,6 +274,7 @@ public class SqliteSmartAlertMetricsRepository
 
     private SmartAlertDecisionMetrics emptyMetrics() {
         return new SmartAlertDecisionMetrics(
+                0,
                 0,
                 0,
                 0,

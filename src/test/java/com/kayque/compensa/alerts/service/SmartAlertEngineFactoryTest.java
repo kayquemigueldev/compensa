@@ -106,6 +106,7 @@ class SmartAlertEngineFactoryTest {
                 5,
                 3,
                 1,
+                1,
                 2400,
                 new BigDecimal("2350")
         );

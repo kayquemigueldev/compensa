@@ -145,6 +145,7 @@ public class SmartAlertSnapshotProvider
                 decisionMetrics.purchasesAvoidedThisMonth(),
                 decisionMetrics.pendingDecisions(),
                 decisionMetrics.overduePendingDecisions(),
+                decisionMetrics.unevaluatedPurchases(),
                 decisionMetrics.workMinutesThisMonth(),
                 decisionMetrics.preservedAmountThisYear()
         );
