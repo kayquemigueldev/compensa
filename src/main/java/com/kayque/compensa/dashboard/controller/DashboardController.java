@@ -1038,6 +1038,10 @@ public class DashboardController {
     ) {
         Label titleLabel = new Label(alert.title());
 
+        titleLabel.setWrapText(true);
+        titleLabel.setMinWidth(0);
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
+
         titleLabel.getStyleClass().add(
                 "dashboard-smart-alert-title"
         );
@@ -1045,6 +1049,7 @@ public class DashboardController {
         Label messageLabel = new Label(alert.message());
 
         messageLabel.setWrapText(true);
+        messageLabel.setMinWidth(0);
         messageLabel.setMaxWidth(Double.MAX_VALUE);
 
         messageLabel.getStyleClass().add(
@@ -1057,7 +1062,10 @@ public class DashboardController {
                 messageLabel
         );
 
+        card.setPrefWidth(0);
+        card.setMinWidth(0);
         card.setMaxWidth(Double.MAX_VALUE);
+        card.setMaxHeight(Double.MAX_VALUE);
 
         card.getStyleClass().addAll(
                 "dashboard-smart-alert-card",

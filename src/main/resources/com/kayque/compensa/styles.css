@@ -2175,12 +2175,14 @@
     -fx-border-radius: 11px;
     -fx-border-width: 1px;
     -fx-padding: 12px 14px;
+    -fx-min-height: 88px;
 }
 
 .dashboard-smart-alert-title {
     -fx-text-fill: #f4f1ea;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
+    -fx-wrap-text: true;
 }
 
 .dashboard-smart-alert-message {
