@@ -280,6 +280,39 @@ public final class DatabaseInitializer {
                 "evaluated_at",
                 "evaluated_at TEXT"
         );
+
+        addColumnIfMissing(
+                connection,
+                "purchase_decision",
+                "compensa_score",
+                """
+                compensa_score INTEGER
+                    CHECK (
+                        compensa_score IS NULL
+                        OR compensa_score BETWEEN 0 AND 100
+                    )
+                """
+        );
+
+        addColumnIfMissing(
+                connection,
+                "purchase_decision",
+                "compensa_score_classification",
+                """
+                compensa_score_classification TEXT
+                    CHECK (
+                        compensa_score_classification IS NULL
+                        OR compensa_score_classification IN (
+                            'EXCELLENT',
+                            'GOOD',
+                            'MODERATE',
+                            'RISKY',
+                            'CRITICAL'
+                        )
+                    )
+                """
+        );
+
     }
 
     private static void migrateUserProfileTable(
