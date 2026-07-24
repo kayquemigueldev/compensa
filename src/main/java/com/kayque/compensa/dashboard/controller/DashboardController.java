@@ -26,10 +26,6 @@ import com.kayque.compensa.goal.model.SavingsGoalMonthlyPace;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
-import com.kayque.compensa.dashboard.service.BudgetDashboardAlertService;
-import com.kayque.compensa.dashboard.model.DashboardAlert;
-import com.kayque.compensa.dashboard.model.DashboardAlertLevel;
-import com.kayque.compensa.dashboard.service.GoalDashboardAlertService;
 import com.kayque.compensa.alerts.service.SmartAlertService;
 import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
@@ -117,14 +113,6 @@ public class DashboardController {
     private final SavingsGoalMonthlyPaceService
             savingsGoalMonthlyPaceService =
             new SavingsGoalMonthlyPaceService();
-
-    private final GoalDashboardAlertService
-            goalAlertService =
-            new GoalDashboardAlertService();
-
-    private final BudgetDashboardAlertService
-            budgetAlertService =
-            new BudgetDashboardAlertService();
 
     private static final int SMART_ALERT_LIMIT = 3;
 
@@ -217,18 +205,6 @@ public class DashboardController {
 
     @FXML
     private Label dashboardHighlightDescriptionLabel;
-
-    @FXML
-    private VBox dashboardAlertCard;
-
-    @FXML
-    private Label dashboardAlertTitleLabel;
-
-    @FXML
-    private Label dashboardAlertMessageLabel;
-
-    @FXML
-    private VBox dashboardBudgetAlertCard;
 
     @FXML
     private Label dashboardBudgetAlertTitleLabel;
@@ -385,7 +361,6 @@ public class DashboardController {
             );
 
             configureBudgetProgress(currentBudget);
-            renderBudgetAlert(currentBudget);
 
         } catch (IllegalStateException exception) {
             showMissingBudget();
@@ -535,7 +510,6 @@ public class DashboardController {
                         renderGoalTargetPlan(goal);
                         renderGoalMonthlyPace(goal);
                         renderGoalForecast(goal);
-                        renderGoalAlert(progress);
                         renderLastGoalContribution();
 
                         dashboardGoalCard.setVisible(true);
@@ -639,7 +613,6 @@ public class DashboardController {
         dashboardGoalForecastLabel.setText("");
 
         hideGoalForecastDate();
-        hideDashboardAlert();
         hideLastGoalContribution();
 
         dashboardGoalCard.setVisible(false);
@@ -647,8 +620,6 @@ public class DashboardController {
     }
 
     private void showMissingBudget() {
-        hideBudgetAlert();
-
         plannedBudgetLabel.setText("--");
         purchasedThisMonthLabel.setText("--");
         currentAvailableBudgetLabel.setText("--");
@@ -976,112 +947,6 @@ public class DashboardController {
         dashboardGoalForecastDateLabel.setText("");
         dashboardGoalForecastDateLabel.setVisible(false);
         dashboardGoalForecastDateLabel.setManaged(false);
-    }
-
-    private void renderBudgetAlert(
-            MonthlyBudgetUsage budget
-    ) {
-        budgetAlertService.create(budget)
-                .ifPresentOrElse(
-                        this::showBudgetAlert,
-                        this::hideBudgetAlert
-                );
-    }
-
-    private void showBudgetAlert(
-            DashboardAlert alert
-    ) {
-        dashboardBudgetAlertTitleLabel.setText(
-                alert.title()
-        );
-
-        dashboardBudgetAlertMessageLabel.setText(
-                alert.message()
-        );
-
-        dashboardBudgetAlertCard
-                .getStyleClass()
-                .setAll(
-                        "dashboard-alert-card",
-                        getDashboardAlertStyle(
-                                alert.level()
-                        )
-                );
-
-        dashboardBudgetAlertCard.setVisible(true);
-        dashboardBudgetAlertCard.setManaged(true);
-    }
-
-    private void hideBudgetAlert() {
-        dashboardBudgetAlertTitleLabel.setText("");
-        dashboardBudgetAlertMessageLabel.setText("");
-
-        dashboardBudgetAlertCard.setVisible(false);
-        dashboardBudgetAlertCard.setManaged(false);
-    }
-
-    private void renderGoalAlert(
-            SavingsGoalProgress progress
-    ) {
-        try {
-            List<SavingsGoalContribution> contributions =
-                    savingsGoalContributionRepository.findAll();
-
-            goalAlertService.create(
-                    progress,
-                    contributions,
-                    LocalDate.now()
-            ).ifPresentOrElse(
-                    this::showDashboardAlert,
-                    this::hideDashboardAlert
-            );
-
-        } catch (IllegalStateException exception) {
-            hideDashboardAlert();
-        }
-    }
-
-    private void showDashboardAlert(
-            DashboardAlert alert
-    ) {
-        dashboardAlertTitleLabel.setText(
-                alert.title()
-        );
-
-        dashboardAlertMessageLabel.setText(
-                alert.message()
-        );
-
-        dashboardAlertCard.getStyleClass().setAll(
-                "dashboard-alert-card",
-                getDashboardAlertStyle(alert.level())
-        );
-
-        dashboardAlertCard.setVisible(true);
-        dashboardAlertCard.setManaged(true);
-    }
-
-    private void hideDashboardAlert() {
-        dashboardAlertTitleLabel.setText("");
-        dashboardAlertMessageLabel.setText("");
-
-        dashboardAlertCard.setVisible(false);
-        dashboardAlertCard.setManaged(false);
-    }
-
-    private String getDashboardAlertStyle(
-            DashboardAlertLevel level
-    ) {
-        return switch (level) {
-            case INFORMATION ->
-                    "dashboard-alert-information";
-
-            case ATTENTION ->
-                    "dashboard-alert-attention";
-
-            case POSITIVE ->
-                    "dashboard-alert-positive";
-        };
     }
 
     private void renderLastGoalContribution() {

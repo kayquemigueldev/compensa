@@ -2193,8 +2193,7 @@
     -fx-border-color: #31576a;
 }
 
-.dashboard-smart-alert-informational
-.dashboard-smart-alert-title {
+.dashboard-smart-alert-informational .dashboard-smart-alert-title {
     -fx-text-fill: #54c7ec;
 }
 
@@ -2202,8 +2201,7 @@
     -fx-border-color: #665225;
 }
 
-.dashboard-smart-alert-attention
-.dashboard-smart-alert-title {
+.dashboard-smart-alert-attention .dashboard-smart-alert-title {
     -fx-text-fill: #f2b84b;
 }
 
@@ -2212,7 +2210,6 @@
     -fx-border-color: #71343c;
 }
 
-.dashboard-smart-alert-critical
-.dashboard-smart-alert-title {
+.dashboard-smart-alert-critical .dashboard-smart-alert-title {
     -fx-text-fill: #e87979;
 }
