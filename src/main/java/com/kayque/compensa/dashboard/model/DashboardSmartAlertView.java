@@ -1,9 +1,14 @@
 package com.kayque.compensa.dashboard.model;
 
+import com.kayque.compensa.navigation.NavigationTarget;
+
+import java.util.Objects;
+
 public record DashboardSmartAlertView(
         String title,
         String message,
-        String styleClass
+        String styleClass,
+        NavigationTarget navigationTarget
 ) {
 
     public DashboardSmartAlertView {
@@ -21,6 +26,28 @@ public record DashboardSmartAlertView(
                 styleClass,
                 "O estilo do alerta é obrigatório."
         );
+
+        Objects.requireNonNull(
+                navigationTarget,
+                "O destino do alerta é obrigatório."
+        );
+    }
+
+    public DashboardSmartAlertView(
+            String title,
+            String message,
+            String styleClass
+    ) {
+        this(
+                title,
+                message,
+                styleClass,
+                NavigationTarget.NONE
+        );
+    }
+
+    public boolean hasNavigation() {
+        return navigationTarget != NavigationTarget.NONE;
     }
 
     private static String requireText(

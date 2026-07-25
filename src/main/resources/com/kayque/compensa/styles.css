@@ -2245,3 +2245,22 @@
 .dashboard-goal-consistency-warning {
     -fx-text-fill: #f2b84b;
 }
+
+.dashboard-smart-alert-clickable {
+    -fx-cursor: hand;
+}
+
+.dashboard-smart-alert-clickable:hover {
+    -fx-background-color: #171d22;
+    -fx-translate-y: -2px;
+}
+
+.dashboard-smart-alert-clickable:focused {
+    -fx-border-width: 2px;
+    -fx-border-insets: -1px;
+}
+
+.dashboard-smart-alert-clickable:pressed {
+    -fx-translate-y: 0;
+    -fx-opacity: 0.88;
+}

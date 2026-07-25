@@ -33,8 +33,12 @@ import com.kayque.compensa.alerts.service.SmartAlertService;
 import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
 import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
+import com.kayque.compensa.navigation.NavigationRequestEvent;
+
 
 import javafx.scene.layout.VBox;
+import javafx.scene.AccessibleRole;
+import javafx.scene.input.KeyCode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -1230,7 +1234,62 @@ public class DashboardController {
                 Priority.ALWAYS
         );
 
+        configureSmartAlertNavigation(
+                card,
+                alert
+        );
+
         return card;
+    }
+
+    private void configureSmartAlertNavigation(
+            VBox card,
+            DashboardSmartAlertView alert
+    ) {
+        if (!alert.hasNavigation()) {
+            return;
+        }
+
+        card.getStyleClass().add(
+                "dashboard-smart-alert-clickable"
+        );
+
+        card.setFocusTraversable(true);
+        card.setAccessibleRole(
+                AccessibleRole.BUTTON
+        );
+
+        card.setAccessibleText(
+                alert.title()
+                        + ". "
+                        + alert.message()
+        );
+
+        card.setOnMouseClicked(event ->
+                requestNavigation(alert)
+        );
+
+        card.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER
+                    || event.getCode() == KeyCode.SPACE) {
+                requestNavigation(alert);
+                event.consume();
+            }
+        });
+    }
+
+    private void requestNavigation(
+            DashboardSmartAlertView alert
+    ) {
+        if (!alert.hasNavigation()) {
+            return;
+        }
+
+        dashboardSmartAlertsContainer.fireEvent(
+                new NavigationRequestEvent(
+                        alert.navigationTarget()
+                )
+        );
     }
 
     private void hideSmartAlerts() {

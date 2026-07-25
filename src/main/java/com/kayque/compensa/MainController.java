@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ScrollPane;
+import com.kayque.compensa.navigation.NavigationRequestEvent;
+import com.kayque.compensa.navigation.NavigationTarget;
 
 import java.io.IOException;
 
@@ -60,6 +62,11 @@ public class MainController {
     private void initialize() {
         purchaseAnalysisView =
                 mainContentScrollPane.getContent();
+
+        mainBorderPane.addEventHandler(
+                NavigationRequestEvent.NAVIGATION_REQUEST,
+                this::handleNavigationRequest
+        );
     }
 
     @FXML
@@ -120,6 +127,32 @@ public class MainController {
                 savingsGoalButton,
                 "Não foi possível abrir o objetivo financeiro."
         );
+    }
+
+    private void handleNavigationRequest(
+            NavigationRequestEvent event
+    ) {
+        NavigationTarget target = event.target();
+
+        switch (target) {
+            case FINANCIAL_PROFILE ->
+                    showFinancialProfile();
+
+            case SAVINGS_GOAL ->
+                    showSavingsGoal();
+
+            case HISTORY ->
+                    showHistory();
+
+            case INSIGHTS ->
+                    showInsights();
+
+            case NONE -> {
+                return;
+            }
+        }
+
+        event.consume();
     }
 
     private void showView(

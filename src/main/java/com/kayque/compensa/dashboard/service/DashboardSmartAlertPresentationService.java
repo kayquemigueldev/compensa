@@ -3,11 +3,28 @@ package com.kayque.compensa.dashboard.service;
 import com.kayque.compensa.alerts.model.SmartAlert;
 import com.kayque.compensa.alerts.model.SmartAlertPriority;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
+import com.kayque.compensa.navigation.NavigationTarget;
 
 import java.util.List;
 import java.util.Objects;
 
 public class DashboardSmartAlertPresentationService {
+
+    private final DashboardAlertNavigationService
+            navigationService;
+
+    public DashboardSmartAlertPresentationService() {
+        this(new DashboardAlertNavigationService());
+    }
+
+    public DashboardSmartAlertPresentationService(
+            DashboardAlertNavigationService navigationService
+    ) {
+        this.navigationService = Objects.requireNonNull(
+                navigationService,
+                "O serviço de navegação é obrigatório."
+        );
+    }
 
     public List<DashboardSmartAlertView> prepare(
             List<SmartAlert> alerts,
@@ -39,10 +56,16 @@ public class DashboardSmartAlertPresentationService {
     private DashboardSmartAlertView createView(
             SmartAlert alert
     ) {
+        NavigationTarget navigationTarget =
+                navigationService.resolve(
+                        alert.topic()
+                );
+
         return new DashboardSmartAlertView(
                 alert.title(),
                 alert.message(),
-                getStyleClass(alert.priority())
+                getStyleClass(alert.priority()),
+                navigationTarget
         );
     }
 
