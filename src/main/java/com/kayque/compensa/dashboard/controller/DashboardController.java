@@ -26,6 +26,9 @@ import com.kayque.compensa.goal.model.SavingsGoalMonthlyPace;
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+import com.kayque.compensa.goal.model.SavingsGoalConsistency;
+import com.kayque.compensa.goal.model.SavingsGoalConsistencyStatus;
+import com.kayque.compensa.goal.service.SavingsGoalConsistencyService;
 import com.kayque.compensa.alerts.service.SmartAlertService;
 import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
@@ -113,6 +116,10 @@ public class DashboardController {
     private final SavingsGoalMonthlyPaceService
             savingsGoalMonthlyPaceService =
             new SavingsGoalMonthlyPaceService();
+
+    private final SavingsGoalConsistencyService
+            savingsGoalConsistencyService =
+            new SavingsGoalConsistencyService();
 
     private static final int SMART_ALERT_LIMIT = 3;
 
@@ -229,6 +236,15 @@ public class DashboardController {
 
     @FXML
     private Label dashboardGoalMonthlyPaceMessageLabel;
+
+    @FXML
+    private Region dashboardGoalConsistencySeparator;
+
+    @FXML
+    private Label dashboardGoalConsistencyLabel;
+
+    @FXML
+    private Label dashboardGoalConsistencyMessageLabel;
 
     @FXML
     private VBox dashboardSmartAlertsSection;
@@ -511,6 +527,7 @@ public class DashboardController {
                         renderGoalMonthlyPace(goal);
                         renderGoalForecast(goal);
                         renderLastGoalContribution();
+                        renderGoalConsistency();
 
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
@@ -651,6 +668,142 @@ public class DashboardController {
         }
 
         return hours + "h " + minutes + "min";
+    }
+
+    private void renderGoalConsistency() {
+        try {
+            List<SavingsGoalContribution> contributions =
+                    savingsGoalContributionRepository.findAll();
+
+            SavingsGoalConsistency consistency =
+                    savingsGoalConsistencyService.calculate(
+                            contributions,
+                            LocalDate.now()
+                    );
+
+            dashboardGoalConsistencyLabel.setText(
+                    getGoalConsistencyTitle(consistency)
+            );
+
+            dashboardGoalConsistencyMessageLabel.setText(
+                    getGoalConsistencyMessage(consistency)
+            );
+
+            dashboardGoalConsistencyMessageLabel
+                    .getStyleClass()
+                    .setAll(
+                            "dashboard-goal-consistency-message",
+                            getGoalConsistencyStyle(
+                                    consistency.status()
+                            )
+                    );
+
+            setGoalConsistencyVisible(true);
+
+        } catch (IllegalStateException exception) {
+            setGoalConsistencyVisible(false);
+        }
+    }
+
+    private String getGoalConsistencyTitle(
+            SavingsGoalConsistency consistency
+    ) {
+        return switch (consistency.status()) {
+            case NO_CONTRIBUTIONS ->
+                    "Ritmo da conquista";
+
+            case STARTED_THIS_MONTH ->
+                    currencyFormat.format(
+                            consistency.contributedThisMonth()
+                    ) + " guardados neste mês";
+
+            case CONSISTENT ->
+                    consistency.consecutiveMonths()
+                            + " "
+                            + formatMonthWord(
+                            consistency.consecutiveMonths()
+                    )
+                            + " de consistência";
+
+            case PAUSED ->
+                    "Seu objetivo espera por você";
+        };
+    }
+
+    private String getGoalConsistencyMessage(
+            SavingsGoalConsistency consistency
+    ) {
+        return switch (consistency.status()) {
+            case NO_CONTRIBUTIONS ->
+                    "Registre sua primeira contribuição para começar a construir seu ritmo.";
+
+            case STARTED_THIS_MONTH ->
+                    consistency.contributionsThisMonth()
+                            + " "
+                            + formatContributionWord(
+                            consistency.contributionsThisMonth()
+                    )
+                            + " neste mês. Continue avançando.";
+
+            case CONSISTENT ->
+                    "Você contribuiu por "
+                            + consistency.consecutiveMonths()
+                            + " "
+                            + formatMonthWord(
+                            consistency.consecutiveMonths()
+                    )
+                            + " seguidos e guardou "
+                            + currencyFormat.format(
+                            consistency.contributedThisMonth()
+                    )
+                            + " neste mês.";
+
+            case PAUSED ->
+                    "Ainda não houve contribuição neste mês. Um pequeno valor já coloca sua conquista em movimento.";
+        };
+    }
+
+    private String getGoalConsistencyStyle(
+            SavingsGoalConsistencyStatus status
+    ) {
+        return switch (status) {
+            case NO_CONTRIBUTIONS ->
+                    "dashboard-goal-consistency-neutral";
+
+            case STARTED_THIS_MONTH ->
+                    "dashboard-goal-consistency-started";
+
+            case CONSISTENT ->
+                    "dashboard-goal-consistency-positive";
+
+            case PAUSED ->
+                    "dashboard-goal-consistency-warning";
+        };
+    }
+
+    private String formatContributionWord(int amount) {
+        return amount == 1
+                ? "contribuição registrada"
+                : "contribuições registradas";
+    }
+
+    private String formatMonthWord(int amount) {
+        return amount == 1
+                ? "mês"
+                : "meses";
+    }
+
+    private void setGoalConsistencyVisible(
+            boolean visible
+    ) {
+        dashboardGoalConsistencySeparator.setVisible(visible);
+        dashboardGoalConsistencySeparator.setManaged(visible);
+
+        dashboardGoalConsistencyLabel.setVisible(visible);
+        dashboardGoalConsistencyLabel.setManaged(visible);
+
+        dashboardGoalConsistencyMessageLabel.setVisible(visible);
+        dashboardGoalConsistencyMessageLabel.setManaged(visible);
     }
 
     private void renderGoalMonthlyPace(

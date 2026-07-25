@@ -2215,3 +2215,33 @@
 .dashboard-smart-alert-critical .dashboard-smart-alert-title {
     -fx-text-fill: #e87979;
 }
+
+.dashboard-goal-consistency-separator {
+    -fx-background-color: #303846;
+    -fx-opacity: 0.8;
+}
+
+.dashboard-goal-consistency-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-padding: 4px 0 0 0;
+}
+
+.dashboard-goal-consistency-message {
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
+}
+
+.dashboard-goal-consistency-neutral {
+    -fx-text-fill: #8f98a6;
+}
+
+.dashboard-goal-consistency-started,
+.dashboard-goal-consistency-positive {
+    -fx-text-fill: #8eea3c;
+}
+
+.dashboard-goal-consistency-warning {
+    -fx-text-fill: #f2b84b;
+}

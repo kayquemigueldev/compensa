@@ -329,6 +329,29 @@
                        wrapText="true"
                        styleClass="dashboard-goal-forecast-date"/>
 
+                <Region fx:id="dashboardGoalConsistencySeparator"
+                        visible="false"
+                        managed="false"
+                        prefHeight="1.0"
+                        maxWidth="Infinity"
+                        styleClass="dashboard-goal-consistency-separator"/>
+
+                <Label fx:id="dashboardGoalConsistencyLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-consistency-title"/>
+
+                <Label fx:id="dashboardGoalConsistencyMessageLabel"
+                       text=""
+                       visible="false"
+                       managed="false"
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-goal-consistency-message"/>
+
             </VBox>
 
             <Label fx:id="dashboardGoalLastContributionLabel"
