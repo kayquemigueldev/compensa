@@ -2264,3 +2264,24 @@
     -fx-translate-y: 0;
     -fx-opacity: 0.88;
 }
+
+.dashboard-navigation-shortcut {
+    -fx-cursor: hand;
+}
+
+.dashboard-navigation-shortcut:hover {
+    -fx-background-color: #151c1a;
+    -fx-border-color: #69d921;
+    -fx-translate-y: -2px;
+}
+
+.dashboard-navigation-shortcut:focused {
+    -fx-border-color: #8eea3c;
+    -fx-border-width: 2px;
+    -fx-border-insets: -1px;
+}
+
+.dashboard-navigation-shortcut:pressed {
+    -fx-translate-y: 0;
+    -fx-opacity: 0.88;
+}

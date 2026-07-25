@@ -34,11 +34,14 @@ import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
 import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
 import com.kayque.compensa.navigation.NavigationRequestEvent;
+import com.kayque.compensa.navigation.NavigationTarget;
+
 
 
 import javafx.scene.layout.VBox;
 import javafx.scene.AccessibleRole;
 import javafx.scene.input.KeyCode;
+import javafx.scene.Node;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -258,12 +261,51 @@ public class DashboardController {
 
     @FXML
     private void initialize() {
+        configureDashboardShortcuts();
+
         loadGreeting();
         loadSummary();
         loadMonthlyBudget();
         loadSavingsGoal();
         showDashboardHighlight();
         loadSmartAlerts();
+    }
+
+    private void configureDashboardShortcuts() {
+        configureNavigationShortcut(
+                dashboardGoalCard,
+                NavigationTarget.SAVINGS_GOAL,
+                "Abrir detalhes do objetivo financeiro"
+        );
+    }
+
+    private void configureNavigationShortcut(
+            Node node,
+            NavigationTarget target,
+            String accessibleText
+    ) {
+        node.getStyleClass().add(
+                "dashboard-navigation-shortcut"
+        );
+
+        node.setFocusTraversable(true);
+        node.setAccessibleRole(
+                AccessibleRole.BUTTON
+        );
+
+        node.setAccessibleText(accessibleText);
+
+        node.setOnMouseClicked(event ->
+                requestNavigation(target)
+        );
+
+        node.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER
+                    || event.getCode() == KeyCode.SPACE) {
+                requestNavigation(target);
+                event.consume();
+            }
+        });
     }
 
     private void loadGreeting() {
@@ -532,6 +574,13 @@ public class DashboardController {
                         renderGoalForecast(goal);
                         renderLastGoalContribution();
                         renderGoalConsistency();
+
+                        dashboardGoalCard.setAccessibleText(
+                                "Abrir objetivo "
+                                        + goal.name()
+                                        + ". "
+                                        + formatGoalShortcutProgress(progress)
+                        );
 
                         dashboardGoalCard.setVisible(true);
                         dashboardGoalCard.setManaged(true);
@@ -1086,6 +1135,19 @@ public class DashboardController {
         }
     }
 
+    private String formatGoalShortcutProgress(
+            SavingsGoalProgress progress
+    ) {
+        return formatGoalPercentage(
+                progress.percentage()
+        )
+                + " concluídos. "
+                + currencyFormat.format(
+                progress.savedAmount()
+        )
+                + " guardados.";
+    }
+
     private void showGoalForecastDate(
             LocalDate estimatedDate
     ) {
@@ -1285,10 +1347,20 @@ public class DashboardController {
             return;
         }
 
+        requestNavigation(
+                alert.navigationTarget()
+        );
+    }
+
+    private void requestNavigation(
+            NavigationTarget target
+    ) {
+        if (target == NavigationTarget.NONE) {
+            return;
+        }
+
         dashboardSmartAlertsContainer.fireEvent(
-                new NavigationRequestEvent(
-                        alert.navigationTarget()
-                )
+                new NavigationRequestEvent(target)
         );
     }
 
