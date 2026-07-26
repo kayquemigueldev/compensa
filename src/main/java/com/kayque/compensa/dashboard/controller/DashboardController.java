@@ -36,8 +36,6 @@ import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationServ
 import com.kayque.compensa.navigation.NavigationRequestEvent;
 import com.kayque.compensa.navigation.NavigationTarget;
 
-
-
 import javafx.scene.layout.VBox;
 import javafx.scene.AccessibleRole;
 import javafx.scene.input.KeyCode;
