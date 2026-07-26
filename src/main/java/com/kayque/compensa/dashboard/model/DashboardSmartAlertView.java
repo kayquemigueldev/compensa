@@ -7,6 +7,7 @@ import java.util.Objects;
 public record DashboardSmartAlertView(
         String title,
         String message,
+        String explanation,
         String styleClass,
         NavigationTarget navigationTarget
 ) {
@@ -22,6 +23,11 @@ public record DashboardSmartAlertView(
                 "A mensagem do alerta é obrigatória."
         );
 
+        explanation = requireText(
+                explanation,
+                "A explicação do alerta é obrigatória."
+        );
+
         styleClass = requireText(
                 styleClass,
                 "O estilo do alerta é obrigatório."
@@ -33,6 +39,25 @@ public record DashboardSmartAlertView(
         );
     }
 
+    /*
+     * Mantém compatibilidade com os testes e códigos
+     * que utilizam o construtor anterior.
+     */
+    public DashboardSmartAlertView(
+            String title,
+            String message,
+            String styleClass,
+            NavigationTarget navigationTarget
+    ) {
+        this(
+                title,
+                message,
+                message,
+                styleClass,
+                navigationTarget
+        );
+    }
+
     public DashboardSmartAlertView(
             String title,
             String message,
@@ -40,6 +65,7 @@ public record DashboardSmartAlertView(
     ) {
         this(
                 title,
+                message,
                 message,
                 styleClass,
                 NavigationTarget.NONE

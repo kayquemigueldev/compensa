@@ -36,6 +36,9 @@ import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationServ
 import com.kayque.compensa.navigation.NavigationRequestEvent;
 import com.kayque.compensa.navigation.NavigationTarget;
 
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.AccessibleRole;
 import javafx.scene.input.KeyCode;
@@ -55,9 +58,7 @@ import com.kayque.compensa.goal.service.SavingsGoalMonthlyPaceService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -1271,10 +1272,54 @@ public class DashboardController {
                 "dashboard-smart-alert-message"
         );
 
+        Label explanationLabel = new Label(
+                alert.explanation()
+        );
+
+        explanationLabel.setWrapText(true);
+        explanationLabel.setMinWidth(0);
+        explanationLabel.setMaxWidth(Double.MAX_VALUE);
+        explanationLabel.setVisible(false);
+        explanationLabel.setManaged(false);
+
+        explanationLabel.getStyleClass().add(
+                "dashboard-smart-alert-explanation"
+        );
+
+        Button explanationButton = new Button(
+                "Entender este alerta"
+        );
+
+        explanationButton.getStyleClass().add(
+                "dashboard-smart-alert-explanation-button"
+        );
+
+        explanationButton.setOnAction(event -> {
+            boolean showExplanation =
+                    !explanationLabel.isManaged();
+
+            explanationLabel.setVisible(showExplanation);
+            explanationLabel.setManaged(showExplanation);
+
+            explanationButton.setText(
+                    showExplanation
+                            ? "Ocultar explicação"
+                            : "Entender este alerta"
+            );
+
+            event.consume();
+        });
+
+        explanationButton.setOnMouseClicked(
+                event -> event.consume()
+        );
+
         VBox card = new VBox(
-                5,
+                6,
                 titleLabel,
-                messageLabel
+                messageLabel,
+                explanationButton,
+                explanationLabel
         );
 
         card.setPrefWidth(0);
@@ -1294,6 +1339,7 @@ public class DashboardController {
 
         if (alert.hasNavigation()) {
             Region spacer = new Region();
+
             VBox.setVgrow(
                     spacer,
                     Priority.ALWAYS

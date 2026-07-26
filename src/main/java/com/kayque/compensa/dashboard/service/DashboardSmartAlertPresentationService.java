@@ -2,6 +2,7 @@ package com.kayque.compensa.dashboard.service;
 
 import com.kayque.compensa.alerts.model.SmartAlert;
 import com.kayque.compensa.alerts.model.SmartAlertPriority;
+import com.kayque.compensa.alerts.model.SmartAlertTopic;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
 import com.kayque.compensa.navigation.NavigationTarget;
 
@@ -64,9 +65,40 @@ public class DashboardSmartAlertPresentationService {
         return new DashboardSmartAlertView(
                 alert.title(),
                 alert.message(),
+                getExplanation(alert.topic()),
                 getStyleClass(alert.priority()),
                 navigationTarget
         );
+    }
+
+    private String getExplanation(
+            SmartAlertTopic topic
+    ) {
+        return switch (topic) {
+            case BUDGET_USAGE ->
+                    "Este alerta compara o total comprado neste mês com o dinheiro livre planejado no seu perfil financeiro.";
+
+            case MONTHLY_SAVINGS_GOAL ->
+                    "Este alerta compara quanto você definiu como meta de economia com o valor disponível no orçamento mensal.";
+
+            case FINANCIAL_GOAL_PROGRESS ->
+                    "Este alerta compara o progresso atual do seu objetivo com o avanço esperado para este momento.";
+
+            case PENDING_DECISIONS ->
+                    "Este alerta considera as compras que continuam aguardando uma decisão no seu histórico.";
+
+            case PURCHASE_EVALUATION ->
+                    "Este alerta considera compras realizadas que ainda não receberam uma avaliação de satisfação.";
+
+            case WORK_TIME ->
+                    "Este alerta soma o tempo real de trabalho necessário para pagar as compras realizadas neste mês.";
+
+            case PRESERVED_VALUE ->
+                    "Este alerta considera o valor das compras que você decidiu não realizar durante o período analisado.";
+
+            case PURCHASE_BEHAVIOR ->
+                    "Este alerta observa padrões recorrentes nas suas decisões, como impulso, planejamento e satisfação.";
+        };
     }
 
     private String getStyleClass(

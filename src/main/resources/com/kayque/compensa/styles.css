@@ -2255,27 +2255,47 @@
 }
 
 .dashboard-smart-alert-action {
+    -fx-text-fill: #c5cbd4;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 5px 0 0 0;
 }
 
-.dashboard-smart-alert-informational
-.dashboard-smart-alert-action {
-    -fx-text-fill: #54c7ec;
+.dashboard-smart-alert-explanation-button {
+    -fx-background-color: #202630;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7px;
+    -fx-border-color: #596373;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 10px;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
 }
 
-.dashboard-smart-alert-attention
-.dashboard-smart-alert-action {
-    -fx-text-fill: #f2b84b;
+.dashboard-smart-alert-explanation-button:hover {
+    -fx-background-color: #29313c;
+    -fx-border-color: #7b8798;
+    -fx-text-fill: #ffffff;
 }
 
-.dashboard-smart-alert-critical
-.dashboard-smart-alert-action {
-    -fx-text-fill: #ff626d;
+.dashboard-smart-alert-explanation-button:focused {
+    -fx-background-color: #202630;
+    -fx-border-color: #54c7ec;
+    -fx-border-width: 1px;
+    -fx-effect: none;
 }
 
-.dashboard-smart-alert-clickable:hover
-.dashboard-smart-alert-action {
-    -fx-underline: true;
+.dashboard-smart-alert-explanation {
+    -fx-background-color: #10141a;
+    -fx-background-radius: 8px;
+    -fx-border-color: #2a313b;
+    -fx-border-radius: 8px;
+    -fx-padding: 9px 10px;
+    -fx-text-fill: #aeb5c0;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
 }
