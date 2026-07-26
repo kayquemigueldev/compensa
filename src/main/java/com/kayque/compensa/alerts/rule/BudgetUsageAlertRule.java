@@ -6,6 +6,8 @@ import com.kayque.compensa.alerts.model.SmartAlertSnapshot;
 import com.kayque.compensa.alerts.model.SmartAlertTopic;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,10 +21,15 @@ public class BudgetUsageAlertRule
             new BigDecimal("90");
 
     private static final BigDecimal ATTENTION_PERCENTAGE =
-            new BigDecimal("75");
+            new BigDecimal("70");
 
     private static final BigDecimal HEALTHY_PERCENTAGE =
             new BigDecimal("50");
+
+    private final NumberFormat currencyFormat =
+            NumberFormat.getCurrencyInstance(
+                    Locale.of("pt", "BR")
+            );
 
     @Override
     public Optional<SmartAlert> evaluate(
@@ -33,13 +40,21 @@ public class BudgetUsageAlertRule
                 "O resumo financeiro é obrigatório."
         );
 
+        if (!snapshot.financialProfileConfigured()) {
+            return Optional.empty();
+        }
+
         if (snapshot.availableBudget().signum() < 0) {
             return Optional.of(
                     createAlert(
                             "budget.deficit",
                             SmartAlertPriority.CRITICAL,
                             "Seu orçamento está em déficit",
-                            "As compras do mês ultrapassaram o valor disponível no orçamento."
+                            "As compras do mês ultrapassaram o orçamento em "
+                                    + formatCurrency(
+                                    snapshot.availableBudget().abs()
+                            )
+                                    + "."
                     )
             );
         }
@@ -76,8 +91,11 @@ public class BudgetUsageAlertRule
                                     + formatPercentage(
                                     usagePercentage
                             )
-                                    + " do orçamento deste mês. "
-                                    + "Considere adiar novas compras."
+                                    + " do orçamento e possui "
+                                    + formatCurrency(
+                                    snapshot.availableBudget()
+                            )
+                                    + " disponíveis."
                     )
             );
         }
@@ -94,7 +112,11 @@ public class BudgetUsageAlertRule
                                     + formatPercentage(
                                     usagePercentage
                             )
-                                    + " do orçamento deste mês."
+                                    + " do orçamento e ainda possui "
+                                    + formatCurrency(
+                                    snapshot.availableBudget()
+                            )
+                                    + " disponíveis."
                     )
             );
         }
@@ -111,7 +133,11 @@ public class BudgetUsageAlertRule
                                     + formatPercentage(
                                     usagePercentage
                             )
-                                    + " do orçamento deste mês."
+                                    + " do orçamento e ainda possui "
+                                    + formatCurrency(
+                                    snapshot.availableBudget()
+                            )
+                                    + " disponíveis."
                     )
             );
         }
@@ -142,5 +168,11 @@ public class BudgetUsageAlertRule
                 .toPlainString()
                 .replace(".", ",")
                 + "%";
+    }
+
+    private String formatCurrency(
+            BigDecimal amount
+    ) {
+        return currencyFormat.format(amount);
     }
 }

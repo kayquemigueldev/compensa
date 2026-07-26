@@ -16,7 +16,8 @@ public record SmartAlertSnapshot(
         int overduePendingDecisions,
         int unevaluatedPurchases,
         long totalWorkMinutes,
-        BigDecimal preservedAmountThisYear
+        BigDecimal preservedAmountThisYear,
+        boolean financialProfileConfigured
 ) {
 
     public SmartAlertSnapshot {
@@ -50,29 +51,25 @@ public record SmartAlertSnapshot(
                 "O progresso esperado não pode ser negativo."
         );
 
-        if (purchasesMade < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade de compras realizadas não pode ser negativa."
-            );
-        }
+        requireNonNegative(
+                purchasesMade,
+                "A quantidade de compras realizadas não pode ser negativa."
+        );
 
-        if (purchasesAvoided < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade de compras evitadas não pode ser negativa."
-            );
-        }
+        requireNonNegative(
+                purchasesAvoided,
+                "A quantidade de compras evitadas não pode ser negativa."
+        );
 
-        if (pendingDecisions < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade de decisões pendentes não pode ser negativa."
-            );
-        }
+        requireNonNegative(
+                pendingDecisions,
+                "A quantidade de decisões pendentes não pode ser negativa."
+        );
 
-        if (overduePendingDecisions < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade de decisões atrasadas não pode ser negativa."
-            );
-        }
+        requireNonNegative(
+                overduePendingDecisions,
+                "A quantidade de decisões atrasadas não pode ser negativa."
+        );
 
         if (overduePendingDecisions > pendingDecisions) {
             throw new IllegalArgumentException(
@@ -80,11 +77,10 @@ public record SmartAlertSnapshot(
             );
         }
 
-        if (unevaluatedPurchases < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade de compras sem avaliação não pode ser negativa."
-            );
-        }
+        requireNonNegative(
+                unevaluatedPurchases,
+                "A quantidade de compras sem avaliação não pode ser negativa."
+        );
 
         if (totalWorkMinutes < 0) {
             throw new IllegalArgumentException(
@@ -95,6 +91,43 @@ public record SmartAlertSnapshot(
         requireNonNegative(
                 preservedAmountThisYear,
                 "O valor preservado no ano não pode ser negativo."
+        );
+    }
+
+    /*
+     * Mantém compatibilidade com os testes e códigos
+     * criados antes da informação do perfil financeiro.
+     */
+    public SmartAlertSnapshot(
+            BigDecimal budgetUsagePercentage,
+            BigDecimal availableBudget,
+            BigDecimal monthlyGoalContributions,
+            BigDecimal monthlyGoalTarget,
+            BigDecimal goalProgressPercentage,
+            BigDecimal expectedGoalProgressPercentage,
+            int purchasesMade,
+            int purchasesAvoided,
+            int pendingDecisions,
+            int overduePendingDecisions,
+            int unevaluatedPurchases,
+            long totalWorkMinutes,
+            BigDecimal preservedAmountThisYear
+    ) {
+        this(
+                budgetUsagePercentage,
+                availableBudget,
+                monthlyGoalContributions,
+                monthlyGoalTarget,
+                goalProgressPercentage,
+                expectedGoalProgressPercentage,
+                purchasesMade,
+                purchasesAvoided,
+                pendingDecisions,
+                overduePendingDecisions,
+                unevaluatedPurchases,
+                totalWorkMinutes,
+                preservedAmountThisYear,
+                true
         );
     }
 
@@ -125,7 +158,8 @@ public record SmartAlertSnapshot(
                 overduePendingDecisions,
                 0,
                 totalWorkMinutes,
-                preservedAmountThisYear
+                preservedAmountThisYear,
+                true
         );
     }
 
@@ -157,6 +191,15 @@ public record SmartAlertSnapshot(
         Objects.requireNonNull(value, message);
 
         if (value.signum() < 0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private static void requireNonNegative(
+            int value,
+            String message
+    ) {
+        if (value < 0) {
             throw new IllegalArgumentException(message);
         }
     }

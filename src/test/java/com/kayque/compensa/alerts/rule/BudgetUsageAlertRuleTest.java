@@ -91,7 +91,8 @@ class BudgetUsageAlertRuleTest {
         );
 
         assertEquals(
-                "Você já utilizou 82% do orçamento deste mês.",
+                "Você já utilizou 82% do orçamento e ainda possui "
+                        + "R$\u00A0120,00 disponíveis.",
                 alert.message()
         );
     }
@@ -141,9 +142,25 @@ class BudgetUsageAlertRuleTest {
         ).orElseThrow();
 
         assertEquals(
-                "Você já utilizou 82,5% do orçamento deste mês.",
+                "Você já utilizou 82,5% do orçamento e ainda possui "
+                        + "R$\u00A0120,00 disponíveis.",
                 alert.message()
         );
+    }
+
+    @Test
+    void shouldNotGenerateBudgetAlertWithoutFinancialProfile() {
+        SmartAlertSnapshot snapshot =
+                createSnapshot(
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO,
+                        false
+                );
+
+        Optional<SmartAlert> result =
+                rule.evaluate(snapshot);
+
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -171,6 +188,29 @@ class BudgetUsageAlertRuleTest {
                 0,
                 0,
                 BigDecimal.ZERO
+        );
+    }
+
+    private SmartAlertSnapshot createSnapshot(
+            BigDecimal usagePercentage,
+            BigDecimal availableBudget,
+            boolean financialProfileConfigured
+    ) {
+        return new SmartAlertSnapshot(
+                usagePercentage,
+                availableBudget,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                BigDecimal.ZERO,
+                financialProfileConfigured
         );
     }
 }

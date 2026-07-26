@@ -147,7 +147,8 @@ public class SmartAlertSnapshotProvider
                 decisionMetrics.overduePendingDecisions(),
                 decisionMetrics.unevaluatedPurchases(),
                 decisionMetrics.workMinutesThisMonth(),
-                decisionMetrics.preservedAmountThisYear()
+                decisionMetrics.preservedAmountThisYear(),
+                budgetValues.configured()
         );
     }
 
@@ -212,6 +213,7 @@ public class SmartAlertSnapshotProvider
                 calculateBudgetUsagePercentage(usage);
 
         return new BudgetValues(
+                true,
                 percentage,
                 usage.currentAvailableAmount()
         );
@@ -303,12 +305,14 @@ public class SmartAlertSnapshotProvider
     }
 
     private record BudgetValues(
+            boolean configured,
             BigDecimal usagePercentage,
             BigDecimal availableAmount
     ) {
 
         private static BudgetValues empty() {
             return new BudgetValues(
+                    false,
                     BigDecimal.ZERO,
                     BigDecimal.ZERO
             );
