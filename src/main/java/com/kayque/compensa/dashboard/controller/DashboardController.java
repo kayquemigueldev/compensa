@@ -1254,7 +1254,6 @@ public class DashboardController {
             DashboardSmartAlertView alert
     ) {
         Label titleLabel = new Label(alert.title());
-
         titleLabel.setWrapText(true);
         titleLabel.setMinWidth(0);
         titleLabel.setMaxWidth(Double.MAX_VALUE);
@@ -1264,7 +1263,6 @@ public class DashboardController {
         );
 
         Label messageLabel = new Label(alert.message());
-
         messageLabel.setWrapText(true);
         messageLabel.setMinWidth(0);
         messageLabel.setMaxWidth(Double.MAX_VALUE);
@@ -1294,12 +1292,59 @@ public class DashboardController {
                 Priority.ALWAYS
         );
 
+        if (alert.hasNavigation()) {
+            Region spacer = new Region();
+            VBox.setVgrow(
+                    spacer,
+                    Priority.ALWAYS
+            );
+
+            Label actionLabel = new Label(
+                    getSmartAlertActionText(
+                            alert.navigationTarget()
+                    ) + "  →"
+            );
+
+            actionLabel.getStyleClass().add(
+                    "dashboard-smart-alert-action"
+            );
+
+            card.getChildren().addAll(
+                    spacer,
+                    actionLabel
+            );
+        }
+
         configureSmartAlertNavigation(
                 card,
                 alert
         );
 
         return card;
+    }
+
+    private String getSmartAlertActionText(
+            NavigationTarget target
+    ) {
+        return switch (target) {
+            case FINANCIAL_PROFILE ->
+                    "Abrir perfil financeiro";
+
+            case SAVINGS_GOAL ->
+                    "Ver meu objetivo";
+
+            case HISTORY ->
+                    "Revisar histórico";
+
+            case INSIGHTS ->
+                    "Ver insights";
+
+            case NONE ->
+                    "";
+
+            default ->
+                    "Abrir detalhes";
+        };
     }
 
     private void configureSmartAlertNavigation(

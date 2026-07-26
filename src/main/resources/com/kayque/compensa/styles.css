@@ -2253,3 +2253,29 @@
     -fx-translate-y: 0;
     -fx-opacity: 0.88;
 }
+
+.dashboard-smart-alert-action {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 0 0 0;
+}
+
+.dashboard-smart-alert-informational
+.dashboard-smart-alert-action {
+    -fx-text-fill: #54c7ec;
+}
+
+.dashboard-smart-alert-attention
+.dashboard-smart-alert-action {
+    -fx-text-fill: #f2b84b;
+}
+
+.dashboard-smart-alert-critical
+.dashboard-smart-alert-action {
+    -fx-text-fill: #ff626d;
+}
+
+.dashboard-smart-alert-clickable:hover
+.dashboard-smart-alert-action {
+    -fx-underline: true;
+}
