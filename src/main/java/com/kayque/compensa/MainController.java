@@ -129,12 +129,23 @@ public class MainController {
         );
     }
 
+    private void showAlertCenter() {
+        showView(
+                "/com/kayque/compensa/alerts/alert-center-view.fxml",
+                todayButton,
+                "Não foi possível abrir a central de alertas."
+        );
+    }
+
     private void handleNavigationRequest(
             NavigationRequestEvent event
     ) {
         NavigationTarget target = event.target();
 
         switch (target) {
+            case ALERT_CENTER ->
+                    showAlertCenter();
+
             case FINANCIAL_PROFILE ->
                     showFinancialProfile();
 

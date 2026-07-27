@@ -15,6 +15,7 @@ module com.kayque.compensa {
     opens com.kayque.compensa.splash.controller to javafx.fxml;
     opens com.kayque.compensa.userprofile.controller to javafx.fxml;
     opens com.kayque.compensa.goal.controller to javafx.fxml;
+    opens com.kayque.compensa.alerts.controller to javafx.fxml;
 
     exports com.kayque.compensa;
 }

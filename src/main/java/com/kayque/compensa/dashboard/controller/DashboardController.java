@@ -1222,6 +1222,15 @@ public class DashboardController {
         dashboardGoalLastContributionLabel.setManaged(false);
     }
 
+    @FXML
+    private void showAllSmartAlerts() {
+        dashboardSmartAlertsSection.fireEvent(
+                new NavigationRequestEvent(
+                        NavigationTarget.ALERT_CENTER
+                )
+        );
+    }
+
     private void loadSmartAlerts() {
         try {
             List<DashboardSmartAlertView> alerts =

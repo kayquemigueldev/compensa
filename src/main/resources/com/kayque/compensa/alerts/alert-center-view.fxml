@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.alerts.controller.AlertCenterController"
+      spacing="22.0"
+      styleClass="main-content, alert-center">
+
+    <padding>
+        <Insets top="28.0"
+                right="34.0"
+                bottom="34.0"
+                left="34.0"/>
+    </padding>
+
+    <VBox spacing="5.0">
+        <Label text="Central de alertas"
+               styleClass="page-title"/>
+
+        <Label text="Acompanhe todos os sinais importantes identificados pelo Compensa?."
+               wrapText="true"
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT"
+          styleClass="alert-center-summary">
+
+        <VBox spacing="4.0">
+            <Label text="Alertas ativos"
+                   styleClass="alert-center-summary-title"/>
+
+            <Label fx:id="alertCountLabel"
+                   text="Carregando alertas..."
+                   styleClass="alert-center-summary-value"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="Você pode entender, acessar ou adiar cada alerta."
+               wrapText="true"
+               styleClass="alert-center-summary-description"/>
+    </HBox>
+
+    <VBox fx:id="alertListContainer"
+          spacing="12.0"
+          maxWidth="Infinity">
+
+        <Label fx:id="emptyStateLabel"
+               text="Os alertas ativos aparecerão aqui."
+               wrapText="true"
+               styleClass="alert-center-empty"/>
+    </VBox>
+</VBox>

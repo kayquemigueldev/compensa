@@ -35,8 +35,16 @@
           visible="false"
           managed="false">
 
-        <Label text="Alertas inteligentes"
-               styleClass="dashboard-smart-alert-section-title"/>
+        <HBox alignment="CENTER_LEFT">
+            <Label text="Alertas inteligentes"
+                   styleClass="dashboard-smart-alert-section-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="Ver todos →"
+                   onMouseClicked="#showAllSmartAlerts"
+                   styleClass="dashboard-smart-alert-view-all"/>
+        </HBox>
 
         <HBox fx:id="dashboardSmartAlertsContainer"
               spacing="10.0"/>
