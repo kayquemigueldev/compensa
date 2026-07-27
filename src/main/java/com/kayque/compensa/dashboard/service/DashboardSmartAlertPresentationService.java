@@ -63,6 +63,7 @@ public class DashboardSmartAlertPresentationService {
                 );
 
         return new DashboardSmartAlertView(
+                alert.code(),
                 alert.title(),
                 alert.message(),
                 getExplanation(alert.topic()),

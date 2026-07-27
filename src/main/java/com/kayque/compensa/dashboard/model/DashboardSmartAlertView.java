@@ -5,6 +5,7 @@ import com.kayque.compensa.navigation.NavigationTarget;
 import java.util.Objects;
 
 public record DashboardSmartAlertView(
+        String code,
         String title,
         String message,
         String explanation,
@@ -13,6 +14,11 @@ public record DashboardSmartAlertView(
 ) {
 
     public DashboardSmartAlertView {
+        code = requireText(
+                code,
+                "O código do alerta é obrigatório."
+        );
+
         title = requireText(
                 title,
                 "O título do alerta é obrigatório."
@@ -39,10 +45,23 @@ public record DashboardSmartAlertView(
         );
     }
 
-    /*
-     * Mantém compatibilidade com os testes e códigos
-     * que utilizam o construtor anterior.
-     */
+    public DashboardSmartAlertView(
+            String title,
+            String message,
+            String explanation,
+            String styleClass,
+            NavigationTarget navigationTarget
+    ) {
+        this(
+                title,
+                title,
+                message,
+                explanation,
+                styleClass,
+                navigationTarget
+        );
+    }
+
     public DashboardSmartAlertView(
             String title,
             String message,
@@ -50,6 +69,7 @@ public record DashboardSmartAlertView(
             NavigationTarget navigationTarget
     ) {
         this(
+                title,
                 title,
                 message,
                 message,
@@ -64,6 +84,7 @@ public record DashboardSmartAlertView(
             String styleClass
     ) {
         this(
+                title,
                 title,
                 message,
                 message,

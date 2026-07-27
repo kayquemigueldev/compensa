@@ -24,6 +24,18 @@ public final class DatabaseInitializer {
         )
         """;
 
+    private static final String CREATE_SMART_ALERT_SNOOZE_TABLE = """
+    CREATE TABLE IF NOT EXISTS smart_alert_snooze (
+        alert_code TEXT PRIMARY KEY
+            CHECK (length(trim(alert_code)) > 0),
+
+        snoozed_until TEXT NOT NULL,
+
+        updated_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP
+    )
+    """;
+
     private static final String CREATE_PURCHASE_DECISION_TABLE = """
             CREATE TABLE IF NOT EXISTS purchase_decision (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -211,6 +223,7 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_USER_PROFILE_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE);
+            statement.execute(CREATE_SMART_ALERT_SNOOZE_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);

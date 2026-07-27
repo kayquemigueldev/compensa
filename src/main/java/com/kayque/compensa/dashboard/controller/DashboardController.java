@@ -30,7 +30,9 @@ import com.kayque.compensa.goal.model.SavingsGoalConsistency;
 import com.kayque.compensa.goal.model.SavingsGoalConsistencyStatus;
 import com.kayque.compensa.goal.service.SavingsGoalConsistencyService;
 import com.kayque.compensa.alerts.service.SmartAlertService;
+import com.kayque.compensa.alerts.service.SmartAlertSnoozeService;
 import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
+import com.kayque.compensa.alerts.repository.SqliteSmartAlertSnoozeRepository;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
 import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
 import com.kayque.compensa.navigation.NavigationRequestEvent;
@@ -45,6 +47,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.Node;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.Duration;
 import java.util.List;
 
 import com.kayque.compensa.goal.model.SavingsGoalProgress;
@@ -131,6 +134,12 @@ public class DashboardController {
 
     private final SmartAlertService smartAlertService =
             SmartAlertServiceFactory.createDefault();
+
+    private final SmartAlertSnoozeService
+            smartAlertSnoozeService =
+            new SmartAlertSnoozeService(
+                    new SqliteSmartAlertSnoozeRepository()
+            );
 
     private final DashboardSmartAlertPresentationService
             smartAlertPresentationService =
@@ -1216,7 +1225,9 @@ public class DashboardController {
         try {
             List<DashboardSmartAlertView> alerts =
                     smartAlertPresentationService.prepare(
-                            smartAlertService.generateAlerts(),
+                            smartAlertSnoozeService.filterVisible(
+                                    smartAlertService.generateAlerts()
+                            ),
                             SMART_ALERT_LIMIT
                     );
 
@@ -1314,11 +1325,43 @@ public class DashboardController {
                 event -> event.consume()
         );
 
+        Button snoozeButton = new Button(
+                "Lembrar depois"
+        );
+
+        snoozeButton.getStyleClass().add(
+                "dashboard-smart-alert-snooze-button"
+        );
+
+        snoozeButton.setOnAction(event -> {
+            smartAlertSnoozeService.snooze(
+                    alert.code(),
+                    Duration.ofHours(24)
+            );
+
+            loadSmartAlerts();
+            event.consume();
+        });
+
+        snoozeButton.setOnMouseClicked(
+                event -> event.consume()
+        );
+
+        HBox alertButtons = new HBox(
+                8,
+                explanationButton,
+                snoozeButton
+        );
+
+        alertButtons.getStyleClass().add(
+                "dashboard-smart-alert-buttons"
+        );
+
         VBox card = new VBox(
                 6,
                 titleLabel,
                 messageLabel,
-                explanationButton,
+                alertButtons,
                 explanationLabel
         );
 
