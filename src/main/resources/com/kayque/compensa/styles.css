@@ -2587,3 +2587,34 @@
     -fx-border-color: #73e600;
     -fx-text-fill: #8eea3c;
 }
+
+.alert-filter-container {
+    -fx-padding: 2px 0 4px 0;
+}
+
+.alert-filter-button {
+    -fx-background-color: #171b22;
+    -fx-background-radius: 9px;
+
+    -fx-border-color: #303743;
+    -fx-border-radius: 9px;
+    -fx-border-width: 1px;
+
+    -fx-text-fill: #969eaa;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+
+    -fx-padding: 9px 16px;
+    -fx-cursor: hand;
+}
+
+.alert-filter-button:hover {
+    -fx-background-color: #202630;
+    -fx-text-fill: #f4f1ea;
+}
+
+.alert-filter-button-active {
+    -fx-background-color: #24301e;
+    -fx-border-color: #8eea3c;
+    -fx-text-fill: #8eea3c;
+}

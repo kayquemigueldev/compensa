@@ -72,6 +72,27 @@
 
     </HBox>
 
+    <HBox spacing="10.0"
+          alignment="CENTER_LEFT"
+          styleClass="alert-filter-container">
+
+        <Button fx:id="allFilterButton"
+                text="Todos (0)"
+                onAction="#showAllAlerts"
+                styleClass="alert-filter-button, alert-filter-button-active"/>
+
+        <Button fx:id="unreadFilterButton"
+                text="Novos (0)"
+                onAction="#showUnreadAlerts"
+                styleClass="alert-filter-button"/>
+
+        <Button fx:id="readFilterButton"
+                text="Lidos (0)"
+                onAction="#showReadAlerts"
+                styleClass="alert-filter-button"/>
+
+    </HBox>
+
     <VBox fx:id="alertListContainer"
           spacing="12.0"
           maxWidth="Infinity">
