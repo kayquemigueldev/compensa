@@ -11,6 +11,7 @@ import com.kayque.compensa.navigation.NavigationTarget;
 import com.kayque.compensa.alerts.model.SmartAlert;
 import com.kayque.compensa.alerts.repository.SqliteSmartAlertReadRepository;
 import com.kayque.compensa.alerts.service.SmartAlertReadService;
+import com.kayque.compensa.alerts.event.SmartAlertStateChangedEvent;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -315,6 +316,7 @@ public class AlertCenterController {
                         alert.code()
                 );
 
+                notifyAlertStateChanged();
                 loadAlerts();
             });
         }
@@ -367,6 +369,7 @@ public class AlertCenterController {
                     Duration.ofHours(24)
             );
 
+            notifyAlertStateChanged();
             loadAlerts();
         });
 
@@ -449,4 +452,11 @@ public class AlertCenterController {
         emptyStateLabel.setVisible(true);
         emptyStateLabel.setManaged(true);
     }
+
+    private void notifyAlertStateChanged() {
+        alertListContainer.fireEvent(
+                new SmartAlertStateChangedEvent()
+        );
+    }
+
 }

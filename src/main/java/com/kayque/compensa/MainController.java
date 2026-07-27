@@ -1,18 +1,47 @@
 package com.kayque.compensa;
 
+import com.kayque.compensa.alerts.event.SmartAlertStateChangedEvent;
+import com.kayque.compensa.alerts.model.SmartAlert;
+import com.kayque.compensa.alerts.repository.SqliteSmartAlertReadRepository;
+import com.kayque.compensa.alerts.repository.SqliteSmartAlertSnoozeRepository;
+import com.kayque.compensa.alerts.service.SmartAlertReadService;
+import com.kayque.compensa.alerts.service.SmartAlertService;
+import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
+import com.kayque.compensa.alerts.service.SmartAlertSnoozeService;
+import com.kayque.compensa.navigation.NavigationRequestEvent;
+import com.kayque.compensa.navigation.NavigationTarget;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import com.kayque.compensa.navigation.NavigationRequestEvent;
-import com.kayque.compensa.navigation.NavigationTarget;
+import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.util.List;
 
 public class MainController {
+
+    private final SmartAlertService smartAlertService =
+            SmartAlertServiceFactory.createDefault();
+
+    private final SmartAlertSnoozeService
+            smartAlertSnoozeService =
+            new SmartAlertSnoozeService(
+                    new SqliteSmartAlertSnoozeRepository(),
+                    Clock.systemDefaultZone()
+            );
+
+    private final SmartAlertReadService
+            smartAlertReadService =
+            new SmartAlertReadService(
+                    new SqliteSmartAlertReadRepository(),
+                    Clock.systemDefaultZone()
+            );
 
     @FXML
     private BorderPane mainBorderPane;
@@ -36,6 +65,9 @@ public class MainController {
     private Button insightsButton;
 
     @FXML
+    private Button alertCenterButton;
+
+    @FXML
     private Button settingsButton;
 
     @FXML
@@ -45,9 +77,45 @@ public class MainController {
     private Button savingsGoalButton;
 
     @FXML
+    private Label alertBadgeLabel;
+
+    @FXML
     private ScrollPane mainContentScrollPane;
 
     private Node purchaseAnalysisView;
+
+    @FXML
+    private void initialize() {
+        purchaseAnalysisView =
+                mainContentScrollPane.getContent();
+
+        mainBorderPane.addEventHandler(
+                NavigationRequestEvent.NAVIGATION_REQUEST,
+                this::handleNavigationRequest
+        );
+
+        mainBorderPane.addEventHandler(
+                SmartAlertStateChangedEvent.ALERT_STATE_CHANGED,
+                event -> refreshAlertBadge()
+        );
+
+        refreshAlertBadge();
+    }
+
+    @FXML
+    private void showDashboard() {
+        showView(
+                "/com/kayque/compensa/dashboard/dashboard-view.fxml",
+                todayButton,
+                "Não foi possível abrir a tela Hoje."
+        );
+    }
+
+    @FXML
+    private void showPurchaseAnalysis() {
+        showContent(purchaseAnalysisView);
+        setActiveButton(analyzePurchaseButton);
+    }
 
     @FXML
     private void showWishlist() {
@@ -59,20 +127,39 @@ public class MainController {
     }
 
     @FXML
-    private void initialize() {
-        purchaseAnalysisView =
-                mainContentScrollPane.getContent();
-
-        mainBorderPane.addEventHandler(
-                NavigationRequestEvent.NAVIGATION_REQUEST,
-                this::handleNavigationRequest
+    private void showHistory() {
+        showView(
+                "/com/kayque/compensa/history/history-view.fxml",
+                historyButton,
+                "Não foi possível abrir o histórico."
         );
     }
 
     @FXML
-    private void showPurchaseAnalysis() {
-        showContent(purchaseAnalysisView);
-        setActiveButton(analyzePurchaseButton);
+    private void showInsights() {
+        showView(
+                "/com/kayque/compensa/insights/insights-view.fxml",
+                insightsButton,
+                "Não foi possível abrir os insights."
+        );
+    }
+
+    @FXML
+    private void showAlertCenter() {
+        showView(
+                "/com/kayque/compensa/alerts/alert-center-view.fxml",
+                alertCenterButton,
+                "Não foi possível abrir a central de alertas."
+        );
+    }
+
+    @FXML
+    private void showSavingsGoal() {
+        showView(
+                "/com/kayque/compensa/goal/savings-goal-view.fxml",
+                savingsGoalButton,
+                "Não foi possível abrir o objetivo financeiro."
+        );
     }
 
     @FXML
@@ -94,46 +181,11 @@ public class MainController {
     }
 
     @FXML
-    private void showHistory() {
+    private void showSettings() {
         showView(
-                "/com/kayque/compensa/history/history-view.fxml",
-                historyButton,
-                "Não foi possível abrir o histórico."
-        );
-    }
-
-    @FXML
-    private void showDashboard() {
-        showView(
-                "/com/kayque/compensa/dashboard/dashboard-view.fxml",
-                todayButton,
-                "Não foi possível abrir a tela Hoje."
-        );
-    }
-
-    @FXML
-    private void showInsights() {
-        showView(
-                "/com/kayque/compensa/insights/insights-view.fxml",
-                insightsButton,
-                "Não foi possível abrir os insights."
-        );
-    }
-
-    @FXML
-    private void showSavingsGoal() {
-        showView(
-                "/com/kayque/compensa/goal/savings-goal-view.fxml",
-                savingsGoalButton,
-                "Não foi possível abrir o objetivo financeiro."
-        );
-    }
-
-    private void showAlertCenter() {
-        showView(
-                "/com/kayque/compensa/alerts/alert-center-view.fxml",
-                todayButton,
-                "Não foi possível abrir a central de alertas."
+                "/com/kayque/compensa/settings/settings-view.fxml",
+                settingsButton,
+                "Não foi possível abrir as configurações."
         );
     }
 
@@ -189,19 +241,60 @@ public class MainController {
         }
     }
 
-    @FXML
-    private void showSettings() {
-        showView(
-                "/com/kayque/compensa/settings/settings-view.fxml",
-                settingsButton,
-                "Não foi possível abrir as configurações."
-        );
-    }
-
     private void showContent(Node view) {
         mainContentScrollPane.setContent(view);
         mainContentScrollPane.setVvalue(0);
         mainContentScrollPane.setHvalue(0);
+
+        refreshAlertBadge();
+    }
+
+    private void refreshAlertBadge() {
+        try {
+            List<SmartAlert> generatedAlerts =
+                    smartAlertService.generateAlerts();
+
+            smartAlertReadService.synchronize(
+                    generatedAlerts
+            );
+
+            List<SmartAlert> visibleAlerts =
+                    smartAlertSnoozeService.filterVisible(
+                            generatedAlerts
+                    );
+
+            int unreadTotal = (int) visibleAlerts
+                    .stream()
+                    .filter(alert ->
+                            !smartAlertReadService.isRead(
+                                    alert.code()
+                            )
+                    )
+                    .count();
+
+            updateAlertBadge(unreadTotal);
+
+        } catch (RuntimeException exception) {
+            updateAlertBadge(0);
+        }
+    }
+
+    private void updateAlertBadge(int unreadTotal) {
+        boolean visible = unreadTotal > 0;
+
+        alertBadgeLabel.setVisible(visible);
+        alertBadgeLabel.setManaged(visible);
+
+        if (!visible) {
+            alertBadgeLabel.setText("");
+            return;
+        }
+
+        alertBadgeLabel.setText(
+                unreadTotal > 99
+                        ? "99+"
+                        : String.valueOf(unreadTotal)
+        );
     }
 
     private void setActiveButton(Button activeButton) {
@@ -222,6 +315,10 @@ public class MainController {
         );
 
         insightsButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        alertCenterButton.getStyleClass().setAll(
                 "nav-button"
         );
 

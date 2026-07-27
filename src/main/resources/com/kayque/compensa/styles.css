@@ -36,6 +36,18 @@
     -fx-cursor: hand;
 }
 
+.nav-alert-badge {
+    -fx-background-color: #73e600;
+    -fx-background-radius: 999px;
+    -fx-text-fill: #0e1014;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 3px 7px;
+    -fx-min-width: 22px;
+    -fx-min-height: 22px;
+}
+
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #aeb4be;

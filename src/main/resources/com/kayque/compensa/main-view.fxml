@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -68,6 +69,29 @@
                         maxWidth="Infinity"
                         onAction="#showInsights"
                         styleClass="nav-button"/>
+
+                <StackPane maxWidth="Infinity">
+
+                    <Button fx:id="alertCenterButton"
+                            text="Alertas"
+                            maxWidth="Infinity"
+                            onAction="#showAlertCenter"
+                            styleClass="nav-button"/>
+
+                    <Label fx:id="alertBadgeLabel"
+                           text=""
+                           visible="false"
+                           managed="false"
+                           mouseTransparent="true"
+                           StackPane.alignment="CENTER_RIGHT"
+                           styleClass="nav-alert-badge">
+
+                        <StackPane.margin>
+                            <Insets right="13.0"/>
+                        </StackPane.margin>
+                    </Label>
+
+                </StackPane>
 
                 <Button fx:id="savingsGoalButton"
                         text="Meu objetivo"
