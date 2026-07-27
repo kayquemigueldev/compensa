@@ -2332,3 +2332,74 @@
     -fx-border-width: 1px;
     -fx-effect: none;
 }
+
+.settings-snooze-card {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 14px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 14px;
+    -fx-padding: 22px;
+}
+
+.settings-snooze-row {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 10px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 10px;
+    -fx-padding: 13px 15px;
+}
+
+.settings-snooze-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.settings-snooze-expiration {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 11px;
+}
+
+.settings-snooze-empty {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 12px;
+    -fx-padding: 7px 0;
+}
+
+.button.settings-snooze-restore-button {
+    -fx-background-color: #202630;
+    -fx-background-radius: 8px;
+    -fx-border-color: #455161;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #aeb5c0;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 12px;
+    -fx-cursor: hand;
+}
+
+.button.settings-snooze-restore-button:hover {
+    -fx-background-color: #29313c;
+    -fx-border-color: #8eea3c;
+    -fx-text-fill: #8eea3c;
+}
+
+.button.settings-snooze-restore-all-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #8eea3c;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 13px;
+    -fx-cursor: hand;
+}
+
+.button.settings-snooze-restore-all-button:hover {
+    -fx-background-color: #1c2a18;
+}
+
+.button.settings-snooze-restore-all-button:disabled {
+    -fx-opacity: 0.4;
+}

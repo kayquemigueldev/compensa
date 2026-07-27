@@ -48,7 +48,7 @@ import javafx.scene.Node;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
-import java.util.List;
+import java.time.Clock;
 
 import com.kayque.compensa.goal.model.SavingsGoalProgress;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
@@ -56,7 +56,6 @@ import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
 import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
 import com.kayque.compensa.goal.service.SavingsGoalMonthlyPaceService;
-
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -67,6 +66,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.List;
 
 public class DashboardController {
 
@@ -138,7 +138,8 @@ public class DashboardController {
     private final SmartAlertSnoozeService
             smartAlertSnoozeService =
             new SmartAlertSnoozeService(
-                    new SqliteSmartAlertSnoozeRepository()
+                    new SqliteSmartAlertSnoozeRepository(),
+                    Clock.systemDefaultZone()
             );
 
     private final DashboardSmartAlertPresentationService

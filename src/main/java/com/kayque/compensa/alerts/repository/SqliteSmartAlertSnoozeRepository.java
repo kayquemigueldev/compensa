@@ -1,5 +1,6 @@
 package com.kayque.compensa.alerts.repository;
 
+import com.kayque.compensa.alerts.model.SmartAlertSnooze;
 import com.kayque.compensa.database.DatabaseConnection;
 
 import java.sql.Connection;
@@ -7,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SqliteSmartAlertSnoozeRepository
@@ -32,6 +35,24 @@ public class SqliteSmartAlertSnoozeRepository
         LIMIT 1
         """;
 
+    private static final String FIND_ACTIVE = """
+        SELECT
+            alert_code,
+            snoozed_until
+        FROM smart_alert_snooze
+        WHERE snoozed_until > ?
+        ORDER BY snoozed_until ASC, alert_code ASC
+        """;
+
+    private static final String DELETE_SNOOZE = """
+        DELETE FROM smart_alert_snooze
+        WHERE alert_code = ?
+        """;
+
+    private static final String DELETE_ALL = """
+        DELETE FROM smart_alert_snooze
+        """;
+
     private static final String DELETE_EXPIRED = """
         DELETE FROM smart_alert_snooze
         WHERE snoozed_until <= ?
@@ -42,11 +63,12 @@ public class SqliteSmartAlertSnoozeRepository
             String alertCode,
             Instant snoozedUntil
     ) {
-        String validatedCode = requireAlertCode(alertCode);
+        String validatedCode =
+                requireAlertCode(alertCode);
 
         Objects.requireNonNull(
                 snoozedUntil,
-                "O término do adiamento é obrigatório."
+                "A data final do adiamento é obrigatória."
         );
 
         try (
@@ -57,7 +79,11 @@ public class SqliteSmartAlertSnoozeRepository
                         connection.prepareStatement(SAVE_SNOOZE)
         ) {
             statement.setString(1, validatedCode);
-            statement.setString(2, snoozedUntil.toString());
+            statement.setString(
+                    2,
+                    snoozedUntil.toString()
+            );
+
             statement.executeUpdate();
 
         } catch (SQLException exception) {
@@ -73,7 +99,8 @@ public class SqliteSmartAlertSnoozeRepository
             String alertCode,
             Instant currentInstant
     ) {
-        String validatedCode = requireAlertCode(alertCode);
+        String validatedCode =
+                requireAlertCode(alertCode);
 
         Objects.requireNonNull(
                 currentInstant,
@@ -88,22 +115,122 @@ public class SqliteSmartAlertSnoozeRepository
                         connection.prepareStatement(CHECK_SNOOZE)
         ) {
             statement.setString(1, validatedCode);
-            statement.setString(2, currentInstant.toString());
+            statement.setString(
+                    2,
+                    currentInstant.toString()
+            );
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
                 return resultSet.next();
             }
 
         } catch (SQLException exception) {
             throw new IllegalStateException(
-                    "Não foi possível consultar o adiamento do alerta.",
+                    "Não foi possível verificar o alerta adiado.",
                     exception
             );
         }
     }
 
     @Override
-    public void deleteExpired(Instant currentInstant) {
+    public List<SmartAlertSnooze> findActive(
+            Instant currentInstant
+    ) {
+        Objects.requireNonNull(
+                currentInstant,
+                "O instante atual é obrigatório."
+        );
+
+        List<SmartAlertSnooze> snoozes =
+                new ArrayList<>();
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(FIND_ACTIVE)
+        ) {
+            statement.setString(
+                    1,
+                    currentInstant.toString()
+            );
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+                while (resultSet.next()) {
+                    snoozes.add(
+                            new SmartAlertSnooze(
+                                    resultSet.getString(
+                                            "alert_code"
+                                    ),
+                                    Instant.parse(
+                                            resultSet.getString(
+                                                    "snoozed_until"
+                                            )
+                                    )
+                            )
+                    );
+                }
+            }
+
+            return List.copyOf(snoozes);
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível carregar os alertas adiados.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public void delete(String alertCode) {
+        String validatedCode =
+                requireAlertCode(alertCode);
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(DELETE_SNOOZE)
+        ) {
+            statement.setString(1, validatedCode);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível restaurar o alerta.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(DELETE_ALL)
+        ) {
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível restaurar os alertas.",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public void deleteExpired(
+            Instant currentInstant
+    ) {
         Objects.requireNonNull(
                 currentInstant,
                 "O instante atual é obrigatório."
@@ -125,7 +252,7 @@ public class SqliteSmartAlertSnoozeRepository
 
         } catch (SQLException exception) {
             throw new IllegalStateException(
-                    "Não foi possível limpar os adiamentos expirados.",
+                    "Não foi possível remover os adiamentos expirados.",
                     exception
             );
         }

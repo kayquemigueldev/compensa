@@ -1,6 +1,7 @@
 package com.kayque.compensa.alerts.service;
 
 import com.kayque.compensa.alerts.model.SmartAlert;
+import com.kayque.compensa.alerts.model.SmartAlertSnooze;
 import com.kayque.compensa.alerts.repository.SmartAlertSnoozeRepository;
 
 import java.time.Clock;
@@ -15,27 +16,13 @@ public class SmartAlertSnoozeService {
     private final Clock clock;
 
     public SmartAlertSnoozeService(
-            SmartAlertSnoozeRepository repository
-    ) {
-        this(
-                repository,
-                Clock.systemDefaultZone()
-        );
-    }
-
-    public SmartAlertSnoozeService(
             SmartAlertSnoozeRepository repository,
             Clock clock
     ) {
-        this.repository = Objects.requireNonNull(
-                repository,
-                "O repositório de adiamentos é obrigatório."
-        );
+        this.repository =
+                Objects.requireNonNull(repository);
 
-        this.clock = Objects.requireNonNull(
-                clock,
-                "O relógio da aplicação é obrigatório."
-        );
+        this.clock = Objects.requireNonNull(clock);
     }
 
     public void snooze(
@@ -47,22 +34,13 @@ public class SmartAlertSnoozeService {
                 "O alerta é obrigatório."
         );
 
-        snooze(
-                alert.code(),
-                duration
-        );
+        snooze(alert.code(), duration);
     }
 
     public void snooze(
             String alertCode,
             Duration duration
     ) {
-        if (alertCode == null || alertCode.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O código do alerta é obrigatório."
-            );
-        }
-
         Objects.requireNonNull(
                 duration,
                 "A duração do adiamento é obrigatória."
@@ -78,7 +56,7 @@ public class SmartAlertSnoozeService {
                 clock.instant().plus(duration);
 
         repository.save(
-                alertCode.trim(),
+                alertCode,
                 snoozedUntil
         );
     }
@@ -103,5 +81,21 @@ public class SmartAlertSnoozeService {
                         )
                 )
                 .toList();
+    }
+
+    public List<SmartAlertSnooze> findActive() {
+        Instant currentInstant = clock.instant();
+
+        repository.deleteExpired(currentInstant);
+
+        return repository.findActive(currentInstant);
+    }
+
+    public void restore(String alertCode) {
+        repository.delete(alertCode);
+    }
+
+    public void restoreAll() {
+        repository.deleteAll();
     }
 }

@@ -13,6 +13,20 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.application.Platform;
 
+import com.kayque.compensa.alerts.model.SmartAlertSnooze;
+import com.kayque.compensa.alerts.repository.SqliteSmartAlertSnoozeRepository;
+import com.kayque.compensa.alerts.service.SmartAlertSnoozeService;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -27,6 +41,17 @@ public class SettingsController {
     private final DatabaseBackupService backupService =
             new DatabaseBackupService();
 
+    private final SmartAlertSnoozeService snoozeService =
+            new SmartAlertSnoozeService(
+                    new SqliteSmartAlertSnoozeRepository(),
+                    Clock.systemDefaultZone()
+            );
+
+    private final DateTimeFormatter snoozeDateFormat =
+            DateTimeFormatter.ofPattern(
+                    "dd/MM/yyyy 'às' HH:mm"
+            );
+
     @FXML
     private Label applicationVersionLabel;
 
@@ -34,9 +59,244 @@ public class SettingsController {
     private Label backupFeedbackLabel;
 
     @FXML
+    private VBox snoozedAlertsContainer;
+
+    @FXML
+    private Label snoozedAlertsEmptyLabel;
+
+    @FXML
+    private Label snoozeFeedbackLabel;
+
+    @FXML
+    private Button restoreAllSnoozesButton;
+
+    @FXML
     private void initialize() {
         applicationVersionLabel.setText(
                 APPLICATION_VERSION
+        );
+
+        loadSnoozedAlerts();
+    }
+
+    private void loadSnoozedAlerts() {
+        clearSnoozeFeedback();
+
+        try {
+            List<SmartAlertSnooze> snoozes =
+                    snoozeService.findActive();
+
+            renderSnoozedAlerts(snoozes);
+
+        } catch (IllegalStateException exception) {
+            snoozedAlertsContainer
+                    .getChildren()
+                    .clear();
+
+            snoozedAlertsEmptyLabel.setText(
+                    "Não foi possível carregar os alertas adiados."
+            );
+
+            snoozedAlertsEmptyLabel.setVisible(true);
+            snoozedAlertsEmptyLabel.setManaged(true);
+
+            restoreAllSnoozesButton.setDisable(true);
+        }
+    }
+
+    private void renderSnoozedAlerts(
+            List<SmartAlertSnooze> snoozes
+    ) {
+        snoozedAlertsContainer
+                .getChildren()
+                .clear();
+
+        boolean empty = snoozes.isEmpty();
+
+        snoozedAlertsEmptyLabel.setText(
+                "Nenhum alerta está temporariamente oculto."
+        );
+
+        snoozedAlertsEmptyLabel.setVisible(empty);
+        snoozedAlertsEmptyLabel.setManaged(empty);
+
+        restoreAllSnoozesButton.setDisable(empty);
+
+        snoozes.stream()
+                .map(this::createSnoozedAlertRow)
+                .forEach(row ->
+                        snoozedAlertsContainer
+                                .getChildren()
+                                .add(row)
+                );
+    }
+
+    private HBox createSnoozedAlertRow(
+            SmartAlertSnooze snooze
+    ) {
+        Label titleLabel = new Label(
+                formatAlertName(snooze.alertCode())
+        );
+
+        titleLabel.getStyleClass().add(
+                "settings-snooze-title"
+        );
+
+        Label expirationLabel = new Label(
+                "Voltará automaticamente em "
+                        + formatSnoozeExpiration(
+                        snooze.snoozedUntil()
+                )
+        );
+
+        expirationLabel.getStyleClass().add(
+                "settings-snooze-expiration"
+        );
+
+        VBox information = new VBox(
+                4,
+                titleLabel,
+                expirationLabel
+        );
+
+        Region spacer = new Region();
+
+        HBox.setHgrow(
+                spacer,
+                Priority.ALWAYS
+        );
+
+        Button restoreButton =
+                new Button("Restaurar agora");
+
+        restoreButton.getStyleClass().add(
+                "settings-snooze-restore-button"
+        );
+
+        restoreButton.setOnAction(event ->
+                restoreSnoozedAlert(
+                        snooze.alertCode()
+                )
+        );
+
+        HBox row = new HBox(
+                14,
+                information,
+                spacer,
+                restoreButton
+        );
+
+        row.setAlignment(
+                javafx.geometry.Pos.CENTER_LEFT
+        );
+
+        row.getStyleClass().add(
+                "settings-snooze-row"
+        );
+
+        return row;
+    }
+
+    private void restoreSnoozedAlert(
+            String alertCode
+    ) {
+        clearSnoozeFeedback();
+
+        try {
+            snoozeService.restore(alertCode);
+            loadSnoozedAlerts();
+
+            showSnoozeSuccess(
+                    "Alerta restaurado. Ele poderá aparecer novamente na tela Hoje."
+            );
+
+        } catch (IllegalArgumentException
+                 | IllegalStateException exception) {
+            showSnoozeError(exception.getMessage());
+        }
+    }
+
+    @FXML
+    private void restoreAllSnoozedAlerts() {
+        clearSnoozeFeedback();
+
+        try {
+            snoozeService.restoreAll();
+            loadSnoozedAlerts();
+
+            showSnoozeSuccess(
+                    "Todos os alertas adiados foram restaurados."
+            );
+
+        } catch (IllegalStateException exception) {
+            showSnoozeError(
+                    "Não foi possível restaurar os alertas."
+            );
+        }
+    }
+
+    private String formatSnoozeExpiration(
+            Instant snoozedUntil
+    ) {
+        return snoozedUntil
+                .atZone(ZoneId.systemDefault())
+                .format(snoozeDateFormat);
+    }
+
+    private String formatAlertName(String alertCode) {
+        return switch (alertCode) {
+            case "budget-usage" ->
+                    "Uso do orçamento mensal";
+
+            case "monthly-savings-goal" ->
+                    "Meta mensal de economia";
+
+            case "financial-goal-progress" ->
+                    "Progresso do objetivo financeiro";
+
+            case "pending-decisions" ->
+                    "Decisões aguardando resposta";
+
+            case "purchase-evaluation" ->
+                    "Compras aguardando avaliação";
+
+            case "purchase-behavior" ->
+                    "Comportamento de compra";
+
+            case "work-time" ->
+                    "Tempo de trabalho envolvido";
+
+            case "preserved-value" ->
+                    "Valor preservado";
+
+            default ->
+                    "Alerta inteligente";
+        };
+    }
+
+    private void clearSnoozeFeedback() {
+        snoozeFeedbackLabel.setText("");
+
+        snoozeFeedbackLabel.getStyleClass().setAll(
+                "feedback-label"
+        );
+    }
+
+    private void showSnoozeSuccess(String message) {
+        snoozeFeedbackLabel.setText(message);
+
+        snoozeFeedbackLabel.getStyleClass().setAll(
+                "feedback-label",
+                "feedback-success"
+        );
+    }
+
+    private void showSnoozeError(String message) {
+        snoozeFeedbackLabel.setText(message);
+
+        snoozeFeedbackLabel.getStyleClass().setAll(
+                "feedback-label",
+                "feedback-error"
         );
     }
 

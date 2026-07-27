@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Region?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -111,6 +112,44 @@
                    wrapText="true"
                    styleClass="feedback-label"/>
         </VBox>
+
+    <VBox spacing="14.0"
+          maxWidth="Infinity"
+          styleClass="settings-snooze-card">
+
+        <HBox alignment="CENTER_LEFT"
+              spacing="14.0">
+
+            <VBox spacing="4.0">
+                <Label text="Alertas adiados"
+                       styleClass="settings-card-title"/>
+
+                <Label text="Gerencie os alertas que você pediu para lembrar mais tarde."
+                       wrapText="true"
+                       styleClass="settings-description"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="restoreAllSnoozesButton"
+                    text="Restaurar todos"
+                    onAction="#restoreAllSnoozedAlerts"
+                    styleClass="settings-snooze-restore-all-button"/>
+        </HBox>
+
+        <Label fx:id="snoozedAlertsEmptyLabel"
+               text="Nenhum alerta está temporariamente oculto."
+               wrapText="true"
+               styleClass="settings-snooze-empty"/>
+
+        <VBox fx:id="snoozedAlertsContainer"
+              spacing="8.0"/>
+
+        <Label fx:id="snoozeFeedbackLabel"
+               text=""
+               wrapText="true"
+               styleClass="feedback-label"/>
+    </VBox>
 
     <VBox spacing="12.0"
           styleClass="settings-author-card">
