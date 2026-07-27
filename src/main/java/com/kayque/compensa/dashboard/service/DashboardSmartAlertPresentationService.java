@@ -31,10 +31,7 @@ public class DashboardSmartAlertPresentationService {
             List<SmartAlert> alerts,
             int limit
     ) {
-        Objects.requireNonNull(
-                alerts,
-                "A lista de alertas é obrigatória."
-        );
+        validateAlerts(alerts);
 
         if (limit <= 0) {
             throw new IllegalArgumentException(
@@ -42,16 +39,35 @@ public class DashboardSmartAlertPresentationService {
             );
         }
 
+        return alerts.stream()
+                .limit(limit)
+                .map(this::createView)
+                .toList();
+    }
+
+    public List<DashboardSmartAlertView> prepareAll(
+            List<SmartAlert> alerts
+    ) {
+        validateAlerts(alerts);
+
+        return alerts.stream()
+                .map(this::createView)
+                .toList();
+    }
+
+    private void validateAlerts(
+            List<SmartAlert> alerts
+    ) {
+        Objects.requireNonNull(
+                alerts,
+                "A lista de alertas é obrigatória."
+        );
+
         if (alerts.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException(
                     "A lista de alertas não pode conter valores nulos."
             );
         }
-
-        return alerts.stream()
-                .limit(limit)
-                .map(this::createView)
-                .toList();
     }
 
     private DashboardSmartAlertView createView(
