@@ -2483,3 +2483,56 @@
     -fx-border-color: #8eea3c;
     -fx-text-fill: #8eea3c;
 }
+
+.alert-center-card-header {
+    -fx-alignment: center-left;
+}
+
+.alert-center-new-badge,
+.alert-center-read-badge {
+    -fx-background-radius: 999px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.alert-center-new-badge {
+    -fx-background-color: #263a16;
+    -fx-text-fill: #8eea3c;
+    -fx-border-color: #4f7a27;
+    -fx-border-radius: 999px;
+}
+
+.alert-center-read-badge {
+    -fx-background-color: #242a32;
+    -fx-text-fill: #8f98a6;
+    -fx-border-color: #39414d;
+    -fx-border-radius: 999px;
+}
+
+.alert-center-read-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #8eea3c;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 11px;
+    -fx-cursor: hand;
+}
+
+.alert-center-read-button:hover {
+    -fx-background-color: #263a16;
+}
+
+.alert-center-read-button:disabled {
+    -fx-border-color: #39414d;
+    -fx-text-fill: #737c89;
+    -fx-opacity: 0.75;
+    -fx-cursor: default;
+}
+
+.alert-center-card-read {
+    -fx-opacity: 0.82;
+}

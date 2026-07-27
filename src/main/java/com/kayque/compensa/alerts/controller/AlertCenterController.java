@@ -8,6 +8,10 @@ import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
 import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
 import com.kayque.compensa.navigation.NavigationRequestEvent;
 import com.kayque.compensa.navigation.NavigationTarget;
+import com.kayque.compensa.alerts.model.SmartAlert;
+import com.kayque.compensa.alerts.repository.SqliteSmartAlertReadRepository;
+import com.kayque.compensa.alerts.service.SmartAlertReadService;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,6 +36,13 @@ public class AlertCenterController {
                     Clock.systemDefaultZone()
             );
 
+    private final SmartAlertReadService
+            smartAlertReadService =
+            new SmartAlertReadService(
+                    new SqliteSmartAlertReadRepository(),
+                    Clock.systemDefaultZone()
+            );
+
     private final DashboardSmartAlertPresentationService
             presentationService =
             new DashboardSmartAlertPresentationService();
@@ -52,14 +63,36 @@ public class AlertCenterController {
 
     private void loadAlerts() {
         try {
-            List<DashboardSmartAlertView> alerts =
-                    presentationService.prepareAll(
-                            smartAlertSnoozeService.filterVisible(
-                                    smartAlertService.generateAlerts()
-                            )
+            List<SmartAlert> generatedAlerts =
+                    smartAlertService.generateAlerts();
+
+            smartAlertReadService.synchronize(
+                    generatedAlerts
+            );
+
+            List<SmartAlert> visibleAlerts =
+                    smartAlertSnoozeService.filterVisible(
+                            generatedAlerts
                     );
 
-            renderAlerts(alerts);
+            int unreadTotal = (int) visibleAlerts
+                    .stream()
+                    .filter(alert ->
+                            !smartAlertReadService.isRead(
+                                    alert.code()
+                            )
+                    )
+                    .count();
+
+            List<DashboardSmartAlertView> preparedAlerts =
+                    presentationService.prepareAll(
+                            visibleAlerts
+                    );
+
+            renderAlerts(
+                    preparedAlerts,
+                    unreadTotal
+            );
 
         } catch (RuntimeException exception) {
             alertListContainer
@@ -77,13 +110,17 @@ public class AlertCenterController {
     }
 
     private void renderAlerts(
-            List<DashboardSmartAlertView> alerts
+            List<DashboardSmartAlertView> alerts,
+            int unreadTotal
     ) {
         alertListContainer
                 .getChildren()
                 .clear();
 
-        updateAlertCount(alerts.size());
+        updateAlertCount(
+                alerts.size(),
+                unreadTotal
+        );
 
         boolean empty = alerts.isEmpty();
 
@@ -110,6 +147,11 @@ public class AlertCenterController {
     private VBox createAlertCard(
             DashboardSmartAlertView alert
     ) {
+        boolean read =
+                smartAlertReadService.isRead(
+                        alert.code()
+                );
+
         Label titleLabel = new Label(
                 alert.title()
         );
@@ -117,8 +159,30 @@ public class AlertCenterController {
         titleLabel.setWrapText(true);
         titleLabel.setMaxWidth(Double.MAX_VALUE);
 
+        HBox.setHgrow(
+                titleLabel,
+                Priority.ALWAYS
+        );
+
         titleLabel.getStyleClass().add(
                 "dashboard-smart-alert-title"
+        );
+
+        Label readStatusLabel =
+                createReadStatusLabel(read);
+
+        HBox header = new HBox(
+                10,
+                titleLabel,
+                readStatusLabel
+        );
+
+        header.setAlignment(
+                javafx.geometry.Pos.CENTER_LEFT
+        );
+
+        header.getStyleClass().add(
+                "alert-center-card-header"
         );
 
         Label messageLabel = new Label(
@@ -153,10 +217,17 @@ public class AlertCenterController {
         Button snoozeButton =
                 createSnoozeButton(alert);
 
+        Button readButton =
+                createReadButton(
+                        alert,
+                        read
+                );
+
         HBox buttons = new HBox(
                 8,
                 explanationButton,
-                snoozeButton
+                snoozeButton,
+                readButton
         );
 
         buttons.getStyleClass().add(
@@ -172,7 +243,7 @@ public class AlertCenterController {
 
         VBox card = new VBox(
                 8,
-                titleLabel,
+                header,
                 messageLabel,
                 buttons,
                 explanationLabel,
@@ -197,7 +268,58 @@ public class AlertCenterController {
                 alert.styleClass()
         );
 
+        if (read) {
+            card.getStyleClass().add(
+                    "alert-center-card-read"
+            );
+        }
+
         return card;
+    }
+
+    private Label createReadStatusLabel(
+            boolean read
+    ) {
+        Label label = new Label(
+                read ? "Lido" : "Novo"
+        );
+
+        label.getStyleClass().add(
+                read
+                        ? "alert-center-read-badge"
+                        : "alert-center-new-badge"
+        );
+
+        return label;
+    }
+
+    private Button createReadButton(
+            DashboardSmartAlertView alert,
+            boolean read
+    ) {
+        Button button = new Button(
+                read
+                        ? "Alerta lido"
+                        : "Marcar como lido"
+        );
+
+        button.getStyleClass().add(
+                "alert-center-read-button"
+        );
+
+        button.setDisable(read);
+
+        if (!read) {
+            button.setOnAction(event -> {
+                smartAlertReadService.markAsRead(
+                        alert.code()
+                );
+
+                loadAlerts();
+            });
+        }
+
+        return button;
     }
 
     private Button createExplanationButton(
@@ -301,17 +423,24 @@ public class AlertCenterController {
         };
     }
 
-    private void updateAlertCount(int total) {
-        if (total == 1) {
-            alertCountLabel.setText(
-                    "1 alerta ativo"
-            );
+    private void updateAlertCount(
+            int total,
+            int unreadTotal
+    ) {
+        String activeText =
+                total == 1
+                        ? "1 alerta ativo"
+                        : total + " alertas ativos";
 
-            return;
-        }
+        String unreadText =
+                unreadTotal == 1
+                        ? "1 novo"
+                        : unreadTotal + " novos";
 
         alertCountLabel.setText(
-                total + " alertas ativos"
+                activeText
+                        + " • "
+                        + unreadText
         );
     }
 

@@ -35,8 +35,12 @@ public class SmartAlertReadService {
                 "O alerta é obrigatório."
         );
 
+        markAsRead(alert.code());
+    }
+
+    public void markAsRead(String alertCode) {
         repository.markAsRead(
-                alert.code(),
+                alertCode,
                 clock.instant()
         );
     }
@@ -47,7 +51,11 @@ public class SmartAlertReadService {
                 "O alerta é obrigatório."
         );
 
-        return repository.isRead(alert.code());
+        return isRead(alert.code());
+    }
+
+    public boolean isRead(String alertCode) {
+        return repository.isRead(alertCode);
     }
 
     public List<SmartAlert> filterUnread(
