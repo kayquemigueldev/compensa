@@ -58,6 +58,21 @@ public class AlertCenterController {
     private Label emptyStateLabel;
 
     @FXML
+    private Button allAlertsFilterButton;
+
+    @FXML
+    private Button unreadAlertsFilterButton;
+
+    @FXML
+    private Button readAlertsFilterButton;
+
+    private AlertFilter selectedFilter =
+            AlertFilter.ALL;
+
+    private List<DashboardSmartAlertView> currentAlerts =
+            List.of();
+
+    @FXML
     private void initialize() {
         loadAlerts();
     }
@@ -76,26 +91,17 @@ public class AlertCenterController {
                             generatedAlerts
                     );
 
-            int unreadTotal = (int) visibleAlerts
-                    .stream()
-                    .filter(alert ->
-                            !smartAlertReadService.isRead(
-                                    alert.code()
-                            )
-                    )
-                    .count();
-
-            List<DashboardSmartAlertView> preparedAlerts =
+            currentAlerts =
                     presentationService.prepareAll(
                             visibleAlerts
                     );
 
-            renderAlerts(
-                    preparedAlerts,
-                    unreadTotal
-            );
+            updateFilterInformation();
+            renderSelectedFilter();
 
         } catch (RuntimeException exception) {
+            currentAlerts = List.of();
+
             alertListContainer
                     .getChildren()
                     .clear();
@@ -110,39 +116,156 @@ public class AlertCenterController {
         }
     }
 
-    private void renderAlerts(
-            List<DashboardSmartAlertView> alerts,
-            int unreadTotal
-    ) {
+    @FXML
+    private void showAllAlerts() {
+        selectFilter(AlertFilter.ALL);
+    }
+
+    @FXML
+    private void showUnreadAlerts() {
+        selectFilter(AlertFilter.UNREAD);
+    }
+
+    @FXML
+    private void showReadAlerts() {
+        selectFilter(AlertFilter.READ);
+    }
+
+    private void selectFilter(AlertFilter filter) {
+        selectedFilter = filter;
+
+        updateFilterButtonStyles();
+        renderSelectedFilter();
+    }
+
+    private void updateFilterInformation() {
+        int total = currentAlerts.size();
+        int unreadTotal = countUnreadAlerts();
+        int readTotal = total - unreadTotal;
+
+        updateAlertCount(
+                total,
+                unreadTotal
+        );
+
+        allAlertsFilterButton.setText(
+                "Todos (" + total + ")"
+        );
+
+        unreadAlertsFilterButton.setText(
+                "Novos (" + unreadTotal + ")"
+        );
+
+        readAlertsFilterButton.setText(
+                "Lidos (" + readTotal + ")"
+        );
+
+        updateFilterButtonStyles();
+    }
+
+    private int countUnreadAlerts() {
+        return (int) currentAlerts
+                .stream()
+                .filter(alert ->
+                        !smartAlertReadService.isRead(
+                                alert.code()
+                        )
+                )
+                .count();
+    }
+
+    private void renderSelectedFilter() {
+        List<DashboardSmartAlertView> filteredAlerts =
+                currentAlerts
+                        .stream()
+                        .filter(this::matchesSelectedFilter)
+                        .toList();
+
         alertListContainer
                 .getChildren()
                 .clear();
 
-        updateAlertCount(
-                alerts.size(),
-                unreadTotal
-        );
-
-        boolean empty = alerts.isEmpty();
-
-        emptyStateLabel.setVisible(empty);
-        emptyStateLabel.setManaged(empty);
-
-        if (empty) {
+        if (filteredAlerts.isEmpty()) {
             showEmptyState(
-                    "Nenhum alerta ativo neste momento. Está tudo tranquilo por aqui."
+                    getEmptyStateMessage()
             );
 
             return;
         }
 
-        alerts.stream()
+        emptyStateLabel.setVisible(false);
+        emptyStateLabel.setManaged(false);
+
+        filteredAlerts.stream()
                 .map(this::createAlertCard)
                 .forEach(card ->
                         alertListContainer
                                 .getChildren()
                                 .add(card)
                 );
+    }
+
+    private boolean matchesSelectedFilter(
+            DashboardSmartAlertView alert
+    ) {
+        boolean read =
+                smartAlertReadService.isRead(
+                        alert.code()
+                );
+
+        return switch (selectedFilter) {
+            case ALL -> true;
+            case UNREAD -> !read;
+            case READ -> read;
+        };
+    }
+
+    private String getEmptyStateMessage() {
+        return switch (selectedFilter) {
+            case ALL ->
+                    "Nenhum alerta ativo neste momento. Está tudo tranquilo por aqui.";
+
+            case UNREAD ->
+                    "Nenhum alerta novo. Você já conferiu todos os sinais ativos.";
+
+            case READ ->
+                    "Nenhum alerta foi marcado como lido ainda.";
+        };
+    }
+
+    private void updateFilterButtonStyles() {
+        configureFilterButton(
+                allAlertsFilterButton,
+                selectedFilter == AlertFilter.ALL
+        );
+
+        configureFilterButton(
+                unreadAlertsFilterButton,
+                selectedFilter == AlertFilter.UNREAD
+        );
+
+        configureFilterButton(
+                readAlertsFilterButton,
+                selectedFilter == AlertFilter.READ
+        );
+    }
+
+    private void configureFilterButton(
+            Button button,
+            boolean active
+    ) {
+        if (active) {
+            button.getStyleClass().setAll(
+                    "alert-center-filter-button",
+                    "alert-center-filter-button-active"
+            );
+
+            return;
+        }
+
+        button.getStyleClass().setAll(
+                "alert-center-filter-button"
+        );
     }
 
     private VBox createAlertCard(
@@ -451,12 +574,27 @@ public class AlertCenterController {
         emptyStateLabel.setText(message);
         emptyStateLabel.setVisible(true);
         emptyStateLabel.setManaged(true);
+
+        if (!alertListContainer
+                .getChildren()
+                .contains(emptyStateLabel)) {
+
+            alertListContainer
+                    .getChildren()
+                    .add(emptyStateLabel);
+        }
     }
 
     private void notifyAlertStateChanged() {
         alertListContainer.fireEvent(
                 new SmartAlertStateChangedEvent()
         );
+    }
+
+    private enum AlertFilter {
+        ALL,
+        UNREAD,
+        READ
     }
 
 }

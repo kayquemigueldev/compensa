@@ -2548,3 +2548,42 @@
 .alert-center-card-read {
     -fx-opacity: 0.82;
 }
+
+.alert-center-filters {
+    -fx-background-color: #141820;
+    -fx-background-radius: 12px;
+    -fx-border-color: #292f3a;
+    -fx-border-radius: 12px;
+    -fx-padding: 12px 14px;
+}
+
+.alert-center-filter-label {
+    -fx-text-fill: #858d99;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 4px 0 0;
+}
+
+.alert-center-filter-button {
+    -fx-background-color: #11151c;
+    -fx-background-radius: 999px;
+    -fx-border-color: #323945;
+    -fx-border-radius: 999px;
+    -fx-text-fill: #929aa6;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 7px 14px;
+    -fx-cursor: hand;
+}
+
+.alert-center-filter-button:hover {
+    -fx-background-color: #1d232c;
+    -fx-border-color: #4b5563;
+    -fx-text-fill: #f4f1ea;
+}
+
+.alert-center-filter-button-active {
+    -fx-background-color: #233118;
+    -fx-border-color: #73e600;
+    -fx-text-fill: #8eea3c;
+}
