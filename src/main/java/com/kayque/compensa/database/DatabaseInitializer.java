@@ -163,6 +163,16 @@ public final class DatabaseInitializer {
         )
         """;
 
+    private static final String CREATE_SMART_ALERT_READ_TABLE = """
+    CREATE TABLE IF NOT EXISTS smart_alert_read (
+        alert_code TEXT PRIMARY KEY
+            CHECK (length(trim(alert_code)) > 0),
+
+        read_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP
+    )
+    """;
+
     private static final String CREATE_SAVINGS_GOAL_TABLE = """
     CREATE TABLE IF NOT EXISTS savings_goal (
         id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -224,6 +234,7 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_SAVINGS_GOAL_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE);
             statement.execute(CREATE_SMART_ALERT_SNOOZE_TABLE);
+            statement.execute(CREATE_SMART_ALERT_READ_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
