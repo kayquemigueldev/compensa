@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kayque.compensa.report.controller.MonthlyFinancialReportController"
+      spacing="28.0"
+      minWidth="900.0"
+      styleClass="main-content">
+
+    <padding>
+        <Insets top="42.0"
+                right="44.0"
+                bottom="42.0"
+                left="44.0"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <Label text="Relatório mensal"
+               styleClass="page-title"/>
+
+        <Label text="Compare suas decisões e acompanhe como seus gastos estão mudando."
+               wrapText="true"
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT"
+          spacing="14.0"
+          styleClass="report-month-selector">
+
+        <Button text="‹"
+                onAction="#showPreviousMonth"
+                styleClass="report-month-button"/>
+
+        <Label fx:id="selectedMonthLabel"
+               text="Mês selecionado"
+               styleClass="report-month-label"/>
+
+        <Button fx:id="nextMonthButton"
+                text="›"
+                onAction="#showNextMonth"
+                styleClass="report-month-button"/>
+    </HBox>
+
+    <GridPane hgap="16.0"
+              vgap="16.0">
+
+        <VBox GridPane.columnIndex="0"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="report-metric-card">
+
+            <Label text="Decisões analisadas"
+                   styleClass="report-metric-title"/>
+
+            <Label fx:id="totalDecisionsLabel"
+                   text="0"
+                   styleClass="report-metric-value"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="1"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="report-metric-card">
+
+            <Label text="Compras realizadas"
+                   styleClass="report-metric-title"/>
+
+            <Label fx:id="purchasedDecisionsLabel"
+                   text="0"
+                   styleClass="report-metric-value"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="2"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="report-metric-card">
+
+            <Label text="Compras evitadas"
+                   styleClass="report-metric-title"/>
+
+            <Label fx:id="declinedDecisionsLabel"
+                   text="0"
+                   styleClass="report-metric-value-positive"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="3"
+              GridPane.rowIndex="0"
+              maxWidth="Infinity"
+              styleClass="report-metric-card">
+
+            <Label text="Aguardando decisão"
+                   styleClass="report-metric-title"/>
+
+            <Label fx:id="waitingDecisionsLabel"
+                   text="0"
+                   styleClass="report-metric-value-warning"/>
+        </VBox>
+    </GridPane>
+
+    <HBox spacing="16.0">
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="report-summary-card">
+
+            <Label text="Comprado no mês"
+                   styleClass="report-summary-title"/>
+
+            <Label fx:id="purchasedValueLabel"
+                   text="R$ 0,00"
+                   styleClass="report-summary-value"/>
+        </VBox>
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="report-summary-card">
+
+            <Label text="Valor preservado"
+                   styleClass="report-summary-title"/>
+
+            <Label fx:id="preservedValueLabel"
+                   text="R$ 0,00"
+                   styleClass="report-summary-value-positive"/>
+        </VBox>
+
+        <VBox maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="report-summary-card">
+
+            <Label text="Tempo envolvido"
+                   styleClass="report-summary-title"/>
+
+            <Label fx:id="workTimeLabel"
+                   text="0 min"
+                   styleClass="report-summary-value-positive"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16.0">
+
+        <VBox spacing="10.0"
+              minWidth="280.0"
+              styleClass="report-previous-card">
+
+            <Label text="Mês anterior"
+                   styleClass="report-section-label"/>
+
+            <Label fx:id="previousMonthLabel"
+                   text="Mês anterior"
+                   styleClass="report-previous-month"/>
+
+            <Label text="Total comprado"
+                   styleClass="report-summary-title"/>
+
+            <Label fx:id="previousPurchasedValueLabel"
+                   text="R$ 0,00"
+                   styleClass="report-previous-value"/>
+        </VBox>
+
+        <VBox spacing="12.0"
+              maxWidth="Infinity"
+              HBox.hgrow="ALWAYS"
+              styleClass="report-trend-card">
+
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Comparação dos gastos"
+                       styleClass="report-section-label"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="variationPercentageLabel"
+                       text="0%"
+                       styleClass="report-variation-value"/>
+            </HBox>
+
+            <Label fx:id="spendingTrendTitleLabel"
+                   text="Analisando seu período"
+                   wrapText="true"
+                   styleClass="report-trend-title"/>
+
+            <Label fx:id="spendingTrendDescriptionLabel"
+                   text="Os dados de comparação aparecerão aqui."
+                   wrapText="true"
+                   styleClass="report-trend-description"/>
+        </VBox>
+    </HBox>
+
+    <VBox spacing="10.0"
+          styleClass="report-insight-card">
+
+        <Label text="Entenda seu mês, uma decisão de cada vez"
+               styleClass="report-insight-title"/>
+
+        <Label text="O relatório considera as decisões registradas no período e compara o valor das compras realizadas com o mês anterior."
+               wrapText="true"
+               styleClass="report-insight-description"/>
+    </VBox>
+
+    <Label fx:id="reportFeedbackLabel"
+           text=""
+           wrapText="true"
+           styleClass="feedback-label"/>
+
+</VBox>

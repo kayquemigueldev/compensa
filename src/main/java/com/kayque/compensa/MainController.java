@@ -65,6 +65,9 @@ public class MainController {
     private Button insightsButton;
 
     @FXML
+    private Button monthlyReportButton;
+
+    @FXML
     private Button alertCenterButton;
 
     @FXML
@@ -141,6 +144,15 @@ public class MainController {
                 "/com/kayque/compensa/insights/insights-view.fxml",
                 insightsButton,
                 "Não foi possível abrir os insights."
+        );
+    }
+
+    @FXML
+    private void showMonthlyReport() {
+        showView(
+                "/com/kayque/compensa/report/monthly-financial-report-view.fxml",
+                monthlyReportButton,
+                "Não foi possível abrir o relatório mensal."
         );
     }
 
@@ -315,6 +327,10 @@ public class MainController {
         );
 
         insightsButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        monthlyReportButton.getStyleClass().setAll(
                 "nav-button"
         );
 

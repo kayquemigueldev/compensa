@@ -70,6 +70,12 @@
                         onAction="#showInsights"
                         styleClass="nav-button"/>
 
+                <Button fx:id="monthlyReportButton"
+                        text="Relatório mensal"
+                        maxWidth="Infinity"
+                        onAction="#showMonthlyReport"
+                        styleClass="nav-button"/>
+
                 <StackPane maxWidth="Infinity">
 
                     <Button fx:id="alertCenterButton"
