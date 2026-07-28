@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.application.Platform;
 
+import com.kayque.compensa.onboarding.event.OnboardingRequestedEvent;
 import com.kayque.compensa.alerts.model.SmartAlertSnooze;
 import com.kayque.compensa.alerts.repository.SqliteSmartAlertSnoozeRepository;
 import com.kayque.compensa.alerts.service.SmartAlertSnoozeService;
@@ -297,6 +298,13 @@ public class SettingsController {
         snoozeFeedbackLabel.getStyleClass().setAll(
                 "feedback-label",
                 "feedback-error"
+        );
+    }
+
+    @FXML
+    private void showOnboardingAgain() {
+        applicationVersionLabel.fireEvent(
+                new OnboardingRequestedEvent()
         );
     }
 

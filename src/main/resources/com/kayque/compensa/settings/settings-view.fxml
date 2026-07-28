@@ -113,6 +113,27 @@
                    styleClass="feedback-label"/>
         </VBox>
 
+    <VBox spacing="12.0"
+          maxWidth="Infinity"
+          styleClass="settings-backup-card">
+
+        <Label text="Apresentação do Compensa?"
+               styleClass="settings-card-title"/>
+
+        <Label text="Reveja as principais funcionalidades e o fluxo inicial do aplicativo."
+               wrapText="true"
+               styleClass="settings-description"/>
+
+        <Label text="Seus dados e configurações não serão apagados."
+               wrapText="true"
+               styleClass="settings-backup-detail"/>
+
+        <Button text="Ver apresentação novamente"
+                maxWidth="Infinity"
+                onAction="#showOnboardingAgain"
+                styleClass="settings-backup-button"/>
+    </VBox>
+
     <VBox spacing="14.0"
           maxWidth="Infinity"
           styleClass="settings-snooze-card">

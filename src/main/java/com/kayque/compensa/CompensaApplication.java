@@ -4,6 +4,7 @@ import com.kayque.compensa.database.DatabaseInitializer;
 import com.kayque.compensa.onboarding.controller.OnboardingController;
 import com.kayque.compensa.onboarding.repository.SqliteAppPreferenceRepository;
 import com.kayque.compensa.onboarding.service.OnboardingService;
+import com.kayque.compensa.onboarding.event.OnboardingRequestedEvent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -51,6 +52,8 @@ public class CompensaApplication extends Application {
                         .getResource("styles.css")
                         .toExternalForm()
         );
+
+        configureApplicationEvents(scene);
 
         stage.setTitle("Compensa?");
         stage.setScene(scene);
@@ -248,4 +251,24 @@ public class CompensaApplication extends Application {
 
         return loader.load();
     }
+
+    private void configureApplicationEvents(Scene scene) {
+        scene.addEventHandler(
+                OnboardingRequestedEvent.ONBOARDING_REQUESTED,
+                event -> {
+                    event.consume();
+
+                    try {
+                        showOnboarding(scene);
+
+                    } catch (IOException exception) {
+                        throw new IllegalStateException(
+                                "Não foi possível abrir novamente a apresentação.",
+                                exception
+                        );
+                    }
+                }
+        );
+    }
+
 }
