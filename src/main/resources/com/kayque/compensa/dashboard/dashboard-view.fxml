@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.ColumnConstraints?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -372,21 +373,119 @@
 
         </VBox>
 
-        <VBox fx:id="dashboardHighlightCard"
-              spacing="8.0"
+        <VBox spacing="12.0"
               maxWidth="Infinity"
-              HBox.hgrow="ALWAYS"
-              styleClass="dashboard-insight-card, dashboard-highlight-default">
+              HBox.hgrow="ALWAYS">
 
-            <Label fx:id="dashboardHighlightTitleLabel"
-                   text="Uma escolha de cada vez"
-                   wrapText="true"
-                   styleClass="dashboard-insight-title"/>
+            <VBox fx:id="dashboardHighlightCard"
+                  spacing="8.0"
+                  maxWidth="Infinity"
+                  styleClass="dashboard-insight-card, dashboard-highlight-default">
 
-            <Label fx:id="dashboardHighlightDescriptionLabel"
-                   text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
-                   wrapText="true"
-                   styleClass="dashboard-insight-text"/>
+                <Label fx:id="dashboardHighlightTitleLabel"
+                       text="Uma escolha de cada vez"
+                       wrapText="true"
+                       styleClass="dashboard-insight-title"/>
+
+                <Label fx:id="dashboardHighlightDescriptionLabel"
+                       text="O objetivo não é parar de comprar. É entender quando uma compra realmente faz sentido para você."
+                       wrapText="true"
+                       styleClass="dashboard-insight-text"/>
+            </VBox>
+
+            <VBox spacing="16.0"
+                  maxWidth="Infinity"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="dashboard-weekly-card">
+
+                <HBox alignment="CENTER_LEFT">
+
+                    <VBox spacing="3.0">
+                        <Label text="Resumo da semana"
+                               styleClass="dashboard-weekly-title"/>
+
+                        <Label text="Suas decisões financeiras nos últimos dias."
+                               styleClass="dashboard-weekly-subtitle"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label fx:id="dashboardWeeklyPeriodLabel"
+                           text="--"
+                           styleClass="dashboard-weekly-period"/>
+                </HBox>
+
+                <GridPane hgap="12.0"
+                          vgap="12.0"
+                          maxWidth="Infinity"
+                          VBox.vgrow="ALWAYS">
+
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0"
+                                           hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="50.0"
+                                           hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="0"
+                          maxWidth="Infinity"
+                          styleClass="dashboard-weekly-metric">
+
+                        <Label text="Decisões analisadas"
+                               styleClass="dashboard-weekly-metric-title"/>
+
+                        <Label fx:id="dashboardWeeklyDecisionsLabel"
+                               text="0"
+                               styleClass="dashboard-weekly-metric-value"/>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="0"
+                          maxWidth="Infinity"
+                          styleClass="dashboard-weekly-metric">
+
+                        <Label text="Comprado"
+                               styleClass="dashboard-weekly-metric-title"/>
+
+                        <Label fx:id="dashboardWeeklyPurchasedLabel"
+                               text="R$ 0,00"
+                               styleClass="dashboard-weekly-metric-value"/>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="1"
+                          maxWidth="Infinity"
+                          styleClass="dashboard-weekly-metric">
+
+                        <Label text="Valor preservado"
+                               styleClass="dashboard-weekly-metric-title"/>
+
+                        <Label fx:id="dashboardWeeklyPreservedLabel"
+                               text="R$ 0,00"
+                               styleClass="dashboard-weekly-metric-value-positive"/>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="1"
+                          maxWidth="Infinity"
+                          styleClass="dashboard-weekly-metric">
+
+                        <Label text="Tempo envolvido"
+                               styleClass="dashboard-weekly-metric-title"/>
+
+                        <Label fx:id="dashboardWeeklyWorkTimeLabel"
+                               text="0 min"
+                               styleClass="dashboard-weekly-metric-value-positive"/>
+                    </VBox>
+                </GridPane>
+
+                <Label fx:id="dashboardWeeklyComparisonLabel"
+                       text="Ainda não existem dados suficientes para comparar as semanas."
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       styleClass="dashboard-weekly-comparison, dashboard-weekly-comparison-neutral"/>
+            </VBox>
         </VBox>
 
     </HBox>

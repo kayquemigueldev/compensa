@@ -34,9 +34,15 @@ import com.kayque.compensa.alerts.service.SmartAlertSnoozeService;
 import com.kayque.compensa.alerts.service.SmartAlertServiceFactory;
 import com.kayque.compensa.alerts.repository.SqliteSmartAlertSnoozeRepository;
 import com.kayque.compensa.dashboard.model.DashboardSmartAlertView;
+import com.kayque.compensa.dashboard.model.DashboardWeeklyOverview;
+import com.kayque.compensa.dashboard.model.DashboardWeeklySpendingTrend;
 import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationService;
+import com.kayque.compensa.dashboard.service.DashboardWeeklyOverviewService;
 import com.kayque.compensa.navigation.NavigationRequestEvent;
 import com.kayque.compensa.navigation.NavigationTarget;
+import com.kayque.compensa.dashboard.model.DashboardWeeklyOverview;
+import com.kayque.compensa.dashboard.model.DashboardWeeklySpendingTrend;
+import com.kayque.compensa.dashboard.service.DashboardWeeklyOverviewService;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -89,6 +95,10 @@ public class DashboardController {
     private final DashboardHighlightService
             dashboardHighlightService =
             new DashboardHighlightService();
+
+    private final DashboardWeeklyOverviewService
+            dashboardWeeklyOverviewService =
+            new DashboardWeeklyOverviewService(repository);
 
     private final MonthlyBudgetService budgetService =
             new MonthlyBudgetService();
@@ -149,6 +159,12 @@ public class DashboardController {
     private final DateTimeFormatter goalForecastDateFormat =
             DateTimeFormatter.ofPattern(
                     "MMMM 'de' yyyy",
+                    Locale.of("pt", "BR")
+            );
+
+    private final DateTimeFormatter weeklyPeriodDateFormat =
+            DateTimeFormatter.ofPattern(
+                    "dd/MM",
                     Locale.of("pt", "BR")
             );
 
@@ -269,6 +285,24 @@ public class DashboardController {
     private HBox dashboardSmartAlertsContainer;
 
     @FXML
+    private Label dashboardWeeklyPeriodLabel;
+
+    @FXML
+    private Label dashboardWeeklyDecisionsLabel;
+
+    @FXML
+    private Label dashboardWeeklyPurchasedLabel;
+
+    @FXML
+    private Label dashboardWeeklyPreservedLabel;
+
+    @FXML
+    private Label dashboardWeeklyWorkTimeLabel;
+
+    @FXML
+    private Label dashboardWeeklyComparisonLabel;
+
+    @FXML
     private void initialize() {
         configureDashboardShortcuts();
 
@@ -277,6 +311,7 @@ public class DashboardController {
         loadMonthlyBudget();
         loadSavingsGoal();
         showDashboardHighlight();
+        loadWeeklyOverview();
         loadSmartAlerts();
     }
 
@@ -668,6 +703,150 @@ public class DashboardController {
             case DEFAULT ->
                     "dashboard-highlight-default";
         };
+    }
+
+    private void loadWeeklyOverview() {
+        try {
+            DashboardWeeklyOverview overview =
+                    dashboardWeeklyOverviewService.create();
+
+            dashboardWeeklyPeriodLabel.setText(
+                    weeklyPeriodDateFormat.format(
+                            overview.weekStart()
+                    )
+                            + " a "
+                            + weeklyPeriodDateFormat.format(
+                            overview.weekEnd()
+                    )
+            );
+
+            dashboardWeeklyDecisionsLabel.setText(
+                    String.valueOf(
+                            overview.currentWeek()
+                                    .totalDecisions()
+                    )
+            );
+
+            dashboardWeeklyPurchasedLabel.setText(
+                    currencyFormat.format(
+                            overview.currentWeek()
+                                    .purchasedValue()
+                    )
+            );
+
+            dashboardWeeklyPreservedLabel.setText(
+                    currencyFormat.format(
+                            overview.currentWeek()
+                                    .preservedValue()
+                    )
+            );
+
+            dashboardWeeklyWorkTimeLabel.setText(
+                    formatWorkTime(
+                            overview.currentWeek()
+                                    .totalRealWorkMinutes()
+                    )
+            );
+
+            showWeeklyComparison(overview);
+
+        } catch (IllegalStateException exception) {
+            showWeeklyOverviewUnavailable();
+        }
+    }
+
+    private void showWeeklyComparison(
+            DashboardWeeklyOverview overview
+    ) {
+        if (!overview.currentWeek().hasDecisions()) {
+            dashboardWeeklyComparisonLabel.setText(
+                    "Nenhuma decisão analisada nesta semana até agora."
+            );
+
+            dashboardWeeklyComparisonLabel
+                    .getStyleClass()
+                    .setAll(
+                            "dashboard-weekly-comparison",
+                            "dashboard-weekly-comparison-neutral"
+                    );
+
+            return;
+        }
+
+        DashboardWeeklySpendingTrend trend =
+                overview.spendingTrend();
+
+        String variation = overview
+                .spendingVariationPercentage()
+                .stripTrailingZeros()
+                .toPlainString()
+                .replace(".", ",");
+
+        String message = switch (trend) {
+            case NO_PURCHASES ->
+                    "Nenhuma compra registrada nesta semana ou na anterior.";
+
+            case FIRST_PURCHASES ->
+                    "Esta é a primeira semana com compras para comparar.";
+
+            case LOWER ->
+                    "Você gastou "
+                            + variation
+                            + "% menos que na semana anterior.";
+
+            case STABLE ->
+                    "Seus gastos ficaram iguais aos da semana anterior.";
+
+            case HIGHER ->
+                    "Você gastou "
+                            + variation
+                            + "% a mais que na semana anterior.";
+        };
+
+        dashboardWeeklyComparisonLabel.setText(message);
+
+        dashboardWeeklyComparisonLabel
+                .getStyleClass()
+                .setAll(
+                        "dashboard-weekly-comparison",
+                        getWeeklyComparisonStyle(trend)
+                );
+    }
+
+    private String getWeeklyComparisonStyle(
+            DashboardWeeklySpendingTrend trend
+    ) {
+        return switch (trend) {
+            case LOWER ->
+                    "dashboard-weekly-comparison-positive";
+
+            case HIGHER ->
+                    "dashboard-weekly-comparison-warning";
+
+            case NO_PURCHASES,
+                 FIRST_PURCHASES,
+                 STABLE ->
+                    "dashboard-weekly-comparison-neutral";
+        };
+    }
+
+    private void showWeeklyOverviewUnavailable() {
+        dashboardWeeklyPeriodLabel.setText("--");
+        dashboardWeeklyDecisionsLabel.setText("--");
+        dashboardWeeklyPurchasedLabel.setText("--");
+        dashboardWeeklyPreservedLabel.setText("--");
+        dashboardWeeklyWorkTimeLabel.setText("--");
+
+        dashboardWeeklyComparisonLabel.setText(
+                "Não foi possível carregar o resumo desta semana."
+        );
+
+        dashboardWeeklyComparisonLabel
+                .getStyleClass()
+                .setAll(
+                        "dashboard-weekly-comparison",
+                        "dashboard-weekly-comparison-neutral"
+                );
     }
 
     private void showDefaultHighlight() {
