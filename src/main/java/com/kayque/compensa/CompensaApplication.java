@@ -1,6 +1,9 @@
 package com.kayque.compensa;
 
 import com.kayque.compensa.database.DatabaseInitializer;
+import com.kayque.compensa.onboarding.controller.OnboardingController;
+import com.kayque.compensa.onboarding.repository.SqliteAppPreferenceRepository;
+import com.kayque.compensa.onboarding.service.OnboardingService;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -22,6 +25,11 @@ public class CompensaApplication extends Application {
 
     private static final Duration TRANSITION_DURATION =
             Duration.millis(300);
+
+    private final OnboardingService onboardingService =
+            new OnboardingService(
+                    new SqliteAppPreferenceRepository()
+            );
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -63,13 +71,11 @@ public class CompensaApplication extends Application {
             Parent splashView
     ) {
         FadeTransition fadeIn =
-                new FadeTransition(
-                        TRANSITION_DURATION,
-                        splashView
+                createFadeTransition(
+                        splashView,
+                        0,
+                        1
                 );
-
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
 
         PauseTransition pause =
                 new PauseTransition(
@@ -81,7 +87,7 @@ public class CompensaApplication extends Application {
         );
 
         pause.setOnFinished(
-                event -> showMainView(
+                event -> showInitialDestination(
                         scene,
                         splashView
                 )
@@ -90,36 +96,25 @@ public class CompensaApplication extends Application {
         fadeIn.play();
     }
 
-    private void showMainView(
+    private void showInitialDestination(
             Scene scene,
             Parent splashView
     ) {
         FadeTransition fadeOut =
-                new FadeTransition(
-                        TRANSITION_DURATION,
-                        splashView
+                createFadeTransition(
+                        splashView,
+                        1,
+                        0
                 );
-
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
 
         fadeOut.setOnFinished(event -> {
             try {
-                Parent mainView =
-                        loadView("main-view.fxml");
-
-                mainView.setOpacity(0);
-                scene.setRoot(mainView);
-
-                FadeTransition mainFadeIn =
-                        new FadeTransition(
-                                TRANSITION_DURATION,
-                                mainView
-                        );
-
-                mainFadeIn.setFromValue(0);
-                mainFadeIn.setToValue(1);
-                mainFadeIn.play();
+                if (onboardingService
+                        .shouldShowOnboarding()) {
+                    showOnboarding(scene);
+                } else {
+                    showMainView(scene);
+                }
 
             } catch (IOException exception) {
                 throw new IllegalStateException(
@@ -130,6 +125,117 @@ public class CompensaApplication extends Application {
         });
 
         fadeOut.play();
+    }
+
+    private void showOnboarding(
+            Scene scene
+    ) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                CompensaApplication.class.getResource(
+                        "onboarding/onboarding-view.fxml"
+                )
+        );
+
+        Parent onboardingView = loader.load();
+
+        OnboardingController controller =
+                loader.getController();
+
+        controller.setOnFinished(
+                () -> completeOnboarding(scene)
+        );
+
+        showViewWithFade(
+                scene,
+                onboardingView
+        );
+    }
+
+    private void completeOnboarding(Scene scene) {
+        onboardingService.completeOnboarding();
+
+        try {
+            transitionToMainView(scene);
+
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Não foi possível iniciar o aplicativo.",
+                    exception
+            );
+        }
+    }
+
+    private void transitionToMainView(
+            Scene scene
+    ) throws IOException {
+        Parent currentView = scene.getRoot();
+
+        FadeTransition fadeOut =
+                createFadeTransition(
+                        currentView,
+                        1,
+                        0
+                );
+
+        fadeOut.setOnFinished(event -> {
+            try {
+                showMainView(scene);
+
+            } catch (IOException exception) {
+                throw new IllegalStateException(
+                        "Não foi possível abrir a tela principal.",
+                        exception
+                );
+            }
+        });
+
+        fadeOut.play();
+    }
+
+    private void showMainView(
+            Scene scene
+    ) throws IOException {
+        Parent mainView =
+                loadView("main-view.fxml");
+
+        showViewWithFade(
+                scene,
+                mainView
+        );
+    }
+
+    private void showViewWithFade(
+            Scene scene,
+            Parent view
+    ) {
+        view.setOpacity(0);
+        scene.setRoot(view);
+
+        FadeTransition fadeIn =
+                createFadeTransition(
+                        view,
+                        0,
+                        1
+                );
+
+        fadeIn.play();
+    }
+
+    private FadeTransition createFadeTransition(
+            Parent view,
+            double fromValue,
+            double toValue
+    ) {
+        FadeTransition transition =
+                new FadeTransition(
+                        TRANSITION_DURATION,
+                        view
+                );
+
+        transition.setFromValue(fromValue);
+        transition.setToValue(toValue);
+
+        return transition;
     }
 
     private Parent loadView(

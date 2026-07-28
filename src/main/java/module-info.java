@@ -17,6 +17,7 @@ module com.kayque.compensa {
     opens com.kayque.compensa.goal.controller to javafx.fxml;
     opens com.kayque.compensa.alerts.controller to javafx.fxml;
     opens com.kayque.compensa.report.controller to javafx.fxml;
+    opens com.kayque.compensa.onboarding.controller to javafx.fxml;
 
     exports com.kayque.compensa;
 }

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.kayque.compensa.onboarding.controller.OnboardingController"
+            styleClass="onboarding-root">
+
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              spacing="12.0"
+              styleClass="onboarding-header">
+
+            <Label text="✓"
+                   styleClass="onboarding-brand-symbol"/>
+
+            <VBox spacing="2.0">
+                <Label text="Compensa?"
+                       styleClass="onboarding-brand-title"/>
+
+                <Label text="Compre consciente. Viva melhor."
+                       styleClass="onboarding-brand-subtitle"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="skipButton"
+                    text="Pular apresentação"
+                    onAction="#skipOnboarding"
+                    styleClass="onboarding-skip-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER"
+              maxWidth="760.0"
+              spacing="24.0"
+              styleClass="onboarding-content">
+
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="categoryLabel"
+                       text="BEM-VINDO"
+                       styleClass="onboarding-category"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="stepLabel"
+                       text="1 de 5"
+                       styleClass="onboarding-step"/>
+            </HBox>
+
+            <VBox spacing="12.0">
+                <Label fx:id="titleLabel"
+                       text="Decida melhor antes de comprar"
+                       wrapText="true"
+                       styleClass="onboarding-title"/>
+
+                <Label fx:id="descriptionLabel"
+                       text="Conheça o Compensa?"
+                       wrapText="true"
+                       styleClass="onboarding-description"/>
+            </VBox>
+
+            <VBox spacing="12.0"
+                  styleClass="onboarding-details-card">
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12.0">
+                    <Label text="✓"
+                           styleClass="onboarding-detail-symbol"/>
+
+                    <Label fx:id="firstDetailLabel"
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="onboarding-detail-text"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12.0">
+                    <Label text="✓"
+                           styleClass="onboarding-detail-symbol"/>
+
+                    <Label fx:id="secondDetailLabel"
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="onboarding-detail-text"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12.0">
+                    <Label text="✓"
+                           styleClass="onboarding-detail-symbol"/>
+
+                    <Label fx:id="thirdDetailLabel"
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="onboarding-detail-text"/>
+                </HBox>
+            </VBox>
+
+            <ProgressBar fx:id="progressBar"
+                         progress="0.2"
+                         maxWidth="Infinity"
+                         styleClass="onboarding-progress"/>
+
+            <HBox alignment="CENTER"
+                  spacing="12.0">
+
+                <Button fx:id="backButton"
+                        text="Voltar"
+                        onAction="#showPreviousPage"
+                        styleClass="onboarding-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="nextButton"
+                        text="Continuar"
+                        defaultButton="true"
+                        onAction="#showNextPage"
+                        styleClass="onboarding-next-button"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <Label text="Desenvolvido por Kayque Miguel"
+               maxWidth="Infinity"
+               alignment="CENTER"
+               styleClass="onboarding-author">
+            <BorderPane.margin>
+                <Insets bottom="24.0"/>
+            </BorderPane.margin>
+        </Label>
+    </bottom>
+
+</BorderPane>
