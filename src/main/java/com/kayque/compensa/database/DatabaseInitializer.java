@@ -215,6 +215,18 @@ public final class DatabaseInitializer {
             ON DELETE CASCADE
     )
     """;
+
+    private static final String CREATE_APP_PREFERENCE_TABLE = """
+    CREATE TABLE IF NOT EXISTS app_preference (
+        preference_key TEXT PRIMARY KEY
+            CHECK (length(trim(preference_key)) > 0),
+
+        preference_value TEXT NOT NULL,
+
+        updated_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP
+    )
+    """;
     
 
     private DatabaseInitializer() {
@@ -235,6 +247,7 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE);
             statement.execute(CREATE_SMART_ALERT_SNOOZE_TABLE);
             statement.execute(CREATE_SMART_ALERT_READ_TABLE);
+            statement.execute(CREATE_APP_PREFERENCE_TABLE);
 
             migrateFinancialProfileTable(connection);
             migratePurchaseDecisionTable(connection);
