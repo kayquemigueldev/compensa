@@ -55,6 +55,11 @@
                 <TextField fx:id="monthlyWorkHoursField"
                            promptText="Ex.: 160"
                            styleClass="form-field"/>
+
+                <Button text="Não sei minhas horas mensais"
+                        maxWidth="Infinity"
+                        onAction="#openWorkHoursCalculator"
+                        styleClass="work-hours-calculator-open-button"/>
             </VBox>
 
             <VBox spacing="7.0">
