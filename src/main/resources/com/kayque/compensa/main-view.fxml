@@ -125,6 +125,12 @@
                         onAction="#showSettings"
                         styleClass="nav-button"/>
 
+                <Button fx:id="helpButton"
+                        text="Precisa de ajuda?"
+                        maxWidth="Infinity"
+                        onAction="#showHelp"
+                        styleClass="nav-button"/>
+
             </VBox>
 
             <VBox spacing="8.0"

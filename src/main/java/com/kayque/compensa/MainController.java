@@ -80,6 +80,9 @@ public class MainController {
     private Button savingsGoalButton;
 
     @FXML
+    private Button helpButton;
+
+    @FXML
     private Label alertBadgeLabel;
 
     @FXML
@@ -198,6 +201,15 @@ public class MainController {
                 "/com/kayque/compensa/settings/settings-view.fxml",
                 settingsButton,
                 "Não foi possível abrir as configurações."
+        );
+    }
+
+    @FXML
+    private void showHelp() {
+        showView(
+                "/com/kayque/compensa/help/help-view.fxml",
+                helpButton,
+                "Não foi possível abrir a Central de ajuda."
         );
     }
 
@@ -351,6 +363,10 @@ public class MainController {
         );
 
         settingsButton.getStyleClass().setAll(
+                "nav-button"
+        );
+
+        helpButton.getStyleClass().setAll(
                 "nav-button"
         );
 

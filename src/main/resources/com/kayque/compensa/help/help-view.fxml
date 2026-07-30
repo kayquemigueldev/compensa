@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="22.0"
+      maxWidth="Infinity"
+      styleClass="help-root">
+
+    <padding>
+        <Insets top="36.0"
+                right="38.0"
+                bottom="40.0"
+                left="38.0"/>
+    </padding>
+
+    <VBox spacing="7.0">
+        <Label text="Central de ajuda"
+               styleClass="page-title"/>
+
+        <Label text="Encontre respostas rápidas e entenda melhor como aproveitar o Compensa?."
+               wrapText="true"
+               styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="16.0"
+          alignment="CENTER_LEFT"
+          styleClass="help-introduction-card">
+
+        <Label text="?"
+               styleClass="help-symbol"/>
+
+        <VBox spacing="5.0">
+            <Label text="Como podemos ajudar?"
+                   styleClass="help-introduction-title"/>
+
+            <Label text="O Compensa? transforma valores financeiros e suas respostas em informações para apoiar decisões mais conscientes."
+                   wrapText="true"
+                   styleClass="help-text"/>
+        </VBox>
+    </HBox>
+
+    <VBox spacing="14.0">
+        <Label text="Primeiros passos"
+               styleClass="help-section-title"/>
+
+        <HBox spacing="14.0">
+
+            <VBox spacing="9.0"
+                  maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="help-topic-card">
+
+                <Label text="1"
+                       styleClass="help-step-number"/>
+
+                <Label text="Configure seu perfil"
+                       wrapText="true"
+                       styleClass="help-topic-title"/>
+
+                <Label text="Informe seu nome, objetivo principal e o tom que prefere receber nas recomendações."
+                       wrapText="true"
+                       styleClass="help-text"/>
+            </VBox>
+
+            <VBox spacing="9.0"
+                  maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="help-topic-card">
+
+                <Label text="2"
+                       styleClass="help-step-number"/>
+
+                <Label text="Defina sua realidade financeira"
+                       wrapText="true"
+                       styleClass="help-topic-title"/>
+
+                <Label text="Cadastre renda, horas trabalhadas, despesas essenciais e a meta mensal de economia."
+                       wrapText="true"
+                       styleClass="help-text"/>
+            </VBox>
+
+            <VBox spacing="9.0"
+                  maxWidth="Infinity"
+                  HBox.hgrow="ALWAYS"
+                  styleClass="help-topic-card">
+
+                <Label text="3"
+                       styleClass="help-step-number"/>
+
+                <Label text="Analise suas escolhas"
+                       wrapText="true"
+                       styleClass="help-topic-title"/>
+
+                <Label text="Informe uma possível compra para descobrir seu custo em dinheiro, tempo e impacto no orçamento."
+                       wrapText="true"
+                       styleClass="help-text"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="13.0">
+        <Label text="Dúvidas frequentes"
+               styleClass="help-section-title"/>
+
+        <TitledPane text="Como o tempo de trabalho é calculado?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <Label text="O Compensa? divide sua renda mensal pelas horas profissionais e pelo tempo adicional informado. Assim, uma compra também pode ser apresentada como tempo real de trabalho."
+                       wrapText="true"
+                       styleClass="help-faq-answer"/>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="Meus dados são enviados para algum serviço?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <Label text="Não. Nesta versão, o perfil, as análises, os objetivos e o histórico permanecem armazenados localmente no seu computador."
+                       wrapText="true"
+                       styleClass="help-faq-answer"/>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="A recomendação decide se devo comprar?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <Label text="Não. O resultado apresenta pontos positivos e sinais de atenção. A decisão continua sendo sua."
+                       wrapText="true"
+                       styleClass="help-faq-answer"/>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="Posso desfazer uma contribuição do objetivo?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <Label text="Sim. Na tela Meu objetivo, utilize o botão Desfazer ao lado da contribuição registrada. O progresso será recalculado automaticamente."
+                       wrapText="true"
+                       styleClass="help-faq-answer"/>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="O que significam os alertas?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <Label text="Os alertas destacam informações que merecem atenção, como decisões aguardando resposta, compras sem avaliação e situações relevantes do orçamento."
+                       wrapText="true"
+                       styleClass="help-faq-answer"/>
+            </content>
+        </TitledPane>
+    </VBox>
+
+    <VBox spacing="7.0"
+          styleClass="help-notice-card">
+
+        <Label text="Importante"
+               styleClass="help-notice-title"/>
+
+        <Label text="O Compensa? é uma ferramenta de reflexão e organização pessoal. Ele não substitui aconselhamento financeiro profissional."
+               wrapText="true"
+               styleClass="help-text"/>
+    </VBox>
+
+    <Region prefHeight="4.0"/>
+
+    <Label text="Compensa? • Desenvolvido por Kayque Miguel"
+           styleClass="help-footer"/>
+</VBox>

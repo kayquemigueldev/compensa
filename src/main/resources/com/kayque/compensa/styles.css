@@ -3129,3 +3129,125 @@
     -fx-text-fill: #ff646c;
     -fx-font-size: 12px;
 }
+
+.help-root {
+    -fx-background-color: #0e1014;
+}
+
+.help-introduction-card {
+    -fx-background-color: #151a18;
+    -fx-background-radius: 14px;
+    -fx-border-color: #40572d;
+    -fx-border-radius: 14px;
+    -fx-padding: 20px;
+}
+
+.help-symbol {
+    -fx-min-width: 46px;
+    -fx-min-height: 46px;
+    -fx-alignment: center;
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 999px;
+    -fx-text-fill: #10140d;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+}
+
+.help-introduction-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.help-section-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 19px;
+    -fx-font-weight: 800;
+}
+
+.help-topic-card {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 13px;
+    -fx-border-color: #2d333e;
+    -fx-border-radius: 13px;
+    -fx-padding: 18px;
+}
+
+.help-step-number {
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-alignment: center;
+    -fx-background-color: #27341f;
+    -fx-background-radius: 999px;
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.help-topic-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}
+
+.help-text {
+    -fx-text-fill: #a2a9b4;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.help-faq-item {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 10px;
+    -fx-border-color: #2d333e;
+    -fx-border-radius: 10px;
+}
+
+.help-faq-item > .title {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 10px;
+    -fx-padding: 14px 16px;
+}
+
+.help-faq-item > .title:hover {
+    -fx-background-color: #1e232c;
+}
+
+.help-faq-item > .title > .text {
+    -fx-fill: #e8e5de;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.help-faq-item > .content {
+    -fx-background-color: #12151b;
+    -fx-border-color: transparent;
+    -fx-padding: 4px 16px 16px 16px;
+}
+
+.help-faq-answer {
+    -fx-text-fill: #aeb4be;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.help-notice-card {
+    -fx-background-color: #181a16;
+    -fx-background-radius: 12px;
+    -fx-border-color: #4d5438;
+    -fx-border-radius: 12px;
+    -fx-padding: 18px;
+}
+
+.help-notice-title {
+    -fx-text-fill: #f2b84b;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.help-footer {
+    -fx-text-fill: #646c78;
+    -fx-font-size: 11px;
+    -fx-alignment: center;
+    -fx-max-width: Infinity;
+}
