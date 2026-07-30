@@ -33,7 +33,7 @@
     </VBox>
 
     <HBox spacing="18.0"
-          VBox.vgrow="ALWAYS">
+          alignment="TOP_LEFT">
 
         <VBox spacing="20.0"
               prefWidth="390.0"
