@@ -55,7 +55,7 @@ public class CompensaApplication extends Application {
 
         configureApplicationEvents(scene);
 
-        stage.setTitle("Compensa?");
+        stage.setTitle(ApplicationInfo.NAME);
         stage.setScene(scene);
         stage.setMinWidth(1000);
         stage.setMinHeight(680);

@@ -46,7 +46,7 @@
                        styleClass="settings-label"/>
 
                 <Label fx:id="applicationVersionLabel"
-                       text="1.0.0"
+                       text="--"
                        styleClass="settings-value"/>
             </HBox>
 

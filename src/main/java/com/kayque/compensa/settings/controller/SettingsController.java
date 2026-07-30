@@ -1,5 +1,6 @@
 package com.kayque.compensa.settings.controller;
 
+import com.kayque.compensa.ApplicationInfo;
 import com.kayque.compensa.database.DatabaseConnection;
 import com.kayque.compensa.settings.service.DatabaseBackupService;
 import javafx.fxml.FXML;
@@ -36,9 +37,6 @@ import java.util.Optional;
 
 public class SettingsController {
 
-    private static final String APPLICATION_VERSION =
-            "1.0.0";
-
     private final DatabaseBackupService backupService =
             new DatabaseBackupService();
 
@@ -74,7 +72,7 @@ public class SettingsController {
     @FXML
     private void initialize() {
         applicationVersionLabel.setText(
-                APPLICATION_VERSION
+                ApplicationInfo.VERSION
         );
 
         loadSnoozedAlerts();
