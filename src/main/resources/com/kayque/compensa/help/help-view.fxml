@@ -115,33 +115,52 @@
                     styleClass="help-faq-item">
 
             <content>
-                <Label text="O Compensa? divide sua renda mensal pelas horas profissionais e pelo tempo adicional informado. Assim, uma compra também pode ser apresentada como tempo real de trabalho."
-                       wrapText="true"
-                       styleClass="help-faq-answer"/>
-            </content>
-        </TitledPane>
+                <VBox spacing="15.0"
+                      styleClass="help-detail-content">
 
-        <TitledPane text="Meus dados são enviados para algum serviço?"
-                    expanded="false"
-                    animated="true"
-                    styleClass="help-faq-item">
+                    <Label text="Transformando dinheiro em tempo"
+                           styleClass="help-detail-title"/>
 
-            <content>
-                <Label text="Não. Nesta versão, o perfil, as análises, os objetivos e o histórico permanecem armazenados localmente no seu computador."
-                       wrapText="true"
-                       styleClass="help-faq-answer"/>
-            </content>
-        </TitledPane>
+                    <Label text="O Compensa? mostra quanto tempo de trabalho é necessário para pagar uma compra. Para isso, ele utiliza os dados informados no seu Perfil financeiro."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
 
-        <TitledPane text="A recomendação decide se devo comprar?"
-                    expanded="false"
-                    animated="true"
-                    styleClass="help-faq-item">
+                    <Label text="Hora profissional"
+                           styleClass="help-detail-subtitle"/>
 
-            <content>
-                <Label text="Não. O resultado apresenta pontos positivos e sinais de atenção. A decisão continua sendo sua."
-                       wrapText="true"
-                       styleClass="help-faq-answer"/>
+                    <Label text="A renda mensal líquida é dividida pela quantidade de horas profissionais trabalhadas no mês. O resultado representa quanto você recebe por hora de trabalho."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Hora real"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="O cálculo também considera as horas adicionais comprometidas, como deslocamento e preparação. Com mais tempo envolvido na rotina, o valor real de cada hora pode ficar menor."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Tempo necessário para uma compra"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="O preço da compra é dividido pelo valor da sua hora. Assim, o aplicativo consegue apresentar o custo em minutos ou horas de trabalho."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <VBox spacing="7.0"
+                          styleClass="help-example-card">
+
+                        <Label text="Exemplo"
+                               styleClass="help-example-title"/>
+
+                        <Label text="Se sua hora real vale R$ 20,00, uma compra de R$ 100,00 representa aproximadamente 5 horas de trabalho."
+                               wrapText="true"
+                               styleClass="help-faq-answer"/>
+                    </VBox>
+
+                    <Label text="Os valores são estimativas baseadas nas informações cadastradas. Atualize o Perfil financeiro sempre que sua renda ou rotina de trabalho mudar."
+                           wrapText="true"
+                           styleClass="help-detail-note"/>
+                </VBox>
             </content>
         </TitledPane>
 
@@ -152,52 +171,52 @@
 
             <content>
                 <VBox spacing="15.0"
-                      styleClass="help-score-content">
+                      styleClass="help-detail-content">
 
                     <Label text="Como o Score Compensa? funciona"
-                           styleClass="help-score-title"/>
+                           styleClass="help-detail-title"/>
 
                     <Label text="Toda análise começa com 60 pontos. As informações fornecidas sobre a compra podem aumentar ou diminuir essa pontuação. No final, o resultado é limitado entre 0 e 100 pontos."
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
                     <Label text="Contexto da decisão"
-                           styleClass="help-score-subtitle"/>
+                           styleClass="help-detail-subtitle"/>
 
-                    <Label text="• Compra planejada: +10 pontos&#10;• Compra não planejada: −10 pontos&#10;• Compra motivada por necessidade: +15 pontos&#10;• Compra motivada por impulso: −20 pontos&#10;• Compra motivada por desejo: não altera o score&#10;• Compra urgente: +5 pontos&#10;• Compra sem alternativa disponível: +5 pontos&#10;• Compra com alternativa disponível: −10 pontos"
+                    <Label text="• Compra planejada: +10 pontos&#10;• Compra não planejada: −10 pontos&#10;• Necessidade: +15 pontos&#10;• Impulso: −20 pontos&#10;• Desejo: não altera o score&#10;• Compra urgente: +5 pontos&#10;• Sem alternativa disponível: +5 pontos&#10;• Com alternativa disponível: −10 pontos"
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
                     <Label text="Impacto no orçamento mensal"
-                           styleClass="help-score-subtitle"/>
+                           styleClass="help-detail-subtitle"/>
 
                     <Label text="• Até 10% do dinheiro disponível: +10 pontos&#10;• Acima de 10% e até 25%: +5 pontos&#10;• Acima de 25% e até 50%: −10 pontos&#10;• Acima de 50%: −25 pontos"
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
-                    <Label text="Tempo necessário para pagar a compra"
-                           styleClass="help-score-subtitle"/>
+                    <Label text="Tempo necessário"
+                           styleClass="help-detail-subtitle"/>
 
-                    <Label text="• Menos de 1 hora de trabalho: +5 pontos&#10;• Entre 1 hora e menos de 4 horas: não altera o score&#10;• A partir de 4 horas: −10 pontos&#10;• A partir de 8 horas: −20 pontos&#10;• Duas horas ou mais de tempo adicional comprometido: −5 pontos"
+                    <Label text="• Menos de 1 hora: +5 pontos&#10;• Entre 1 hora e menos de 4 horas: não altera o score&#10;• A partir de 4 horas: −10 pontos&#10;• A partir de 8 horas: −20 pontos&#10;• Duas horas ou mais de tempo adicional: −5 pontos"
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
-                    <Label text="Impacto no seu objetivo financeiro"
-                           styleClass="help-score-subtitle"/>
+                    <Label text="Impacto no objetivo financeiro"
+                           styleClass="help-detail-subtitle"/>
 
-                    <Label text="• Até 2% do valor do objetivo: +5 pontos&#10;• A partir de 10% do objetivo: −10 pontos&#10;• A partir de 25% do objetivo: −20 pontos&#10;• Quando não existe objetivo com valor definido, esse critério não altera o score"
+                    <Label text="• Até 2% do objetivo: +5 pontos&#10;• A partir de 10% do objetivo: −10 pontos&#10;• A partir de 25% do objetivo: −20 pontos&#10;• Sem objetivo financeiro definido: não altera o score"
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
                     <Label text="Frequência e projeção anual"
-                           styleClass="help-score-subtitle"/>
+                           styleClass="help-detail-subtitle"/>
 
-                    <Label text="• Compra realizada apenas uma vez: não altera o score&#10;• Compra mensal: −5 pontos&#10;• Compra semanal: −12 pontos&#10;• Compra diária: −20 pontos&#10;• Projeção anual a partir de 10% da renda anual: −10 pontos&#10;• Projeção anual a partir de 25% da renda anual: −20 pontos"
+                    <Label text="• Compra única: não altera o score&#10;• Compra mensal: −5 pontos&#10;• Compra semanal: −12 pontos&#10;• Compra diária: −20 pontos&#10;• Projeção anual a partir de 10% da renda anual: −10 pontos&#10;• Projeção anual a partir de 25% da renda anual: −20 pontos"
                            wrapText="true"
                            styleClass="help-faq-answer"/>
 
                     <Label text="Como interpretar o resultado"
-                           styleClass="help-score-subtitle"/>
+                           styleClass="help-detail-subtitle"/>
 
                     <VBox spacing="7.0"
                           styleClass="help-score-classifications">
@@ -218,9 +237,83 @@
                                styleClass="help-score-critical"/>
                     </VBox>
 
-                    <Label text="O score não toma a decisão por você. Ele organiza as informações da análise para mostrar fatores favoráveis e pontos que merecem reflexão."
+                    <Label text="O score organiza os fatores da análise, mas não toma a decisão por você."
                            wrapText="true"
-                           styleClass="help-score-note"/>
+                           styleClass="help-detail-note"/>
+                </VBox>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="A recomendação decide se devo comprar?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <VBox spacing="15.0"
+                      styleClass="help-detail-content">
+
+                    <Label text="A decisão continua sendo sua"
+                           styleClass="help-detail-title"/>
+
+                    <Label text="O Compensa? não autoriza nem impede nenhuma compra. Ele organiza os dados fornecidos e apresenta uma recomendação para apoiar sua reflexão."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="O que é considerado?"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="• Se a compra foi planejada&#10;• Sua principal motivação&#10;• A existência de alternativas&#10;• A urgência da compra&#10;• O tempo de trabalho necessário&#10;• O impacto no orçamento mensal&#10;• O impacto no seu objetivo financeiro&#10;• A frequência e a projeção anual do gasto"
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Resultado da análise"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="O aplicativo apresenta uma pontuação, uma classificação, fatores positivos e sinais de atenção. Essas informações ajudam você a enxergar consequências que poderiam passar despercebidas."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="O tom escolhido em Meu perfil altera a forma como a recomendação conversa com você, mas não modifica os fatos financeiros considerados na análise."
+                           wrapText="true"
+                           styleClass="help-detail-note"/>
+                </VBox>
+            </content>
+        </TitledPane>
+
+        <TitledPane text="Meus dados são enviados para algum serviço?"
+                    expanded="false"
+                    animated="true"
+                    styleClass="help-faq-item">
+
+            <content>
+                <VBox spacing="15.0"
+                      styleClass="help-detail-content">
+
+                    <Label text="Seus dados permanecem no dispositivo"
+                           styleClass="help-detail-title"/>
+
+                    <Label text="Nesta versão, o Compensa? funciona localmente. Os dados cadastrados são armazenados no seu próprio computador."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="O que fica armazenado?"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="• Seu perfil e preferências&#10;• Seu perfil financeiro&#10;• Compras analisadas&#10;• Decisões e avaliações&#10;• Lista de desejos&#10;• Objetivo financeiro e contribuições"
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Serviços externos"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="O aplicativo não envia automaticamente essas informações para serviços externos, contas online ou sistemas de publicidade."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Como os dados estão armazenados localmente, eles não são sincronizados automaticamente com outros computadores ou celulares."
+                           wrapText="true"
+                           styleClass="help-detail-note"/>
                 </VBox>
             </content>
         </TitledPane>
@@ -231,9 +324,34 @@
                     styleClass="help-faq-item">
 
             <content>
-                <Label text="Sim. Na tela Meu objetivo, utilize o botão Desfazer ao lado da contribuição registrada. O progresso será recalculado automaticamente."
-                       wrapText="true"
-                       styleClass="help-faq-answer"/>
+                <VBox spacing="15.0"
+                      styleClass="help-detail-content">
+
+                    <Label text="Corrigindo uma contribuição"
+                           styleClass="help-detail-title"/>
+
+                    <Label text="Sim. Cada contribuição registrada aparece no histórico da tela Meu objetivo e pode ser desfeita individualmente."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Como desfazer"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="1. Abra a tela Meu objetivo.&#10;2. Encontre a contribuição em Contribuições recentes.&#10;3. Clique no botão Desfazer.&#10;4. O valor será removido do total guardado."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="O que acontece depois?"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="O progresso, o valor já guardado, o valor restante e a porcentagem do objetivo são recalculados automaticamente."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Use essa opção para corrigir valores registrados por engano ou contribuições que precisaram ser retiradas do objetivo."
+                           wrapText="true"
+                           styleClass="help-detail-note"/>
+                </VBox>
             </content>
         </TitledPane>
 
@@ -243,9 +361,41 @@
                     styleClass="help-faq-item">
 
             <content>
-                <Label text="Os alertas destacam informações que merecem atenção, como decisões aguardando resposta, compras sem avaliação e situações relevantes do orçamento."
-                       wrapText="true"
-                       styleClass="help-faq-answer"/>
+                <VBox spacing="15.0"
+                      styleClass="help-detail-content">
+
+                    <Label text="Informações importantes no momento certo"
+                           styleClass="help-detail-title"/>
+
+                    <Label text="Os alertas destacam situações que merecem atenção. Eles são criados a partir dos dados armazenados no aplicativo."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Alertas de atenção"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="Podem indicar decisões aguardando resposta, compras ainda não avaliadas, aproximação do limite mensal ou ausência de progresso recente no objetivo."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Alertas positivos"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="Também podem destacar progresso no objetivo, valores preservados e marcos importantes alcançados durante sua jornada."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Alertas informativos"
+                           styleClass="help-detail-subtitle"/>
+
+                    <Label text="Apresentam lembretes e informações úteis que ajudam a manter o histórico e os resultados do aplicativo atualizados."
+                           wrapText="true"
+                           styleClass="help-faq-answer"/>
+
+                    <Label text="Um alerta não significa necessariamente que existe um problema. Ele apenas destaca algo que pode merecer sua atenção."
+                           wrapText="true"
+                           styleClass="help-detail-note"/>
+                </VBox>
             </content>
         </TitledPane>
     </VBox>
