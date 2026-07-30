@@ -227,6 +227,51 @@ public final class DatabaseInitializer {
             DEFAULT CURRENT_TIMESTAMP
     )
     """;
+
+    private static final String
+            CREATE_SAVINGS_GOAL_HISTORY_TABLE = """
+    CREATE TABLE IF NOT EXISTS savings_goal_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        name TEXT NOT NULL
+            CHECK (
+                length(trim(name))
+                BETWEEN 1 AND 120
+            ),
+
+        target_amount NUMERIC NOT NULL
+            CHECK (target_amount > 0),
+
+        saved_amount NUMERIC NOT NULL
+            CHECK (saved_amount >= target_amount),
+
+        target_date TEXT,
+
+        created_at TEXT NOT NULL,
+
+        completed_at TEXT NOT NULL
+            DEFAULT CURRENT_TIMESTAMP
+    )
+    """;
+
+    private static final String
+            CREATE_SAVINGS_GOAL_CONTRIBUTION_HISTORY_TABLE = """
+    CREATE TABLE IF NOT EXISTS
+        savings_goal_contribution_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            achievement_id INTEGER NOT NULL,
+
+            amount NUMERIC NOT NULL
+                CHECK (amount > 0),
+
+            contributed_at TEXT NOT NULL,
+
+            FOREIGN KEY (achievement_id)
+                REFERENCES savings_goal_history(id)
+                ON DELETE CASCADE
+        )
+    """;
     
 
     private DatabaseInitializer() {
@@ -244,7 +289,9 @@ public final class DatabaseInitializer {
             statement.execute(CREATE_PURCHASE_DECISION_TABLE);
             statement.execute(CREATE_USER_PROFILE_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_TABLE);
+            statement.execute(CREATE_SAVINGS_GOAL_HISTORY_TABLE);
             statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_TABLE);
+            statement.execute(CREATE_SAVINGS_GOAL_CONTRIBUTION_HISTORY_TABLE);
             statement.execute(CREATE_SMART_ALERT_SNOOZE_TABLE);
             statement.execute(CREATE_SMART_ALERT_READ_TABLE);
             statement.execute(CREATE_APP_PREFERENCE_TABLE);

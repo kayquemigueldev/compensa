@@ -262,6 +262,31 @@
                        styleClass="goal-status, goal-status-warning"/>
             </VBox>
 
+            <VBox fx:id="completedGoalCard"
+                  spacing="12.0"
+                  visible="false"
+                  managed="false"
+                  styleClass="goal-completed-card">
+
+                <Label text="Conquista concluída!"
+                       styleClass="goal-completed-title"/>
+
+                <Label text="Você chegou ao valor planejado. Esta conquista pode ser arquivada para liberar espaço para um novo objetivo."
+                       wrapText="true"
+                       styleClass="goal-completed-description"/>
+
+                <Button fx:id="startNewGoalButton"
+                        text="Concluir e começar novo objetivo"
+                        maxWidth="Infinity"
+                        onAction="#startNewGoal"
+                        styleClass="goal-completed-button"/>
+
+                <Label text="Seu objetivo e suas contribuições continuarão preservados no histórico."
+                       wrapText="true"
+                       styleClass="goal-completed-note"/>
+
+            </VBox>
+
             <VBox spacing="14.0"
                   styleClass="goal-contribution-card">
 

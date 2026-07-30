@@ -12,6 +12,8 @@ import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
+import com.kayque.compensa.goal.repository.SavingsGoalLifecycleRepository;
+import com.kayque.compensa.goal.repository.SqliteSavingsGoalLifecycleRepository;
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
 import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
 import javafx.fxml.FXML;
@@ -23,6 +25,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 
 import com.kayque.compensa.goal.model.SavingsGoalMilestone;
 import com.kayque.compensa.goal.repository.SavingsGoalMilestoneRepository;
@@ -57,6 +62,10 @@ public class SavingsGoalController {
     private final SavingsGoalContributionRepository
             contributionRepository =
             new SqliteSavingsGoalContributionRepository();
+
+    private final SavingsGoalLifecycleRepository
+            lifecycleRepository =
+            new SqliteSavingsGoalLifecycleRepository();
 
     private final SavingsGoalProgressService progressService =
             new SavingsGoalProgressService();
@@ -175,6 +184,12 @@ public class SavingsGoalController {
     private Label forecastDateLabel;
 
     @FXML
+    private VBox completedGoalCard;
+
+    @FXML
+    private Button startNewGoalButton;
+
+    @FXML
     private DatePicker targetDatePicker;
 
     @FXML
@@ -276,6 +291,95 @@ public class SavingsGoalController {
         }
     }
 
+    @FXML
+    private void startNewGoal() {
+        clearFeedback();
+
+        try {
+            if (currentGoal == null) {
+                throw new IllegalArgumentException(
+                        "Nenhum objetivo foi encontrado."
+                );
+            }
+
+            if (!currentGoal.isCompleted()) {
+                throw new IllegalArgumentException(
+                        "Conclua o objetivo atual antes de iniciar outro."
+                );
+            }
+
+            ButtonType confirmButton = new ButtonType(
+                    "Arquivar e continuar",
+                    ButtonBar.ButtonData.OK_DONE
+            );
+
+            ButtonType cancelButton = new ButtonType(
+                    "Cancelar",
+                    ButtonBar.ButtonData.CANCEL_CLOSE
+            );
+
+            Alert confirmation = new Alert(
+                    Alert.AlertType.CONFIRMATION,
+                    "",
+                    confirmButton,
+                    cancelButton
+            );
+
+            confirmation.setTitle(
+                    "Começar um novo objetivo"
+            );
+
+            confirmation.setHeaderText(
+                    "Arquivar esta conquista?"
+            );
+
+            confirmation.setContentText(
+                    "O objetivo “"
+                            + currentGoal.name()
+                            + "” e suas contribuições serão preservados "
+                            + "no histórico.\n\n"
+                            + "Depois disso, você poderá planejar uma nova "
+                            + "conquista. Os demais dados do Compensa? "
+                            + "não serão apagados."
+            );
+
+            ButtonType selectedButton =
+                    confirmation.showAndWait()
+                            .orElse(cancelButton);
+
+            if (selectedButton != confirmButton) {
+                return;
+            }
+
+            String completedGoalName =
+                    currentGoal.name();
+
+            lifecycleRepository
+                    .archiveCompletedGoalAndPrepareNew();
+
+            currentGoal = null;
+            currentContributions = List.of();
+
+            loadGoal();
+            loadContributions();
+
+            showSuccess(
+                    "Conquista “"
+                            + completedGoalName
+                            + "” arquivada com sucesso. "
+                            + "Agora planeje seu próximo objetivo."
+            );
+
+        } catch (IllegalArgumentException exception) {
+            showError(exception.getMessage());
+
+        } catch (IllegalStateException exception) {
+            showError(
+                    "Não foi possível arquivar a conquista."
+            );
+        }
+    }
+
     private void loadGoal() {
         clearFeedback();
 
@@ -285,7 +389,9 @@ public class SavingsGoalController {
                         currentGoal = goal;
                         fillFields(goal);
                         renderGoal(goal);
-                        setContributionFormEnabled(true);
+                        setContributionFormEnabled(
+                                !goal.isCompleted()
+                        );
                     },
                     () -> {
                         currentGoal = null;
@@ -374,6 +480,11 @@ public class SavingsGoalController {
 
         renderStatus(progress.status());
         celebrateNewMilestone(progress.percentage());
+
+        boolean completed = goal.isCompleted();
+
+        setCompletedGoalCardVisible(completed);
+        setContributionFormEnabled(!completed);
     }
 
     private void celebrateNewMilestone(
@@ -1115,7 +1226,23 @@ public class SavingsGoalController {
         }
     }
 
+    private void setCompletedGoalCardVisible(
+            boolean visible
+    ) {
+        completedGoalCard.setVisible(visible);
+        completedGoalCard.setManaged(visible);
+
+        startNewGoalButton.setDisable(!visible);
+    }
+
     private void renderEmptyState() {
+        goalNameField.clear();
+        targetAmountField.clear();
+        savedAmountField.clear();
+        contributionAmountField.clear();
+
+        targetDatePicker.setValue(null);
+
         goalTitleLabel.setText(
                 "Defina sua próxima conquista"
         );
@@ -1125,6 +1252,7 @@ public class SavingsGoalController {
         progressPercentageLabel.setText("0%");
 
         goalProgressBar.setProgress(0);
+
         savedAmountField.setDisable(false);
 
         progressStatusLabel.setText(
@@ -1137,8 +1265,17 @@ public class SavingsGoalController {
         );
 
         currentContributions = List.of();
-        renderForecastUnavailable();
 
+        setCompletedGoalCardVisible(false);
+        setContributionFormEnabled(false);
+
+        targetPlanCard.setVisible(false);
+        targetPlanCard.setManaged(false);
+
+        monthlyPaceSection.setVisible(false);
+        monthlyPaceSection.setManaged(false);
+
+        renderForecastUnavailable();
     }
 
     private void setContributionFormEnabled(
