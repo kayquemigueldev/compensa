@@ -3536,3 +3536,76 @@
     -fx-text-fill: #8f98a6;
     -fx-font-size: 10px;
 }
+
+.goal-confirmation-dialog {
+    -fx-background-color: #171a21;
+    -fx-border-color: #303846;
+    -fx-border-width: 1px;
+    -fx-font-family: "Arial";
+}
+
+.goal-confirmation-dialog > .header-panel {
+    -fx-background-color: #11161d;
+    -fx-padding: 18px 20px;
+}
+
+.goal-confirmation-dialog > .header-panel .label {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 17px;
+    -fx-font-weight: 800;
+}
+
+.goal-confirmation-dialog > .content {
+    -fx-background-color: #171a21;
+    -fx-padding: 20px;
+}
+
+.goal-confirmation-dialog > .content.label {
+    -fx-text-fill: #b7bdc7;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.goal-confirmation-dialog > .button-bar {
+    -fx-background-color: #171a21;
+    -fx-padding: 10px 20px 18px 20px;
+}
+
+.goal-confirmation-dialog > .button-bar > .container {
+    -fx-background-color: #171a21;
+}
+
+.goal-confirmation-primary-button {
+    -fx-background-color: #8eea3c;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #10140d;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-padding: 10px 18px;
+    -fx-min-width: 205px;
+    -fx-pref-width: 205px;
+    -fx-cursor: hand;
+}
+
+.goal-confirmation-primary-button:hover {
+    -fx-background-color: #9bf04d;
+}
+
+.goal-confirmation-cancel-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #4a5260;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #b7bdc7;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 18px;
+    -fx-min-width: 125px;
+    -fx-pref-width: 125px;
+    -fx-cursor: hand;
+}
+
+.goal-confirmation-cancel-button:hover {
+    -fx-background-color: #242a32;
+    -fx-text-fill: #f4f1ea;
+}

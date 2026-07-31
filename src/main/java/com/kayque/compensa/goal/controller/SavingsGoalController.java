@@ -363,6 +363,35 @@ public class SavingsGoalController {
                             + "não serão apagados."
             );
 
+            confirmation.setGraphic(null);
+
+            confirmation.getDialogPane()
+                    .getStylesheets()
+                    .add(
+                            SavingsGoalController.class
+                                    .getResource(
+                                            "/com/kayque/compensa/styles.css"
+                                    )
+                                    .toExternalForm()
+                    );
+
+            confirmation.getDialogPane()
+                    .getStyleClass()
+                    .add("goal-confirmation-dialog");
+
+            confirmation.getDialogPane().setMinWidth(540);
+            confirmation.getDialogPane().setPrefWidth(540);
+
+            confirmation.getDialogPane()
+                    .lookupButton(confirmButton)
+                    .getStyleClass()
+                    .add("goal-confirmation-primary-button");
+
+            confirmation.getDialogPane()
+                    .lookupButton(cancelButton)
+                    .getStyleClass()
+                    .add("goal-confirmation-cancel-button");
+
             ButtonType selectedButton =
                     confirmation.showAndWait()
                             .orElse(cancelButton);
