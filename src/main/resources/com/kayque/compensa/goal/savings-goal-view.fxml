@@ -332,6 +332,30 @@
                       spacing="8.0"/>
 
             </VBox>
+
+            <VBox fx:id="achievementHistoryCard"
+                  spacing="14.0"
+                  styleClass="goal-achievement-history-card">
+
+                <VBox spacing="4.0">
+                    <Label text="Conquistas anteriores"
+                           styleClass="goal-achievement-history-title"/>
+
+                    <Label text="Objetivos concluídos e preservados no seu histórico."
+                           wrapText="true"
+                           styleClass="goal-achievement-history-subtitle"/>
+                </VBox>
+
+                <Label fx:id="achievementHistoryEmptyLabel"
+                       text="Nenhuma conquista concluída ainda."
+                       wrapText="true"
+                       styleClass="goal-achievement-empty"/>
+
+                <VBox fx:id="achievementHistoryContainer"
+                      spacing="8.0"/>
+
+            </VBox>
+
         </VBox>
     </HBox>
 </VBox>

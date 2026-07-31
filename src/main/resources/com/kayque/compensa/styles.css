@@ -3481,3 +3481,58 @@
     -fx-text-fill: #7f8992;
     -fx-font-size: 11px;
 }
+
+.goal-achievement-history-card {
+    -fx-background-color: #171a21;
+    -fx-background-radius: 14px;
+    -fx-border-color: #292e38;
+    -fx-border-radius: 14px;
+    -fx-padding: 20px;
+}
+
+.goal-achievement-history-title {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.goal-achievement-history-subtitle {
+    -fx-text-fill: #848b96;
+    -fx-font-size: 12px;
+}
+
+.goal-achievement-empty {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 0 2px 0;
+}
+
+.goal-achievement-row {
+    -fx-background-color: #11161d;
+    -fx-background-radius: 10px;
+    -fx-border-color: #303846;
+    -fx-border-radius: 10px;
+    -fx-padding: 14px;
+}
+
+.goal-achievement-name {
+    -fx-text-fill: #f4f1ea;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.goal-achievement-date {
+    -fx-text-fill: #737b87;
+    -fx-font-size: 11px;
+}
+
+.goal-achievement-value {
+    -fx-text-fill: #8eea3c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.goal-achievement-target {
+    -fx-text-fill: #8f98a6;
+    -fx-font-size: 10px;
+}

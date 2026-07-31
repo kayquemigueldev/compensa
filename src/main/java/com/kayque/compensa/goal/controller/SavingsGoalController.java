@@ -7,6 +7,7 @@ import com.kayque.compensa.goal.model.SavingsGoalProgressStatus;
 import com.kayque.compensa.goal.model.SavingsGoalForecast;
 import com.kayque.compensa.goal.model.SavingsGoalForecastStatus;
 import com.kayque.compensa.goal.service.SavingsGoalForecastService;
+import com.kayque.compensa.goal.model.SavingsGoalAchievement;
 
 import com.kayque.compensa.goal.repository.SavingsGoalContributionRepository;
 import com.kayque.compensa.goal.repository.SavingsGoalRepository;
@@ -14,6 +15,9 @@ import com.kayque.compensa.goal.repository.SqliteSavingsGoalContributionReposito
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalRepository;
 import com.kayque.compensa.goal.repository.SavingsGoalLifecycleRepository;
 import com.kayque.compensa.goal.repository.SqliteSavingsGoalLifecycleRepository;
+import com.kayque.compensa.goal.repository.SavingsGoalAchievementRepository;
+import com.kayque.compensa.goal.repository.SqliteSavingsGoalAchievementRepository;
+
 import com.kayque.compensa.goal.service.SavingsGoalProgressService;
 import com.kayque.compensa.goal.service.SavingsGoalTargetPlanService;
 import javafx.fxml.FXML;
@@ -56,6 +60,8 @@ public class SavingsGoalController {
 
     private static final int HISTORY_LIMIT = 5;
 
+    private static final int ACHIEVEMENT_HISTORY_LIMIT = 5;
+
     private final SavingsGoalRepository repository =
             new SqliteSavingsGoalRepository();
 
@@ -66,6 +72,10 @@ public class SavingsGoalController {
     private final SavingsGoalLifecycleRepository
             lifecycleRepository =
             new SqliteSavingsGoalLifecycleRepository();
+
+    private final SavingsGoalAchievementRepository
+            achievementRepository =
+            new SqliteSavingsGoalAchievementRepository();
 
     private final SavingsGoalProgressService progressService =
             new SavingsGoalProgressService();
@@ -175,6 +185,15 @@ public class SavingsGoalController {
     private Label contributionEmptyLabel;
 
     @FXML
+    private VBox achievementHistoryCard;
+
+    @FXML
+    private VBox achievementHistoryContainer;
+
+    @FXML
+    private Label achievementHistoryEmptyLabel;
+
+    @FXML
     private Label forecastTitleLabel;
 
     @FXML
@@ -196,6 +215,7 @@ public class SavingsGoalController {
     private void initialize() {
         loadGoal();
         loadContributions();
+        loadAchievements();
     }
 
     @FXML
@@ -1211,6 +1231,7 @@ public class SavingsGoalController {
 
             loadGoal();
             loadContributions();
+            loadAchievements();
 
             showSuccess(
                     "Contribuição de "
@@ -1233,6 +1254,136 @@ public class SavingsGoalController {
         completedGoalCard.setManaged(visible);
 
         startNewGoalButton.setDisable(!visible);
+    }
+
+    private void loadAchievements() {
+        try {
+            List<SavingsGoalAchievement> achievements =
+                    achievementRepository.findAll();
+
+            renderAchievementHistory(achievements);
+
+        } catch (IllegalStateException exception) {
+            achievementHistoryContainer
+                    .getChildren()
+                    .clear();
+
+            achievementHistoryEmptyLabel.setText(
+                    "Não foi possível carregar as conquistas anteriores."
+            );
+
+            achievementHistoryEmptyLabel.setVisible(true);
+            achievementHistoryEmptyLabel.setManaged(true);
+        }
+    }
+
+    private void renderAchievementHistory(
+            List<SavingsGoalAchievement> achievements
+    ) {
+        achievementHistoryContainer
+                .getChildren()
+                .clear();
+
+        boolean empty = achievements.isEmpty();
+
+        achievementHistoryEmptyLabel.setVisible(empty);
+        achievementHistoryEmptyLabel.setManaged(empty);
+
+        if (empty) {
+            return;
+        }
+
+        achievements.stream()
+                .limit(ACHIEVEMENT_HISTORY_LIMIT)
+                .map(this::createAchievementRow)
+                .forEach(row ->
+                        achievementHistoryContainer
+                                .getChildren()
+                                .add(row)
+                );
+    }
+
+    private HBox createAchievementRow(
+            SavingsGoalAchievement achievement
+    ) {
+        Label nameLabel = new Label(
+                achievement.name()
+        );
+
+        nameLabel.setWrapText(true);
+        nameLabel.getStyleClass().add(
+                "goal-achievement-name"
+        );
+
+        Label completedDateLabel = new Label(
+                "Concluído em "
+                        + achievement.completedAt()
+                        .format(dateFormat)
+        );
+
+        completedDateLabel.getStyleClass().add(
+                "goal-achievement-date"
+        );
+
+        VBox information = new VBox(
+                4,
+                nameLabel,
+                completedDateLabel
+        );
+
+        HBox.setHgrow(
+                information,
+                javafx.scene.layout.Priority.ALWAYS
+        );
+
+        Label savedAmountLabel = new Label(
+                currencyFormat.format(
+                        achievement.savedAmount()
+                )
+        );
+
+        savedAmountLabel.getStyleClass().add(
+                "goal-achievement-value"
+        );
+
+        Label targetAmountLabel = new Label(
+                "Meta: "
+                        + currencyFormat.format(
+                        achievement.targetAmount()
+                )
+        );
+
+        targetAmountLabel.getStyleClass().add(
+                "goal-achievement-target"
+        );
+
+        VBox amounts = new VBox(
+                4,
+                savedAmountLabel,
+                targetAmountLabel
+        );
+
+        amounts.setAlignment(
+                javafx.geometry.Pos.CENTER_RIGHT
+        );
+
+        HBox row = new HBox(
+                16,
+                information,
+                amounts
+        );
+
+        row.setAlignment(
+                javafx.geometry.Pos.CENTER_LEFT
+        );
+
+        row.setMaxWidth(Double.MAX_VALUE);
+
+        row.getStyleClass().add(
+                "goal-achievement-row"
+        );
+
+        return row;
     }
 
     private void renderEmptyState() {
