@@ -1,0 +1,67 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Compensa para Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Compilar e executar os testes
+        shell: pwsh
+        run: .\mvnw.cmd clean package
+
+      - name: Copiar dependências de execução
+        shell: pwsh
+        run: |
+          .\mvnw.cmd dependency:copy-dependencies `
+            -DincludeScope=runtime `
+            -DoutputDirectory=target/dependency
+
+      - name: Criar aplicativo portátil
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path packaging/windows | Out-Null
+
+          jpackage `
+            --type app-image `
+            --dest packaging/windows `
+            --name "Compensa" `
+            --app-version "1.0.0" `
+            --vendor "Kayque Miguel" `
+            --description "Transforme compras impulsivas em decisões conscientes." `
+            --copyright "Copyright 2026 Kayque Miguel" `
+            --module-path "target/compensa-1.0.0.jar;target/dependency" `
+            --module "com.kayque.compensa/com.kayque.compensa.Launcher" `
+            --java-options "-Dfile.encoding=UTF-8" `
+            --win-console
+
+      - name: Compactar aplicativo
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path packaging/windows/Compensa `
+            -DestinationPath packaging/windows/Compensa-Windows-1.0.0.zip
+
+      - name: Disponibilizar versão Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: Compensa-Windows-1.0.0
+          path: packaging/windows/Compensa-Windows-1.0.0.zip
+          if-no-files-found: error
+          retention-days: 14
