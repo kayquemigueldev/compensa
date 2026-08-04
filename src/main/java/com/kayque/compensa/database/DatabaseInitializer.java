@@ -302,11 +302,6 @@ public final class DatabaseInitializer {
             migrateLegacySavingsGoal(connection);
             migrateSavingsGoalTable(connection);
 
-            System.out.println(
-                    "Banco inicializado em: "
-                            + DatabaseConnection.getDatabaseFile()
-            );
-
         } catch (SQLException exception) {
             throw new IllegalStateException(
                     "Não foi possível inicializar o banco de dados.",
@@ -504,13 +499,6 @@ public final class DatabaseInitializer {
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
-
-        System.out.println(
-                "Migração aplicada: "
-                        + table
-                        + "."
-                        + column
-        );
     }
 
     private static boolean columnExists(

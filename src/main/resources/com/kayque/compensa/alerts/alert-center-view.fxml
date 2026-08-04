@@ -24,7 +24,7 @@
         <Label text="Central de alertas"
                styleClass="page-title"/>
 
-        <Label text="Acompanhe todos os sinais importantes identificados pelo Compensa?."
+        <Label text="Acompanhe todos os sinais importantes identificados no Compensa?"
                wrapText="true"
                styleClass="page-subtitle"/>
     </VBox>
