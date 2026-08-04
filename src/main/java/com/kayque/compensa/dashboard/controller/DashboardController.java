@@ -40,9 +40,6 @@ import com.kayque.compensa.dashboard.service.DashboardSmartAlertPresentationServ
 import com.kayque.compensa.dashboard.service.DashboardWeeklyOverviewService;
 import com.kayque.compensa.navigation.NavigationRequestEvent;
 import com.kayque.compensa.navigation.NavigationTarget;
-import com.kayque.compensa.dashboard.model.DashboardWeeklyOverview;
-import com.kayque.compensa.dashboard.model.DashboardWeeklySpendingTrend;
-import com.kayque.compensa.dashboard.service.DashboardWeeklyOverviewService;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;

@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
+import java.util.Objects;
 
 import java.io.IOException;
 
@@ -54,6 +56,17 @@ public class CompensaApplication extends Application {
         );
 
         configureApplicationEvents(scene);
+
+        stage.getIcons().add(
+                new Image(
+                        Objects.requireNonNull(
+                                CompensaApplication.class.getResourceAsStream(
+                                        "/com/kayque/compensa/images/compensa-icon.png"
+                                ),
+                                "Ícone do aplicativo não encontrado."
+                        )
+                )
+        );
 
         stage.setTitle(ApplicationInfo.NAME);
         stage.setScene(scene);
