@@ -69,8 +69,6 @@ O aplicativo não decide pelo usuário e não tenta impedir compras. Seu objetiv
          width="900">
 </p>
 
-> As capturas serão adicionadas ao diretório `docs/screenshots`.
-
 ---
 
 ##  Principais funcionalidades
